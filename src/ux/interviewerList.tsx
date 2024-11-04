@@ -1,0 +1,95 @@
+import {
+	DrawerBody,
+	DrawerHeader,
+	DrawerHeaderTitle,
+	InlineDrawer,
+	Button,
+	useRestoreFocusSource,
+} from "@fluentui/react-components";
+import { Tree, TreeArrayNode } from "fluid-framework";
+import { Interviewer } from "../schema.js";
+import React, { useEffect, useState } from "react";
+import { AddFilled } from "@fluentui/react-icons";
+import { AvailabilityView } from "./availabilityView.js";
+
+export function InterviewerList(props: {
+	interviewers: TreeArrayNode<typeof Interviewer>;
+	isOpen: boolean;
+	setIsOpen: (isOpen: boolean) => void;
+	handleAddInterviewer: (interviewerId: string) => void;
+}): JSX.Element {
+	const restoreFocusSourceAttributes = useRestoreFocusSource();
+
+	return (
+		<InlineDrawer
+			{...restoreFocusSourceAttributes}
+			separator
+			open={props.isOpen}
+			position="end"
+		>
+			<DrawerHeader>
+				<DrawerHeaderTitle>
+					<div className="text-lg p-2">Interviewer Pool</div>
+				</DrawerHeaderTitle>
+			</DrawerHeader>
+
+			<DrawerBody>
+				{props.interviewers.map((interviewer, index) => (
+					<InterviewerView
+						key={index}
+						interviewer={interviewer}
+						handleAddInterviewer={props.handleAddInterviewer}
+					/>
+				))}
+			</DrawerBody>
+		</InlineDrawer>
+	);
+}
+
+export function InterviewerView(props: {
+	interviewer: Interviewer;
+	handleAddInterviewer: (interviewerId: string) => void;
+}): JSX.Element {
+	const [invalidations, setInvalidations] = useState(0);
+	useEffect(() => {
+		const unsubscribe = Tree.on(props.interviewer, "nodeChanged", () => {
+			setInvalidations(invalidations + Math.random());
+		});
+		return unsubscribe;
+	}, [invalidations, props.interviewer]);
+
+	return (
+		<div className="flex flex-col gap-1 content-center my-2 border border-gray-300 p-2 rounded">
+			<div className="flex flex-row gap-1 items-center">
+				<Button
+					appearance="subtle"
+					icon={<AddFilled />}
+					onClick={() => props.handleAddInterviewer(props.interviewer.interviewerId)}
+				/>
+				<div className="flex-grow">
+					<div className="mb-1">
+						<label className="block mb-1 text-sm font-medium text-gray-900">
+							Name:
+						</label>
+						<input
+							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+							value={props.interviewer.name}
+							onChange={(event) => (props.interviewer.name = event.target.value)}
+						/>
+					</div>
+					<div className="mb-1">
+						<label className="block mb-1 text-sm font-medium text-gray-900">
+							Role:
+						</label>
+						<input
+							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+							value={props.interviewer.role}
+							onChange={(event) => (props.interviewer.role = event.target.value)}
+						/>
+					</div>
+				</div>
+			</div>
+			<AvailabilityView avail={props.interviewer.availability} />
+		</div>
+	);
+}
