@@ -42,7 +42,7 @@ export function JobsList(props: {
 						key={index}
 						job={job}
 						isSelected={props.currentlySelectedJob === job}
-						onClick={() => {
+						setSelectedJob={(job: Job | undefined) => {
 							props.setSelectedJob(job);
 						}}
 						currentViewers={getKeysByValue(props.jobPresenceMap, job.jobId)}
@@ -54,7 +54,7 @@ export function JobsList(props: {
 				<button
 					className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
 					onClick={() => {
-						const newJob = createTestJob();
+						const newJob = createTestJob(false);
 						props.jobs.insertAt(props.jobs.length, newJob);
 					}}
 				>
@@ -68,7 +68,7 @@ export function JobsList(props: {
 export function JobView(props: {
 	job: Job;
 	isSelected: boolean;
-	onClick: () => void;
+	setSelectedJob: (job: Job | undefined) => void;
 	currentViewers: ISessionClient[];
 	userInfoState: LatestValueManager<UserInfo> | undefined;
 }): JSX.Element {
@@ -98,7 +98,9 @@ export function JobView(props: {
 		<div
 			className={`flex flex-col p-2 justify-center content-center mb-2 mt-2 cursor-pointer 
                 ${props.isSelected ? "bg-cyan-50 border border-cyan-300" : "bg-slate-50 hover:bg-slate-100"}`}
-			onClick={props.onClick}
+			onClick={() => {
+				props.setSelectedJob(props.job);
+			}}
 		>
 			<div className="flex items-center justify-between gap-2">
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
@@ -114,6 +116,11 @@ export function JobView(props: {
 					icon={<DismissFilled />}
 					onClick={(event) => {
 						event.stopPropagation();
+
+						if (props.isSelected) {
+							props.setSelectedJob(undefined);
+						}
+
 						props.job.delete();
 					}}
 				/>

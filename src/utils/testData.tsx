@@ -51,16 +51,14 @@ export function createTestData() {
 		}),
 	];
 
-	const job = createTestJob();
-
 	const hrData = new HRData({
-		jobsList: [job],
+		jobsList: [createTestJob(true)],
 		interviewerPool: interviewers,
 	});
 	return hrData;
 }
 
-export function createTestJob() {
+export function createTestJob(addCandidates: boolean) {
 	const candidates = [
 		new Candidate({
 			candidateId: "1",
@@ -73,7 +71,7 @@ export function createTestJob() {
 
 	const onSiteSchedule = new OnSiteSchedule({
 		day: "Monday",
-		interviewerIds: ["10", "20", "40"],
+		interviewerIds: ["10", "20", "70"],
 		candidateId: "1",
 	});
 
@@ -113,18 +111,44 @@ export function createTestJob() {
 		Experience with back-end development in Node.js, .NET, or Python. 
 		Understanding of data structures, design patterns, and asynchronous programming. 
 		`,
-		candidates: candidates,
-		onSiteSchedule: [onSiteSchedule],
 		llmCollaboration: false,
+		candidates: addCandidates ? candidates : [],
+		onSiteSchedule: addCandidates ? [onSiteSchedule] : [],
 	});
-
 	return job;
+}
+
+const names = [
+	"Carlos Hernandez",
+	"Yuki Nakamura",
+	"Liam O'Connor",
+	"Maria Garcia",
+	"Sofia Rossi",
+	"Elena Petrova",
+	"Jane Doe",
+	"John Smith",
+	"Amir Patel",
+	"Robert Brown",
+	"Emily Davis",
+	"Michael Wilson",
+	"Sarah Miller",
+	"David Moore",
+	"Laura Taylor",
+	"James Anderson",
+	"Wei Zhang",
+];
+let currentIndex = 0;
+
+function getNextName() {
+	const name = names[currentIndex];
+	currentIndex = (currentIndex + 1) % names.length;
+	return name;
 }
 
 export function createTestCandidate() {
 	const candidate = new Candidate({
-		candidateId: Math.floor(Math.random() * 101).toString(),
-		name: "Jane Doe",
+		candidateId: Math.floor(Math.random() * 1001).toString(),
+		name: getNextName(),
 		yearsOfExperience: Math.floor(Math.random() * 20) + 1,
 		availability: createFullyAvailable(),
 		llmCollaboration: false,

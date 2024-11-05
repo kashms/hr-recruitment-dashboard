@@ -100,7 +100,7 @@ export class Job extends sf.object(
 		}),
 		onSiteSchedule: sf.required(sf.array(OnSiteSchedule), {
 			metadata: {
-				description: `The schedule of the onsite interviews. This field is required. The default is an empty array. The objects of type OnSiteSchedule are put in arrays here.`,
+				description: `The schedule of the onsite interviews. This field is required. The default is an empty array. The objects of type OnSiteSchedule are put in arrays here. A valid onsite schedule should have an onsite interview day when the candidate is available, 3 available interviewers and a candidate.`,
 			},
 		}),
 		llmCollaboration: sf.required(sf.boolean, {
