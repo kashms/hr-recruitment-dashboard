@@ -60,7 +60,7 @@ export function AiChatView(props: {
 				userAsk: inputPrompt,
 			},
 			limiters: {
-				maxModelCalls: 50,
+				maxModelCalls: 10,
 			},
 			dumpDebugLog: true,
 		};

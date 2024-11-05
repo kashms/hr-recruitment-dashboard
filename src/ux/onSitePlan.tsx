@@ -87,11 +87,6 @@ export function OnSitePlan(props: {
 							</option>
 						))}
 					</select>
-					{props.onSiteSchedule.llmCollaboration && (
-						<div className="flex items-center">
-							<span className="w-2 h-2 bg-red-500 rounded-full"></span>
-						</div>
-					)}
 					<Button
 						appearance="subtle"
 						icon={<ListFilled />}

@@ -75,14 +75,44 @@ export function createTestJob() {
 		day: "Monday",
 		interviewerIds: ["10", "20", "40"],
 		candidateId: "1",
-		llmCollaboration: false,
 	});
 
 	const job = new Job({
 		jobId: "1",
 		jobState: "Open",
 		jobTitle: "Software Engineer",
-		jobDescription: "We are looking for a software engineer to join our team.",
+		jobDescription: `Overview
+		We are seeking a Software Engineer to join our Microsoft Teams team, specializing in Enterprise Voice features. As an individual contributor, 
+		you will lead the development, optimization, and maintenance of high-quality web applications, ensuring seamless integration with voice over 
+		internet protocol (VoIP) and telephony systems. Collaborate with cross-functional teams to drive innovative solutions, enhance performance, and ensure reliability.
+		Microsoft’s mission is to empower every person and every organization on the planet to achieve more. As employees we come together with a growth mindset, 
+		innovate to empower others, and collaborate to realize our shared goals. Each day we build on our values of respect, integrity, and accountability to create a 
+		culture of inclusion where everyone can thrive at work and beyond.
+
+		Responsibilities
+		- Web UI: Develop responsive web interfaces, leveraging modern front-end libraries and frameworks like React, Angular, or Vue.js to build intuitive user experiences. 
+		- Automation and Tools: Create and refine internal tools to improve the stability of our products through automated testing, and minimize 
+		long-term maintenance, release, and support costs. 
+		- Research and Innovation: Stay informed about the latest trends in web technologies and tools, supporting the team in integrating new 
+		technologies to maintain competitiveness and innovation. 
+		- Technical Support and Collaboration: Work in a large cross-functional engineering team to implement end-to-end solutions by participating 
+		in team and cross-functional discussions. Collaborate with Product Managers with diverse technological backgrounds. Work with support teams 
+		and solve technical problems as they arise. 
+		
+		Qualifications
+		Required Qualifications:
+		- Bachelor's Degree in Computer Science, or related technical discipline with proven experience coding in languages including, but not limited to, 
+		C, C++, C#, Java, JavaScript, or Python OR equivalent experience.
+		- Experience with front-end web development and frameworks like React, Angular, or Vue.js. 
+		- Experience with full-stack development, including databases and cloud technologies. 
+
+		Preferred Qualifications:
+		- Bachelor's Degree in Computer Science or related technical field AND 1+ year(s) technical engineering experience with coding in languages including, but not 
+		limited to, C, C++, C#, Java, JavaScript, or Python OR Master's Degree in Computer Science or related technical field with proven experience coding in 
+		languages including, but not limited to, C, C++, C#, Java, JavaScript, or Python OR equivalent experience.
+		Experience with back-end development in Node.js, .NET, or Python. 
+		Understanding of data structures, design patterns, and asynchronous programming. 
+		`,
 		candidates: candidates,
 		onSiteSchedule: [onSiteSchedule],
 		llmCollaboration: false,
@@ -94,7 +124,7 @@ export function createTestJob() {
 export function createTestCandidate() {
 	const candidate = new Candidate({
 		candidateId: Math.floor(Math.random() * 101).toString(),
-		name: "Jane",
+		name: "Jane Doe",
 		yearsOfExperience: Math.floor(Math.random() * 20) + 1,
 		availability: createFullyAvailable(),
 		llmCollaboration: false,
