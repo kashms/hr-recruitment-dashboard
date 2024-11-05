@@ -5,15 +5,17 @@ import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { createTestCandidate } from "../utils/testData.js";
 import { Button } from "@fluentui/react-components";
-import { getKeysByValue, getMemberFromConnectionId } from "../utils/util.js";
-import { AvatarUser, userAvatarGroup } from "./userAvatarGroup.js";
-import { OdspMember } from "@fluidframework/odsp-client/beta";
+import { getKeysByValue } from "../utils/util.js";
+import { userAvatarGroup } from "./userAvatarGroup.js";
+import { UserInfo } from "../hr_app.js";
+import { ISessionClient, LatestValueManager } from "@fluid-experimental/presence";
 
 export function CandidatesList(props: {
 	job: Job;
 	selectedCandidate: Candidate | undefined;
 	onCandidateClick: (candidate: Candidate) => void;
-	candidatePresenceMap: Map<string, string>; // Client Session ID to Candidate ID map
+	candidatePresenceMap: Map<ISessionClient, string>; // Client Session ID to Candidate ID map
+	userInfoState: LatestValueManager<UserInfo> | undefined;
 	audience: IServiceAudience<IMember>;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
@@ -72,7 +74,8 @@ export function CandidateView(props: {
 	candidate: Candidate;
 	job: Job;
 	selectedCandidate?: Candidate;
-	currentViewers: string[];
+	currentViewers: ISessionClient[];
+	userInfoState: LatestValueManager<UserInfo> | undefined;
 	audience: IServiceAudience<IMember>;
 	onCandidateClick: (candidate: Candidate) => void;
 }): JSX.Element {
@@ -85,12 +88,16 @@ export function CandidateView(props: {
 		return unsubscribe;
 	}, [invalidations, props.candidate]);
 
-	const currentViewingUsers = new Array<AvatarUser>();
-	props.currentViewers.forEach((clientConnectionId) => {
-		const returnedMember = getMemberFromConnectionId(clientConnectionId, props.audience);
-		const odspMember = returnedMember as OdspMember;
-		if (odspMember && odspMember.email) {
-			currentViewingUsers.push(odspMember);
+	const currentViewingUsers = new Array<UserInfo>();
+	props.currentViewers.forEach((clientSessionId) => {
+		try {
+			const viewingUser = props.userInfoState?.clientValue(clientSessionId).value;
+			if (viewingUser) {
+				currentViewingUsers.push(viewingUser);
+			}
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (e) {
+			// Do nothing
 		}
 	});
 

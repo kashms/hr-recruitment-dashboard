@@ -36,7 +36,7 @@ export function AiChatView(props: {
 		const newBranchFork = originalBranch.branch();
 		const newBranchForkView = newBranchFork.viewWith(treeConfiguration);
 
-		const aiCollabOptions: AiCollabOptions<typeof HRData> = {
+		const aiCollabOptions: AiCollabOptions = {
 			openAI: {
 				client: new AzureOpenAI({
 					endpoint: endpoint,
@@ -49,7 +49,6 @@ export function AiChatView(props: {
 			},
 			// planningStep: true,
 			// finalReviewStep: true,
-			treeView: newBranchForkView,
 			treeNode: newBranchForkView.root,
 			prompt: {
 				systemRoleContext:

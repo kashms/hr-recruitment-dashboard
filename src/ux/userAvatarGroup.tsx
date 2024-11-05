@@ -7,15 +7,10 @@ import {
 	partitionAvatarGroupItems,
 } from "@fluentui/react-components";
 import React from "react";
-
-export type AvatarUser = {
-	id: string;
-	name: string;
-	email: string;
-};
+import { UserInfo } from "../hr_app.js";
 
 export function userAvatarGroup(props: {
-	members: AvatarUser[];
+	members: UserInfo[];
 	size: AvatarSize;
 	layout: "spread" | "stack";
 }): JSX.Element {
@@ -27,16 +22,16 @@ export function userAvatarGroup(props: {
 		<AvatarGroup size={props.size} layout={props.layout} className="pr-2">
 			{inlineItems.map((member) => (
 				<Tooltip
-					content={`${member.name} - ${member.email}`}
-					key={member.id}
+					content={`${member.userName} - ${member.userEmail}`}
+					key={member.userId}
 					relationship="description"
 				>
 					<AvatarGroupItem
 						active="active"
 						activeAppearance="ring-shadow"
 						color="colorful"
-						name={`${member.name} - ${member.email}`}
-						key={member.id}
+						name={`${member.userName} - ${member.userEmail}`}
+						key={member.userId}
 					/>
 				</Tooltip>
 			))}
@@ -44,8 +39,8 @@ export function userAvatarGroup(props: {
 				<AvatarGroupPopover>
 					{overflowItems.map((member) => (
 						<AvatarGroupItem
-							name={`${member.name} - ${member.email}`}
-							key={member.id}
+							name={`${member.userName} - ${member.userEmail}`}
+							key={member.userId}
 							active="active"
 							color="colorful"
 							activeAppearance="ring-shadow"

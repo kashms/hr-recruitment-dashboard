@@ -4,17 +4,19 @@ import { IMember, IServiceAudience, Tree, TreeView } from "fluid-framework";
 import { Button } from "@fluentui/react-components";
 import { DismissFilled } from "@fluentui/react-icons";
 import { createTestJob } from "../utils/testData.js";
-import { getKeysByValue, getMemberFromConnectionId } from "../utils/util.js";
-import { AvatarUser, userAvatarGroup } from "./userAvatarGroup.js";
-import { OdspMember } from "@fluidframework/odsp-client/beta";
+import { getKeysByValue } from "../utils/util.js";
+import { userAvatarGroup } from "./userAvatarGroup.js";
+import { ISessionClient, LatestValueManager } from "@fluid-experimental/presence";
+import { UserInfo } from "../hr_app.js";
 
 export function JobsList(props: {
 	jobs: JobsArray;
 	setSelectedJob: (job: Job | undefined) => void;
 	currentlySelectedJob?: Job;
 	treeRoot: TreeView<typeof HRData>;
-	jobPresenceMap: Map<string, string>; // Client Session ID to Job ID map
+	jobPresenceMap: Map<ISessionClient, string>; // Client Session ID to Job ID map
 	audience: IServiceAudience<IMember>;
+	userInfoState: LatestValueManager<UserInfo> | undefined;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
 
@@ -44,7 +46,7 @@ export function JobsList(props: {
 							props.setSelectedJob(job);
 						}}
 						currentViewers={getKeysByValue(props.jobPresenceMap, job.jobId)}
-						audience={props.audience}
+						userInfoState={props.userInfoState}
 					/>
 				))}
 			</div>
@@ -67,8 +69,8 @@ export function JobView(props: {
 	job: Job;
 	isSelected: boolean;
 	onClick: () => void;
-	currentViewers: string[];
-	audience: IServiceAudience<IMember>;
+	currentViewers: ISessionClient[];
+	userInfoState: LatestValueManager<UserInfo> | undefined;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
 
@@ -79,12 +81,16 @@ export function JobView(props: {
 		return unsubscribe;
 	}, [invalidations, props.job]);
 
-	const currentViewingUsers = new Array<AvatarUser>();
-	props.currentViewers.forEach((clientConnectionId) => {
-		const returnedMember = getMemberFromConnectionId(clientConnectionId, props.audience);
-		const odspMember = returnedMember as OdspMember;
-		if (odspMember && odspMember.email) {
-			currentViewingUsers.push(odspMember);
+	const currentViewingUsers = new Array<UserInfo>();
+	props.currentViewers.forEach((clientSessionId) => {
+		try {
+			const viewingUser = props.userInfoState?.clientValue(clientSessionId).value;
+			if (viewingUser) {
+				currentViewingUsers.push(viewingUser);
+			}
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (e) {
+			// Do nothing
 		}
 	});
 

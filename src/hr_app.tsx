@@ -8,7 +8,7 @@ import { TreeView, IServiceAudience, IMember } from "fluid-framework";
 import { Candidate, HRData, Job, type OnSiteSchedule } from "./schema.js";
 import { OdspMember } from "@fluidframework/odsp-client/beta";
 import { userAvatarGroup } from "./ux/userAvatarGroup.js";
-import { IPresence, Latest, PresenceStates } from "@fluid-experimental/presence";
+import { IPresence, ISessionClient, Latest, PresenceStates } from "@fluid-experimental/presence";
 import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";
 import { CandidatesList } from "./ux/candidatesList.js";
@@ -29,10 +29,11 @@ export function HRApp(props: {
 	const [invalidations, setInvalidations] = useState(0);
 	const [AiInProgress, setAiInProgress] = useState(false);
 
-	const [jobPresenceMap, setJobPresenceMap] = useState<Map<string, string>>(new Map());
-	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<string, string>>(
+	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(new Map());
+	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
 		new Map(),
 	);
+	const [appUserInfo, setAppUserInfo] = useState<UserInfo[]>();
 
 	const handleSetJobSelected = (job: Job | undefined) => {
 		setSelectedJob(job);
@@ -45,7 +46,7 @@ export function HRApp(props: {
 				appSelectionPresenceStateRef.current.jobSelelction.local = {
 					jobSelected: job?.jobId,
 				};
-				appSelectionPresenceStateRef.current.candidateSelelction.local = {
+				appSelectionPresenceStateRef.current.candidateSelection.local = {
 					candidateSelected: "",
 				};
 			}
@@ -66,7 +67,7 @@ export function HRApp(props: {
 		setOpenDrawer(false);
 
 		if (appSelectionPresenceStateRef.current) {
-			appSelectionPresenceStateRef.current.candidateSelelction.local = {
+			appSelectionPresenceStateRef.current.candidateSelection.local = {
 				candidateSelected: candidate.candidateId,
 			};
 		}
@@ -83,6 +84,47 @@ export function HRApp(props: {
 		onsiteScheduleSelectedCandidate?.interviewerIds.insertAtEnd(interviewerId);
 	};
 
+	const resetUserInfoList = () => {
+		if (appSelectionPresenceStateRef.current) {
+			const userInfoArray = [
+				...appSelectionPresenceStateRef.current.userInfo.clientValues(),
+			].map((v) => v.value);
+			// if user array already contains the local user by using the userId, then don't add it again
+			if (
+				!userInfoArray.some(
+					(v) =>
+						appSelectionPresenceStateRef.current &&
+						v.userId === appSelectionPresenceStateRef.current.userInfo.local.userId,
+				)
+			) {
+				userInfoArray.push(appSelectionPresenceStateRef.current.userInfo.local);
+			}
+
+			setAppUserInfo(userInfoArray);
+		}
+	};
+
+	const updateMyself = () => {
+		const myselfMember = props.audience.getMyself();
+		if (myselfMember && appSelectionPresenceStateRef.current) {
+			const odspMember = myselfMember as IMember as OdspMember;
+			appSelectionPresenceStateRef.current.userInfo.local = {
+				userId: odspMember.id,
+				userName: odspMember.name,
+				userEmail: odspMember.email,
+			};
+			resetUserInfoList();
+		}
+	};
+
+	useEffect(() => {
+		props.audience.on("membersChanged", updateMyself);
+
+		return () => {
+			props.audience.off("membersChanged", updateMyself);
+		};
+	}, []);
+
 	useEffect(() => {
 		const appSelectionWorkspace = "appSelection:workspace";
 		appSelectionPresenceStateRef.current = props.presence.getStates(
@@ -91,34 +133,39 @@ export function HRApp(props: {
 		);
 
 		appSelectionPresenceStateRef.current.jobSelelction.events.on("updated", (update) => {
-			const remoteConnectionId = update.client.connectionId();
+			const remoteSessionClient = update.client;
 			const remoteSelectedJobId = update.value.jobSelected;
 
 			// if empty string, then no job is selected, remove it from the map
 			if (remoteSelectedJobId === "") {
-				jobPresenceMap.delete(remoteConnectionId);
+				jobPresenceMap.delete(remoteSessionClient);
 				setJobPresenceMap(new Map(jobPresenceMap));
 			} else {
 				setJobPresenceMap(
-					new Map(jobPresenceMap.set(remoteConnectionId, remoteSelectedJobId)),
+					new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
 				);
 			}
 		});
-		appSelectionPresenceStateRef.current.candidateSelelction.events.on("updated", (update) => {
-			const remoteConnectionId = update.client.connectionId();
+		appSelectionPresenceStateRef.current.candidateSelection.events.on("updated", (update) => {
+			const remoteSessionClient = update.client;
 			const remoteSelectedCandidateId = update.value.candidateSelected;
 
 			if (remoteSelectedCandidateId === "") {
-				candidatePresenceMap.delete(remoteConnectionId);
+				candidatePresenceMap.delete(remoteSessionClient);
 				setCandidatePresenceMap(new Map(candidatePresenceMap));
 			} else {
 				setCandidatePresenceMap(
 					new Map(
-						candidatePresenceMap.set(remoteConnectionId, remoteSelectedCandidateId),
+						candidatePresenceMap.set(remoteSessionClient, remoteSelectedCandidateId),
 					),
 				);
 			}
 		});
+
+		appSelectionPresenceStateRef.current.userInfo.events.on("updated", () => {
+			resetUserInfoList();
+		});
+
 		setInvalidations(invalidations + Math.random());
 	}, []);
 
@@ -140,6 +187,7 @@ export function HRApp(props: {
 							AiInProgress={(inProgress: boolean) => {
 								setAiInProgress(inProgress);
 							}}
+							appUserInfo={appUserInfo}
 						/>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
 							<JobsList
@@ -148,6 +196,7 @@ export function HRApp(props: {
 								currentlySelectedJob={selectedJob}
 								treeRoot={props.data}
 								jobPresenceMap={jobPresenceMap}
+								userInfoState={appSelectionPresenceStateRef?.current?.userInfo}
 								audience={props.audience}
 							/>
 							{selectedJob && (
@@ -156,6 +205,7 @@ export function HRApp(props: {
 									selectedCandidate={selectedCandidate}
 									onCandidateClick={handleCandidateClick}
 									candidatePresenceMap={candidatePresenceMap}
+									userInfoState={appSelectionPresenceStateRef?.current?.userInfo}
 									audience={props.audience}
 								/>
 							)}
@@ -187,44 +237,29 @@ export function HeaderBar(props: {
 	audience: IServiceAudience<IMember>;
 	treeRoot: TreeView<typeof HRData>;
 	AiInProgress: (inProgress: boolean) => void;
+	appUserInfo: UserInfo[] | undefined;
 }): JSX.Element {
 	return (
 		<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
 			<h1 className="text-xl font-bold text-white">HR Recruitment Dashboard</h1>
 			<AiChatView treeRoot={props.treeRoot} AiInProgress={props.AiInProgress} />
-			<CreateAvatarGroup audience={props.audience} />
+			<AppPresenceGroup appUserInfo={props.appUserInfo} />
 		</div>
 	);
 }
 
-export function CreateAvatarGroup(props: { audience: IServiceAudience<IMember> }): JSX.Element {
-	const [fluidMembers, setFluidMembers] = useState<IMember[]>([]);
-
-	const updateMembers = () => {
-		if (props.audience.getMyself() == undefined) return;
-		if (props.audience.getMyself()?.id == undefined) return;
-		if (props.audience.getMembers() == undefined) return;
-
-		setFluidMembers(Array.from(props.audience.getMembers().values()));
-	};
-
-	useEffect(() => {
-		props.audience.on("membersChanged", updateMembers);
-
-		return () => {
-			props.audience.off("membersChanged", updateMembers);
-		};
-	}, []);
-
-	const odspMembers = fluidMembers as OdspMember[];
-	if (odspMembers[0]?.email) {
-		return userAvatarGroup({ members: odspMembers, size: 40, layout: "spread" });
+export function AppPresenceGroup(props: { appUserInfo: UserInfo[] | undefined }): JSX.Element {
+	if (props.appUserInfo) {
+		return userAvatarGroup({ members: props.appUserInfo, size: 40, layout: "spread" });
 	} else {
 		return <div>error</div>;
 	}
 }
 
-const appSelectionSchema = {
+export const appSelectionSchema = {
 	jobSelelction: Latest({ jobSelected: "" }),
-	candidateSelelction: Latest({ candidateSelected: "" }),
+	candidateSelection: Latest({ candidateSelected: "" }),
+	userInfo: Latest({ userId: "", userName: "", userEmail: "" } satisfies UserInfo),
 };
+
+export type UserInfo = { userId: string; userName: string; userEmail: string };
