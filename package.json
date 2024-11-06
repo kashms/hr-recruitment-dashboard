@@ -25,7 +25,6 @@
 		"@fluentui/react": "^8.121.6",
 		"@fluentui/react-components": "^9.55.1",
 		"@fluentui/react-icons": "^2.0.261",
-		"@fluid-experimental/ai-collab": "workspace:~",
 		"@fluid-experimental/presence": "workspace:~",
 		"@fluidframework/azure-client": "workspace:~",
 		"@fluidframework/odsp-client": "workspace:~",
@@ -47,7 +46,6 @@
 	"devDependencies": {
 		"@eslint/eslintrc": "^3.1.0",
 		"@eslint/js": "^9.13.0",
-		"@fluid-experimental/ai-collab": "workspace:~",
 		"@fluidframework/build-common": "^2.0.3",
 		"@fluidframework/devtools": "workspace:~",
 		"@fluidframework/tree": "workspace:~",

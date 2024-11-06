@@ -13,7 +13,7 @@ import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";
 import { CandidatesList } from "./ux/candidatesList.js";
 import { JobsList } from "./ux/jobsList.js";
-import { AiChatView } from "./ux/aiChat.js";
+// import { AiChatView } from "./ux/aiChat.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
@@ -260,10 +260,12 @@ export function HeaderBar(props: {
 }): JSX.Element {
 	return (
 		<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
-			<h1 className="text-xl font-bold text-white">HR Recruitment Dashboard</h1>
-			<AiChatView treeRoot={props.treeRoot} AiInProgress={props.AiInProgress} />
-			<ActionToolBar undoRedo={props.undoRedo} />
-			<AppPresenceGroup appUserInfo={props.appUserInfo} />
+			<h1 className="text-xl font-bold text-white flex-grow">HR Recruitment Dashboard</h1>
+			{/* <AiChatView treeRoot={props.treeRoot} AiInProgress={props.AiInProgress} /> */}
+			<div className="flex justify-end gap-8">
+				<ActionToolBar undoRedo={props.undoRedo} />
+				<AppPresenceGroup appUserInfo={props.appUserInfo} />
+			</div>
 		</div>
 	);
 }
