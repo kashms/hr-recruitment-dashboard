@@ -67,7 +67,9 @@ export function HRApp(props: {
 			if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
 				const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
 				if (candidateSchedule) {
-					candidateSchedule.llmCollaboration = false;
+					if (candidateSchedule.llmCollaboration) {
+						candidateSchedule.llmCollaboration = false;
+					}
 					setOnsiteScheduleSelectedCandidate(candidateSchedule);
 				}
 			} else {
