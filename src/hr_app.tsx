@@ -13,7 +13,7 @@ import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";
 import { CandidatesList } from "./ux/candidatesList.js";
 import { JobsList } from "./ux/jobsList.js";
-import { AiChatView, AiChatViewProps } from "./ux/aiChat.js";
+import { AiChatView } from "./ux/aiChat.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
@@ -41,7 +41,6 @@ export function HRApp(props: {
 	const [appUserInfo, setAppUserInfo] = useState<UserInfo[]>();
 
 	const handleJobSelected = (job: Job | undefined) => {
-		console.log("handleSetJobSelected", job);
 		setSelectedJob(job);
 		setSelectedCandidate(undefined);
 		setOnsiteScheduleSelectedCandidate(undefined);
@@ -202,11 +201,9 @@ export function HRApp(props: {
 					<div className="flex flex-col h-fit w-full overflow-hidden overscroll-none gap-1">
 						<HeaderBar
 							audience={props.audience}
-							aiChatProperties={{
-								treeRoot: props.data,
-								showAnimatedFrame: (show: boolean) => {
-									setShowAnimatedFrame(show);
-								},
+							treeRoot={props.data}
+							showAnimatedFrame={(show: boolean) => {
+								setShowAnimatedFrame(show);
 							}}
 							appUserInfo={appUserInfo}
 							undoRedo={props.undoRedo}
@@ -257,14 +254,15 @@ export function HRApp(props: {
 
 export function HeaderBar(props: {
 	audience: IServiceAudience<IMember>;
-	aiChatProperties: AiChatViewProps;
+	treeRoot: TreeView<typeof HRData>;
+	showAnimatedFrame: (show: boolean) => void;
 	appUserInfo: UserInfo[] | undefined;
 	undoRedo: undoRedo;
 }): JSX.Element {
 	return (
 		<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
 			<h1 className="text-xl font-bold text-white">HR Recruitment Dashboard</h1>
-			<AiChatView {...props.aiChatProperties} />
+			<AiChatView treeRoot={props.treeRoot} showAnimatedFrame={props.showAnimatedFrame} />
 			<ActionToolBar undoRedo={props.undoRedo} />
 			<AppPresenceGroup appUserInfo={props.appUserInfo} />
 		</div>
