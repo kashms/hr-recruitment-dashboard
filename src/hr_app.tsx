@@ -14,12 +14,15 @@ import { OnSitePlan } from "./ux/onSitePlan.js";
 import { CandidatesList } from "./ux/candidatesList.js";
 import { JobsList } from "./ux/jobsList.js";
 import { AiChatView } from "./ux/aiChat.js";
-import { FluentProvider, webLightTheme } from "@fluentui/react-components";
+import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
+import { undoRedo } from "./utils/undo.js";
+import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
 
 export function HRApp(props: {
 	data: TreeView<typeof HRData>;
 	audience: IServiceAudience<IMember>;
 	presence: IPresence;
+	undoRedo: undoRedo;
 }): JSX.Element {
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
@@ -35,7 +38,8 @@ export function HRApp(props: {
 	);
 	const [appUserInfo, setAppUserInfo] = useState<UserInfo[]>();
 
-	const handleSetJobSelected = (job: Job | undefined) => {
+	const handleJobSelected = (job: Job | undefined) => {
+		console.log("handleSetJobSelected", job);
 		setSelectedJob(job);
 		setSelectedCandidate(undefined);
 		setOnsiteScheduleSelectedCandidate(undefined);
@@ -51,31 +55,33 @@ export function HRApp(props: {
 				};
 			}
 		}
-		if (job) {
+		if (job && job.llmCollaboration) {
 			job.llmCollaboration = false;
 		}
 	};
 
-	const handleCandidateClick = (candidate: Candidate) => {
+	const handleCandidateSelected = (candidate: Candidate | undefined) => {
 		setSelectedCandidate(candidate);
 
-		if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
-			const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
-			if (candidateSchedule) {
-				candidateSchedule.llmCollaboration = false;
-				setOnsiteScheduleSelectedCandidate(candidateSchedule);
+		if (candidate?.candidateId) {
+			if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
+				const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
+				if (candidateSchedule) {
+					candidateSchedule.llmCollaboration = false;
+					setOnsiteScheduleSelectedCandidate(candidateSchedule);
+				}
+			} else {
+				setOnsiteScheduleSelectedCandidate(undefined);
 			}
-		} else {
-			setOnsiteScheduleSelectedCandidate(undefined);
-		}
-		setOpenDrawer(false);
+			setOpenDrawer(false);
 
-		if (appSelectionPresenceStateRef.current) {
-			appSelectionPresenceStateRef.current.candidateSelection.local = {
-				candidateSelected: candidate.candidateId,
-			};
+			if (appSelectionPresenceStateRef.current) {
+				appSelectionPresenceStateRef.current.candidateSelection.local = {
+					candidateSelected: candidate.candidateId,
+				};
+			}
 		}
-		if (candidate) {
+		if (candidate && candidate.llmCollaboration) {
 			candidate.llmCollaboration = false;
 		}
 	};
@@ -120,6 +126,11 @@ export function HRApp(props: {
 			resetUserInfoList();
 		}
 	};
+
+	/** Unsubscribe to undo-redo events when the component unmounts */
+	useEffect(() => {
+		return props.undoRedo.dispose;
+	}, []);
 
 	useEffect(() => {
 		props.audience.on("membersChanged", updateMyself);
@@ -192,11 +203,12 @@ export function HRApp(props: {
 								setAiInProgress(inProgress);
 							}}
 							appUserInfo={appUserInfo}
+							undoRedo={props.undoRedo}
 						/>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
 							<JobsList
 								jobs={props.data.root.jobsList}
-								setSelectedJob={handleSetJobSelected}
+								setSelectedJob={handleJobSelected}
 								currentlySelectedJob={selectedJob}
 								treeRoot={props.data}
 								jobPresenceMap={jobPresenceMap}
@@ -207,7 +219,7 @@ export function HRApp(props: {
 								<CandidatesList
 									job={selectedJob}
 									selectedCandidate={selectedCandidate}
-									onCandidateClick={handleCandidateClick}
+									setSelectedCandidate={handleCandidateSelected}
 									candidatePresenceMap={candidatePresenceMap}
 									userInfoState={appSelectionPresenceStateRef?.current?.userInfo}
 									audience={props.audience}
@@ -242,12 +254,32 @@ export function HeaderBar(props: {
 	treeRoot: TreeView<typeof HRData>;
 	AiInProgress: (inProgress: boolean) => void;
 	appUserInfo: UserInfo[] | undefined;
+	undoRedo: undoRedo;
 }): JSX.Element {
 	return (
 		<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
 			<h1 className="text-xl font-bold text-white">HR Recruitment Dashboard</h1>
 			<AiChatView treeRoot={props.treeRoot} AiInProgress={props.AiInProgress} />
+			<ActionToolBar undoRedo={props.undoRedo} />
 			<AppPresenceGroup appUserInfo={props.appUserInfo} />
+		</div>
+	);
+}
+
+// Action tool bar container undo redo buttons
+export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
+	return (
+		<div className="flex flex-row gap-4">
+			<Button
+				appearance="subtle"
+				icon={<ArrowUndoFilled className="text-white" />}
+				onClick={() => props.undoRedo.undo()}
+			/>
+			<Button
+				appearance="subtle"
+				icon={<ArrowRedoFilled className="text-white" />}
+				onClick={() => props.undoRedo.redo()}
+			/>
 		</div>
 	);
 }

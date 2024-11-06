@@ -12,6 +12,7 @@ import { OdspClient } from "@fluidframework/odsp-client/beta";
 import { PublicClientApplication, AccountInfo } from "@azure/msal-browser";
 import { AttachState } from "fluid-framework";
 import { HRApp } from "./hr_app.js";
+import { createUndoRedoStacks } from "./utils/undo.js";
 import { acquirePresenceViaDataObject } from "@fluid-experimental/presence";
 import { createTestData } from "./utils/testData.js";
 
@@ -166,10 +167,20 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 
 	const appPresence = await acquirePresenceViaDataObject(container.initialObjects.presence);
 
+	// Create undo/redo stacks for the app
+	const undoRedo = createUndoRedoStacks(appData.events);
+
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be
 	// interactive immediately.
-	root.render(<HRApp data={appData} presence={appPresence} audience={services.audience} />);
+	root.render(
+		<HRApp
+			data={appData}
+			presence={appPresence}
+			audience={services.audience}
+			undoRedo={undoRedo}
+		/>,
+	);
 
 	// If the app is in a `createNew` state - no containerId, and the container is detached, we attach the container.
 	// This uploads the container to the service and connects to the collaboration session.

@@ -24,7 +24,10 @@ export function JobsList(props: {
 		const unsubscribe = Tree.on(props.jobs, "nodeChanged", () => {
 			setInvalidations(invalidations + Math.random());
 
-			if (props.currentlySelectedJob && !props.jobs.includes(props.currentlySelectedJob)) {
+			if (
+				props.currentlySelectedJob === undefined ||
+				(props.currentlySelectedJob && !props.jobs.includes(props.currentlySelectedJob))
+			) {
 				props.setSelectedJob(undefined);
 			}
 		});
@@ -116,11 +119,6 @@ export function JobView(props: {
 					icon={<DismissFilled />}
 					onClick={(event) => {
 						event.stopPropagation();
-
-						if (props.isSelected) {
-							props.setSelectedJob(undefined);
-						}
-
 						props.job.delete();
 					}}
 				/>

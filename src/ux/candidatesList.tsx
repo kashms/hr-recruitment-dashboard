@@ -13,7 +13,7 @@ import { ISessionClient, LatestValueManager } from "@fluid-experimental/presence
 export function CandidatesList(props: {
 	job: Job;
 	selectedCandidate: Candidate | undefined;
-	onCandidateClick: (candidate: Candidate) => void;
+	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 	candidatePresenceMap: Map<ISessionClient, string>; // Client Session ID to Candidate ID map
 	userInfoState: LatestValueManager<UserInfo> | undefined;
 	audience: IServiceAudience<IMember>;
@@ -22,6 +22,13 @@ export function CandidatesList(props: {
 	useEffect(() => {
 		const unsubscribe = Tree.on(props.job.candidates, "nodeChanged", () => {
 			setInvalidations(invalidations + Math.random());
+
+			if (
+				props.selectedCandidate === undefined ||
+				(props.selectedCandidate && !props.job.candidates.includes(props.selectedCandidate))
+			) {
+				props.setSelectedCandidate(undefined);
+			}
 		});
 		return unsubscribe;
 	}, [invalidations, props.job.candidates]);
@@ -77,7 +84,7 @@ export function CandidateView(props: {
 	currentViewers: ISessionClient[];
 	userInfoState: LatestValueManager<UserInfo> | undefined;
 	audience: IServiceAudience<IMember>;
-	onCandidateClick: (candidate: Candidate) => void;
+	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
 
@@ -106,7 +113,7 @@ export function CandidateView(props: {
 			className={`flex flex-col gap-1 justify-center content-center m-1 p-2 cursor-pointer
                 ${props.selectedCandidate?.candidateId == props.candidate.candidateId ? "bg-violet-50 border border-violet-300" : "bg-slate-50 hover:bg-slate-100"}
            `}
-			onClick={() => props.onCandidateClick(props.candidate)}
+			onClick={() => props.setSelectedCandidate(props.candidate)}
 		>
 			<div className="flex justify-end gap-2">
 				{(props.candidate.llmCollaboration ||
