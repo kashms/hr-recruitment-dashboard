@@ -58,12 +58,16 @@ export function HRApp(props: {
 
 	const handleCandidateClick = (candidate: Candidate) => {
 		setSelectedCandidate(candidate);
-		setOnsiteScheduleSelectedCandidate(undefined);
-		selectedJob?.onSiteSchedule.forEach((onSiteSchedule) => {
-			if (onSiteSchedule.candidateId === candidate.candidateId) {
-				setOnsiteScheduleSelectedCandidate(onSiteSchedule);
+
+		if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
+			const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
+			if (candidateSchedule) {
+				candidateSchedule.llmCollaboration = false;
+				setOnsiteScheduleSelectedCandidate(candidateSchedule);
 			}
-		});
+		} else {
+			setOnsiteScheduleSelectedCandidate(undefined);
+		}
 		setOpenDrawer(false);
 
 		if (appSelectionPresenceStateRef.current) {

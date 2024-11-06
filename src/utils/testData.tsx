@@ -73,6 +73,7 @@ export function createTestJob(addCandidates: boolean) {
 		day: "Monday",
 		interviewerIds: ["10", "20", "70"],
 		candidateId: "1",
+		llmCollaboration: false,
 	});
 
 	const job = new Job({

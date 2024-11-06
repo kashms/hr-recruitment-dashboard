@@ -28,6 +28,11 @@ export class OnSiteSchedule extends sf.object(
 				description: "The candidateId of the candidate that is scheduled for an onsite interview. This field is required. The candidateId should map to the id field in the Candidate object",
 			}
 		}),
+		llmCollaboration: sf.required(sf.boolean, {
+			metadata: {
+				description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
+			}
+		}),
 	}) { }
 
 export class Interviewer extends sf.object(
@@ -122,12 +127,17 @@ export class Job extends sf.object(
 			day: "Monday",
 			interviewerIds: [],
 			candidateId: candiadteId,
+			llmCollaboration: false,
 		});
 		this.onSiteSchedule.insertAtEnd(newOnSite);
 	};
 
 	public readonly hasOnSiteForCandidate = (candidateId: string) => {
-		return this.onSiteSchedule.some((onSite) => onSite.candidateId === candidateId);
+		return !!this.getOnSiteForCandidate(candidateId);
+	}
+
+	public readonly getOnSiteForCandidate = (candidateId: string) => {
+		return this.onSiteSchedule.find((onSite) => onSite.candidateId === candidateId);
 	}
 }
 

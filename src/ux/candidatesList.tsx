@@ -109,7 +109,9 @@ export function CandidateView(props: {
 			onClick={() => props.onCandidateClick(props.candidate)}
 		>
 			<div className="flex justify-end gap-2">
-				{props.candidate.llmCollaboration && (
+				{(props.candidate.llmCollaboration ||
+					props.job.getOnSiteForCandidate(props.candidate.candidateId)
+						?.llmCollaboration) && (
 					<div className="flex items-center p-2">
 						<span className="w-2 h-2 bg-red-500 rounded-full"></span>
 					</div>
