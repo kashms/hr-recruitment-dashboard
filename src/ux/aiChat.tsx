@@ -4,12 +4,14 @@ import { aiCollab, AiCollabOptions } from "@fluid-experimental/ai-collab";
 import { AzureOpenAI } from "openai";
 import { HRData, treeConfiguration } from "../schema.js";
 
-export function AiChatView(props: {
+export interface AiChatViewProps {
 	treeRoot: TreeView<typeof HRData>;
-	AiInProgress: (inProgress: boolean) => void;
-}): JSX.Element {
+	showAnimatedFrame: (show: boolean) => void;
+}
+
+export function AiChatView(props: AiChatViewProps): JSX.Element {
 	const executeAIChat = async () => {
-		props.AiInProgress(true);
+		props.showAnimatedFrame(true);
 
 		const inputPromptElement = document.getElementById(
 			"ai-job-creation-input",
@@ -75,11 +77,11 @@ export function AiChatView(props: {
 
 			if (response.status === "success") {
 				console.log("AI has completed request successfully");
-				props.AiInProgress(false);
+				props.showAnimatedFrame(false);
 				originalBranch.merge(newBranchFork);
 			} else {
 				console.log("Copilot: Something went wrong processing your request");
-				props.AiInProgress(false);
+				props.showAnimatedFrame(false);
 			}
 		} catch (error) {
 			console.error("Caught an error:", error);

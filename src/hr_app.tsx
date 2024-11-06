@@ -13,7 +13,7 @@ import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";
 import { CandidatesList } from "./ux/candidatesList.js";
 import { JobsList } from "./ux/jobsList.js";
-import { AiChatView } from "./ux/aiChat.js";
+import { AiChatView, AiChatViewProps } from "./ux/aiChat.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
@@ -30,7 +30,9 @@ export function HRApp(props: {
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
 		useState<OnSiteSchedule>();
 	const [invalidations, setInvalidations] = useState(0);
-	const [AiInProgress, setAiInProgress] = useState(false);
+
+	// AI in progress state for showing the animation
+	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
 	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(new Map());
 	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
@@ -193,16 +195,18 @@ export function HRApp(props: {
 	return (
 		<div
 			className={`h-screen frame 
-			${AiInProgress ? "animated-frame" : ""}`}
+			${showAnimatedFrame ? "animated-frame" : ""}`}
 		>
 			<div className="inner">
 				<FluentProvider theme={webLightTheme}>
 					<div className="flex flex-col h-fit w-full overflow-hidden overscroll-none gap-1">
 						<HeaderBar
 							audience={props.audience}
-							treeRoot={props.data}
-							AiInProgress={(inProgress: boolean) => {
-								setAiInProgress(inProgress);
+							aiChatProperties={{
+								treeRoot: props.data,
+								showAnimatedFrame: (show: boolean) => {
+									setShowAnimatedFrame(show);
+								},
 							}}
 							appUserInfo={appUserInfo}
 							undoRedo={props.undoRedo}
@@ -253,15 +257,14 @@ export function HRApp(props: {
 
 export function HeaderBar(props: {
 	audience: IServiceAudience<IMember>;
-	treeRoot: TreeView<typeof HRData>;
-	AiInProgress: (inProgress: boolean) => void;
+	aiChatProperties: AiChatViewProps;
 	appUserInfo: UserInfo[] | undefined;
 	undoRedo: undoRedo;
 }): JSX.Element {
 	return (
 		<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
 			<h1 className="text-xl font-bold text-white">HR Recruitment Dashboard</h1>
-			<AiChatView treeRoot={props.treeRoot} AiInProgress={props.AiInProgress} />
+			<AiChatView {...props.aiChatProperties} />
 			<ActionToolBar undoRedo={props.undoRedo} />
 			<AppPresenceGroup appUserInfo={props.appUserInfo} />
 		</div>
