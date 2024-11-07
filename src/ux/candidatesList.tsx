@@ -7,15 +7,15 @@ import { createTestCandidate } from "../utils/testData.js";
 import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroup } from "./userAvatarGroup.js";
-import { UserInfo } from "../hr_app.js";
-import { ISessionClient, LatestValueManager } from "@fluid-experimental/presence";
+import { ISessionClient } from "@fluid-experimental/presence";
+import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
 
 export function CandidatesList(props: {
 	job: Job;
 	selectedCandidate: Candidate | undefined;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 	candidatePresenceMap: Map<ISessionClient, string>; // Client Session ID to Candidate ID map
-	userInfoState: LatestValueManager<UserInfo> | undefined;
+	presenceManager: PresenceManager;
 	audience: IServiceAudience<IMember>;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
@@ -82,7 +82,7 @@ export function CandidateView(props: {
 	job: Job;
 	selectedCandidate?: Candidate;
 	currentViewers: ISessionClient[];
-	userInfoState: LatestValueManager<UserInfo> | undefined;
+	presenceManager: PresenceManager;
 	audience: IServiceAudience<IMember>;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
@@ -98,7 +98,9 @@ export function CandidateView(props: {
 	const currentViewingUsers = new Array<UserInfo>();
 	props.currentViewers.forEach((clientSessionId) => {
 		try {
-			const viewingUser = props.userInfoState?.clientValue(clientSessionId).value;
+			const viewingUser = props.presenceManager
+				.getStates()
+				.userInfo.clientValue(clientSessionId).value;
 			if (viewingUser) {
 				currentViewingUsers.push(viewingUser);
 			}

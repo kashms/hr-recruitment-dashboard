@@ -6,8 +6,8 @@ import { DismissFilled } from "@fluentui/react-icons";
 import { createTestJob } from "../utils/testData.js";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroup } from "./userAvatarGroup.js";
-import { ISessionClient, LatestValueManager } from "@fluid-experimental/presence";
-import { UserInfo } from "../hr_app.js";
+import { ISessionClient } from "@fluid-experimental/presence";
+import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
 
 export function JobsList(props: {
 	jobs: JobsArray;
@@ -16,7 +16,7 @@ export function JobsList(props: {
 	treeRoot: TreeView<typeof HRData>;
 	jobPresenceMap: Map<ISessionClient, string>; // Client Session ID to Job ID map
 	audience: IServiceAudience<IMember>;
-	userInfoState: LatestValueManager<UserInfo> | undefined;
+	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
 
@@ -49,7 +49,7 @@ export function JobsList(props: {
 							props.setSelectedJob(job);
 						}}
 						currentViewers={getKeysByValue(props.jobPresenceMap, job.jobId)}
-						userInfoState={props.userInfoState}
+						presenceManager={props.presenceManager}
 					/>
 				))}
 			</div>
@@ -73,7 +73,7 @@ export function JobView(props: {
 	isSelected: boolean;
 	setSelectedJob: (job: Job | undefined) => void;
 	currentViewers: ISessionClient[];
-	userInfoState: LatestValueManager<UserInfo> | undefined;
+	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
 
@@ -87,7 +87,9 @@ export function JobView(props: {
 	const currentViewingUsers = new Array<UserInfo>();
 	props.currentViewers.forEach((clientSessionId) => {
 		try {
-			const viewingUser = props.userInfoState?.clientValue(clientSessionId).value;
+			const viewingUser = props.presenceManager
+				.getStates()
+				.userInfo.clientValue(clientSessionId).value;
 			if (viewingUser) {
 				currentViewingUsers.push(viewingUser);
 			}

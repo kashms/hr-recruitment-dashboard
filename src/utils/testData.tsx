@@ -77,7 +77,7 @@ export function createTestJob(addCandidates: boolean) {
 	});
 
 	const job = new Job({
-		jobId: "1",
+		jobId: Math.floor(Math.random() * 1001).toString(),
 		jobState: "Open",
 		jobTitle: "Software Engineer",
 		jobDescription: `Overview

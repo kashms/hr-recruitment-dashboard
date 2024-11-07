@@ -7,7 +7,7 @@ import {
 	partitionAvatarGroupItems,
 } from "@fluentui/react-components";
 import React from "react";
-import { UserInfo } from "../hr_app.js";
+import { UserInfo } from "../utils/presenceManager.js";
 
 export function userAvatarGroup(props: {
 	members: UserInfo[];

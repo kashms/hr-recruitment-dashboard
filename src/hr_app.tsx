@@ -3,12 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TreeView, IServiceAudience, IMember } from "fluid-framework";
 import { Candidate, HRData, Job, type OnSiteSchedule } from "./schema.js";
 import { OdspMember } from "@fluidframework/odsp-client/beta";
 import { userAvatarGroup } from "./ux/userAvatarGroup.js";
-import { IPresence, ISessionClient, Latest, PresenceStates } from "@fluid-experimental/presence";
+import { ISessionClient } from "@fluid-experimental/presence";
 import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";
 import { CandidatesList } from "./ux/candidatesList.js";
@@ -17,11 +17,12 @@ import { AiChatView } from "./ux/aiChat.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
+import { PresenceManager, UserInfo } from "./utils/presenceManager.js";
 
 export function HRApp(props: {
 	data: TreeView<typeof HRData>;
 	audience: IServiceAudience<IMember>;
-	presence: IPresence;
+	presenceManager: PresenceManager;
 	undoRedo: undoRedo;
 }): JSX.Element {
 	const [selectedJob, setSelectedJob] = useState<Job>();
@@ -47,14 +48,12 @@ export function HRApp(props: {
 		setOpenDrawer(false);
 
 		if (job?.jobId) {
-			if (appSelectionPresenceStateRef.current) {
-				appSelectionPresenceStateRef.current.jobSelelction.local = {
-					jobSelected: job?.jobId,
-				};
-				appSelectionPresenceStateRef.current.candidateSelection.local = {
-					candidateSelected: "",
-				};
-			}
+			props.presenceManager.getStates().jobSelelction.local = {
+				jobSelected: job?.jobId,
+			};
+			props.presenceManager.getStates().candidateSelection.local = {
+				candidateSelected: "",
+			};
 			job.setSeen();
 		}
 	};
@@ -74,11 +73,9 @@ export function HRApp(props: {
 			}
 			setOpenDrawer(false);
 
-			if (appSelectionPresenceStateRef.current) {
-				appSelectionPresenceStateRef.current.candidateSelection.local = {
-					candidateSelected: candidate.candidateId,
-				};
-			}
+			props.presenceManager.getStates().candidateSelection.local = {
+				candidateSelected: candidate.candidateId,
+			};
 		}
 		candidate?.setSeen();
 	};
@@ -92,30 +89,28 @@ export function HRApp(props: {
 	};
 
 	const resetUserInfoList = () => {
-		if (appSelectionPresenceStateRef.current) {
-			const userInfoArray = [
-				...appSelectionPresenceStateRef.current.userInfo.clientValues(),
-			].map((v) => v.value);
-			// if user array already contains the local user by using the userId, then don't add it again
-			if (
-				!userInfoArray.some(
-					(v) =>
-						appSelectionPresenceStateRef.current &&
-						v.userId === appSelectionPresenceStateRef.current.userInfo.local.userId,
-				)
-			) {
-				userInfoArray.push(appSelectionPresenceStateRef.current.userInfo.local);
-			}
-
-			setAppUserInfo(userInfoArray);
+		const userInfoArray = [...props.presenceManager.getStates().userInfo.clientValues()].map(
+			(v) => v.value,
+		);
+		// if user array already contains the local user by using the userId, then don't add it again
+		if (
+			!userInfoArray.some(
+				(v) =>
+					props.presenceManager.getStates() &&
+					v.userId === props.presenceManager.getStates().userInfo.local.userId,
+			)
+		) {
+			userInfoArray.push(props.presenceManager.getStates().userInfo.local);
 		}
+
+		setAppUserInfo(userInfoArray);
 	};
 
 	const updateMyself = () => {
 		const myselfMember = props.audience.getMyself();
-		if (myselfMember && appSelectionPresenceStateRef.current) {
+		if (myselfMember) {
 			const odspMember = myselfMember as IMember as OdspMember;
-			appSelectionPresenceStateRef.current.userInfo.local = {
+			props.presenceManager.getStates().userInfo.local = {
 				userId: odspMember.id,
 				userName: odspMember.name,
 				userEmail: odspMember.email,
@@ -138,13 +133,7 @@ export function HRApp(props: {
 	}, []);
 
 	useEffect(() => {
-		const appSelectionWorkspace = "appSelection:workspace";
-		appSelectionPresenceStateRef.current = props.presence.getStates(
-			appSelectionWorkspace, // Worksapce address
-			appSelectionSchema, // Worksapce schema
-		);
-
-		appSelectionPresenceStateRef.current.jobSelelction.events.on("updated", (update) => {
+		props.presenceManager.getStates().jobSelelction.events.on("updated", (update) => {
 			const remoteSessionClient = update.client;
 			const remoteSelectedJobId = update.value.jobSelected;
 
@@ -158,7 +147,7 @@ export function HRApp(props: {
 				);
 			}
 		});
-		appSelectionPresenceStateRef.current.candidateSelection.events.on("updated", (update) => {
+		props.presenceManager.getStates().candidateSelection.events.on("updated", (update) => {
 			const remoteSessionClient = update.client;
 			const remoteSelectedCandidateId = update.value.candidateSelected;
 
@@ -174,16 +163,12 @@ export function HRApp(props: {
 			}
 		});
 
-		appSelectionPresenceStateRef.current.userInfo.events.on("updated", () => {
+		props.presenceManager.getStates().userInfo.events.on("updated", () => {
 			resetUserInfoList();
 		});
 
 		setInvalidations(invalidations + Math.random());
 	}, []);
-
-	const appSelectionPresenceStateRef = useRef<PresenceStates<typeof appSelectionSchema> | null>(
-		null,
-	);
 
 	return (
 		<div
@@ -209,7 +194,7 @@ export function HRApp(props: {
 								currentlySelectedJob={selectedJob}
 								treeRoot={props.data}
 								jobPresenceMap={jobPresenceMap}
-								userInfoState={appSelectionPresenceStateRef?.current?.userInfo}
+								presenceManager={props.presenceManager}
 								audience={props.audience}
 							/>
 							{selectedJob && (
@@ -218,7 +203,7 @@ export function HRApp(props: {
 									selectedCandidate={selectedCandidate}
 									setSelectedCandidate={handleCandidateSelected}
 									candidatePresenceMap={candidatePresenceMap}
-									userInfoState={appSelectionPresenceStateRef?.current?.userInfo}
+									presenceManager={props.presenceManager}
 									audience={props.audience}
 								/>
 							)}
@@ -288,11 +273,3 @@ export function AppPresenceGroup(props: { appUserInfo: UserInfo[] | undefined })
 		return <div>error</div>;
 	}
 }
-
-export const appSelectionSchema = {
-	jobSelelction: Latest({ jobSelected: "" }),
-	candidateSelection: Latest({ candidateSelected: "" }),
-	userInfo: Latest({ userId: "", userName: "", userEmail: "" } satisfies UserInfo),
-};
-
-export type UserInfo = { userId: string; userName: string; userEmail: string };

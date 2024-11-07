@@ -15,6 +15,7 @@ import { HRApp } from "./hr_app.js";
 import { createUndoRedoStacks } from "./utils/undo.js";
 import { acquirePresenceViaDataObject } from "@fluid-experimental/presence";
 import { createTestData } from "./utils/testData.js";
+import { PresenceManager } from "./utils/presenceManager.js";
 
 async function start() {
 	const msalInstance = await authHelper();
@@ -166,6 +167,7 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	}
 
 	const appPresence = await acquirePresenceViaDataObject(container.initialObjects.presence);
+	const presenceManager: PresenceManager = new PresenceManager(appPresence);
 
 	// Create undo/redo stacks for the app
 	const undoRedo = createUndoRedoStacks(appData.events);
@@ -176,8 +178,8 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	root.render(
 		<HRApp
 			data={appData}
-			presence={appPresence}
 			audience={services.audience}
+			presenceManager={presenceManager}
 			undoRedo={undoRedo}
 		/>,
 	);
