@@ -136,7 +136,13 @@ export function CandidateView(props: {
 			className={`flex flex-col gap-1 justify-center content-center m-1 p-2 cursor-pointer
                 ${props.selectedCandidate?.candidateId == props.candidate.candidateId ? "bg-violet-50 border border-violet-300" : "bg-slate-50 hover:bg-slate-100"}
            `}
-			onClick={() => props.setSelectedCandidate(props.candidate)}
+			onClick={() => {
+				props.setSelectedCandidate(props.candidate);
+
+				props.presenceManager.getStates().candidateSelection.local = {
+					candidateSelected: props.candidate.candidateId,
+				};
+			}}
 		>
 			<div className="flex justify-end gap-2">
 				{(props.candidate.isUnseen() ||

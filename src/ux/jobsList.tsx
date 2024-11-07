@@ -67,6 +67,9 @@ export function JobsList(props: {
 							props.presenceManager.getStates().jobSelelction.local = {
 								jobSelected: job.jobId,
 							};
+							props.presenceManager.getStates().candidateSelection.local = {
+								candidateSelected: "",
+							};
 						}}
 						currentViewers={getKeysByValue(jobPresenceMap, job.jobId)}
 						presenceManager={props.presenceManager}

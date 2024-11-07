@@ -40,12 +40,7 @@ export function HRApp(props: {
 		setOnsiteScheduleSelectedCandidate(undefined);
 		setOpenDrawer(false);
 
-		if (job?.jobId) {
-			props.presenceManager.getStates().candidateSelection.local = {
-				candidateSelected: "",
-			};
-			job.setSeen();
-		}
+		job?.setSeen();
 	};
 
 	const handleCandidateSelected = (candidate: Candidate | undefined) => {
@@ -62,10 +57,6 @@ export function HRApp(props: {
 				setOnsiteScheduleSelectedCandidate(undefined);
 			}
 			setOpenDrawer(false);
-
-			props.presenceManager.getStates().candidateSelection.local = {
-				candidateSelected: candidate.candidateId,
-			};
 		}
 		candidate?.setSeen();
 	};
