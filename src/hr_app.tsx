@@ -55,9 +55,7 @@ export function HRApp(props: {
 					candidateSelected: "",
 				};
 			}
-		}
-		if (job && job.llmCollaboration) {
-			job.llmCollaboration = false;
+			job.setSeen();
 		}
 	};
 
@@ -68,9 +66,7 @@ export function HRApp(props: {
 			if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
 				const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
 				if (candidateSchedule) {
-					if (candidateSchedule.llmCollaboration) {
-						candidateSchedule.llmCollaboration = false;
-					}
+					candidateSchedule.setSeen();
 					setOnsiteScheduleSelectedCandidate(candidateSchedule);
 				}
 			} else {
@@ -84,9 +80,7 @@ export function HRApp(props: {
 				};
 			}
 		}
-		if (candidate && candidate.llmCollaboration) {
-			candidate.llmCollaboration = false;
-		}
+		candidate?.setSeen();
 	};
 
 	const handleAddInterviewer = (interviewerId: string) => {

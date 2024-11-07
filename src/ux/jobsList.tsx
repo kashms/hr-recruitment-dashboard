@@ -109,7 +109,7 @@ export function JobView(props: {
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
 					{userAvatarGroup({ members: currentViewingUsers, size: 24, layout: "stack" })}
 				</div>
-				{props.job.llmCollaboration && (
+				{props.job.isUnseen() && (
 					<div className="flex items-center">
 						<span className="w-2 h-2 bg-red-500 rounded-full"></span>
 					</div>

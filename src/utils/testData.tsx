@@ -65,7 +65,6 @@ export function createTestJob(addCandidates: boolean) {
 			name: "John Doe",
 			yearsOfExperience: 5,
 			availability: createFullyAvailable(),
-			llmCollaboration: false,
 		}),
 	];
 
@@ -73,7 +72,6 @@ export function createTestJob(addCandidates: boolean) {
 		day: "Monday",
 		interviewerIds: ["10", "20", "70"],
 		candidateId: "1",
-		llmCollaboration: false,
 	});
 
 	const job = new Job({
@@ -112,7 +110,6 @@ export function createTestJob(addCandidates: boolean) {
 		Experience with back-end development in Node.js, .NET, or Python. 
 		Understanding of data structures, design patterns, and asynchronous programming. 
 		`,
-		llmCollaboration: false,
 		candidates: addCandidates ? candidates : [],
 		onSiteSchedule: addCandidates ? [onSiteSchedule] : [],
 	});
@@ -152,7 +149,6 @@ export function createTestCandidate() {
 		name: getNextName(),
 		yearsOfExperience: Math.floor(Math.random() * 20) + 1,
 		availability: createFullyAvailable(),
-		llmCollaboration: false,
 	});
 	return candidate;
 }
