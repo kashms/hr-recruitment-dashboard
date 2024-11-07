@@ -28,7 +28,7 @@ export class OnSiteSchedule extends sf.object(
 				description: "The candidateId of the candidate that is scheduled for an onsite interview. This field is required. The candidateId should map to the id field in the Candidate object",
 			}
 		}),
-		llmCollaboration: sf.optional(sf.boolean, {
+		llmCollaboration: sf.required(sf.boolean, {
 			metadata: {
 				description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
 			}
@@ -81,7 +81,7 @@ export class Candidate extends sf.object(
 					"For this field, the only allowed values are the strings Monday,Tuesday,Wednesday,Thursday,Friday",
 			},
 		}),
-		llmCollaboration: sf.optional(sf.boolean, {
+		llmCollaboration: sf.required(sf.boolean, {
 			metadata: {
 				description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
 			}
@@ -126,7 +126,7 @@ export class Job extends sf.object(
 				description: `The schedule of the onsite interviews. This field is required. The default is an empty array. The objects of type OnSiteSchedule are put in arrays here. A valid onsite schedule should have an onsite interview day when the candidate is available, 3 available interviewers and a candidate.`,
 			},
 		}),
-		llmCollaboration: sf.optional(sf.boolean, {
+		llmCollaboration: sf.required(sf.boolean, {
 			metadata: {
 				description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
 			}
