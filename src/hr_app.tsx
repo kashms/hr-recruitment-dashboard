@@ -2,13 +2,11 @@
  * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
  * Licensed under the MIT License.
  */
-
 import React, { useEffect, useState } from "react";
 import { TreeView, IServiceAudience, IMember } from "fluid-framework";
 import { Candidate, HRData, Job, type OnSiteSchedule } from "./schema.js";
 import { OdspMember } from "@fluidframework/odsp-client/beta";
 import { userAvatarGroup } from "./ux/userAvatarGroup.js";
-import { ISessionClient } from "@fluid-experimental/presence";
 import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";
 import { CandidatesList } from "./ux/candidatesList.js";
@@ -34,11 +32,6 @@ export function HRApp(props: {
 
 	// AI in progress state for showing the animation
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
-
-	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(new Map());
-	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
-		new Map(),
-	);
 	const [appUserInfo, setAppUserInfo] = useState<UserInfo[]>();
 
 	const handleJobSelected = (job: Job | undefined) => {
@@ -48,9 +41,6 @@ export function HRApp(props: {
 		setOpenDrawer(false);
 
 		if (job?.jobId) {
-			props.presenceManager.getStates().jobSelelction.local = {
-				jobSelected: job?.jobId,
-			};
 			props.presenceManager.getStates().candidateSelection.local = {
 				candidateSelected: "",
 			};
@@ -133,36 +123,6 @@ export function HRApp(props: {
 	}, []);
 
 	useEffect(() => {
-		props.presenceManager.getStates().jobSelelction.events.on("updated", (update) => {
-			const remoteSessionClient = update.client;
-			const remoteSelectedJobId = update.value.jobSelected;
-
-			// if empty string, then no job is selected, remove it from the map
-			if (remoteSelectedJobId === "") {
-				jobPresenceMap.delete(remoteSessionClient);
-				setJobPresenceMap(new Map(jobPresenceMap));
-			} else {
-				setJobPresenceMap(
-					new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
-				);
-			}
-		});
-		props.presenceManager.getStates().candidateSelection.events.on("updated", (update) => {
-			const remoteSessionClient = update.client;
-			const remoteSelectedCandidateId = update.value.candidateSelected;
-
-			if (remoteSelectedCandidateId === "") {
-				candidatePresenceMap.delete(remoteSessionClient);
-				setCandidatePresenceMap(new Map(candidatePresenceMap));
-			} else {
-				setCandidatePresenceMap(
-					new Map(
-						candidatePresenceMap.set(remoteSessionClient, remoteSelectedCandidateId),
-					),
-				);
-			}
-		});
-
 		props.presenceManager.getStates().userInfo.events.on("updated", () => {
 			resetUserInfoList();
 		});
@@ -193,7 +153,6 @@ export function HRApp(props: {
 								setSelectedJob={handleJobSelected}
 								currentlySelectedJob={selectedJob}
 								treeRoot={props.data}
-								jobPresenceMap={jobPresenceMap}
 								presenceManager={props.presenceManager}
 								audience={props.audience}
 							/>
@@ -202,7 +161,6 @@ export function HRApp(props: {
 									job={selectedJob}
 									selectedCandidate={selectedCandidate}
 									setSelectedCandidate={handleCandidateSelected}
-									candidatePresenceMap={candidatePresenceMap}
 									presenceManager={props.presenceManager}
 									audience={props.audience}
 								/>

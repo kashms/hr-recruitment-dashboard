@@ -14,11 +14,14 @@ export function CandidatesList(props: {
 	job: Job;
 	selectedCandidate: Candidate | undefined;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
-	candidatePresenceMap: Map<ISessionClient, string>; // Client Session ID to Candidate ID map
 	presenceManager: PresenceManager;
 	audience: IServiceAudience<IMember>;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
+	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
+		new Map(),
+	);
+
 	useEffect(() => {
 		const unsubscribe = Tree.on(props.job.candidates, "nodeChanged", () => {
 			setInvalidations(invalidations + Math.random());
@@ -40,6 +43,24 @@ export function CandidatesList(props: {
 		return unsubscribe;
 	}, [invalidations, props.job.onSiteSchedule]);
 
+	useEffect(() => {
+		props.presenceManager.getStates().candidateSelection.events.on("updated", (update) => {
+			const remoteSessionClient = update.client;
+			const remoteSelectedCandidateId = update.value.candidateSelected;
+
+			if (remoteSelectedCandidateId === "") {
+				candidatePresenceMap.delete(remoteSessionClient);
+				setCandidatePresenceMap(new Map(candidatePresenceMap));
+			} else {
+				setCandidatePresenceMap(
+					new Map(
+						candidatePresenceMap.set(remoteSessionClient, remoteSelectedCandidateId),
+					),
+				);
+			}
+		});
+	}, []);
+
 	return (
 		<div className="flex flex-col gap-1 content-center w-96 h-full border-r-4 overflow-auto">
 			<div className="text-lg p-2 mx-0.5 font-bold bg-violet-600 text-white text-center">
@@ -54,7 +75,7 @@ export function CandidatesList(props: {
 							key={index}
 							candidate={candidate}
 							currentViewers={getKeysByValue(
-								props.candidatePresenceMap,
+								candidatePresenceMap,
 								candidate.candidateId,
 							)}
 							{...props}

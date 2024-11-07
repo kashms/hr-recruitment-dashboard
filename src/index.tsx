@@ -166,7 +166,7 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 		appData.initialize(createTestData());
 	}
 
-	const appPresence = await acquirePresenceViaDataObject(container.initialObjects.presence);
+	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
 	const presenceManager: PresenceManager = new PresenceManager(appPresence);
 
 	// Create undo/redo stacks for the app

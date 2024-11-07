@@ -14,11 +14,11 @@ export function JobsList(props: {
 	setSelectedJob: (job: Job | undefined) => void;
 	currentlySelectedJob?: Job;
 	treeRoot: TreeView<typeof HRData>;
-	jobPresenceMap: Map<ISessionClient, string>; // Client Session ID to Job ID map
 	audience: IServiceAudience<IMember>;
 	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
+	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(new Map());
 
 	useEffect(() => {
 		const unsubscribe = Tree.on(props.jobs, "nodeChanged", () => {
@@ -34,6 +34,23 @@ export function JobsList(props: {
 		return unsubscribe;
 	}, [invalidations, props.jobs]);
 
+	useEffect(() => {
+		props.presenceManager.getStates().jobSelelction.events.on("updated", (update) => {
+			const remoteSessionClient = update.client;
+			const remoteSelectedJobId = update.value.jobSelected;
+
+			// if empty string, then no job is selected, remove it from the map
+			if (remoteSelectedJobId === "") {
+				jobPresenceMap.delete(remoteSessionClient);
+				setJobPresenceMap(new Map(jobPresenceMap));
+			} else {
+				setJobPresenceMap(
+					new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
+				);
+			}
+		});
+	}, []);
+
 	return (
 		<div className="flex flex-col gap-1 content-center w-96 h-full border-r-4 overflow-auto">
 			<div className="text-lg p-2 mx-0.5 font-bold bg-cyan-600 text-white text-center">
@@ -45,10 +62,13 @@ export function JobsList(props: {
 						key={index}
 						job={job}
 						isSelected={props.currentlySelectedJob === job}
-						setSelectedJob={(job: Job | undefined) => {
+						setSelectedJob={(job: Job) => {
 							props.setSelectedJob(job);
+							props.presenceManager.getStates().jobSelelction.local = {
+								jobSelected: job.jobId,
+							};
 						}}
-						currentViewers={getKeysByValue(props.jobPresenceMap, job.jobId)}
+						currentViewers={getKeysByValue(jobPresenceMap, job.jobId)}
 						presenceManager={props.presenceManager}
 					/>
 				))}
@@ -71,7 +91,7 @@ export function JobsList(props: {
 export function JobView(props: {
 	job: Job;
 	isSelected: boolean;
-	setSelectedJob: (job: Job | undefined) => void;
+	setSelectedJob: (job: Job) => void;
 	currentViewers: ISessionClient[];
 	presenceManager: PresenceManager;
 }): JSX.Element {
