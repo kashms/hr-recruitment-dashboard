@@ -145,7 +145,6 @@ export function HRApp(props: {
 								currentlySelectedJob={selectedJob}
 								treeRoot={props.data}
 								presenceManager={props.presenceManager}
-								audience={props.audience}
 							/>
 							{selectedJob && (
 								<CandidatesList
@@ -153,7 +152,6 @@ export function HRApp(props: {
 									selectedCandidate={selectedCandidate}
 									setSelectedCandidate={handleCandidateSelected}
 									presenceManager={props.presenceManager}
-									audience={props.audience}
 								/>
 							)}
 							{selectedCandidate && onsiteScheduleSelectedCandidate && (

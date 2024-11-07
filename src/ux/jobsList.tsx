@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HRData, Job, JobsArray } from "../schema.js";
-import { IMember, IServiceAudience, Tree, TreeView } from "fluid-framework";
+import { Tree, TreeView } from "fluid-framework";
 import { Button } from "@fluentui/react-components";
 import { DismissFilled } from "@fluentui/react-icons";
 import { createTestJob } from "../utils/testData.js";
@@ -14,7 +14,6 @@ export function JobsList(props: {
 	setSelectedJob: (job: Job | undefined) => void;
 	currentlySelectedJob?: Job;
 	treeRoot: TreeView<typeof HRData>;
-	audience: IServiceAudience<IMember>;
 	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);

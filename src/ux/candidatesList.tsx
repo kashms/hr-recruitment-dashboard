@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Candidate, Job } from "../schema.js";
-import { IMember, IServiceAudience, Tree } from "fluid-framework";
+import { Tree } from "fluid-framework";
 import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { createTestCandidate } from "../utils/testData.js";
@@ -15,7 +15,6 @@ export function CandidatesList(props: {
 	selectedCandidate: Candidate | undefined;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 	presenceManager: PresenceManager;
-	audience: IServiceAudience<IMember>;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
 	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
@@ -104,7 +103,6 @@ export function CandidateView(props: {
 	selectedCandidate?: Candidate;
 	currentViewers: ISessionClient[];
 	presenceManager: PresenceManager;
-	audience: IServiceAudience<IMember>;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
