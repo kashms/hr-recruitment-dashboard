@@ -8,7 +8,7 @@ import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroup } from "./userAvatarGroup.js";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
+import { PresenceManager } from "../utils/presenceManager.js";
 
 export function CandidatesList(props: {
 	job: Job;
@@ -114,20 +114,9 @@ export function CandidateView(props: {
 		return unsubscribe;
 	}, [invalidations, props.candidate]);
 
-	const currentViewingUsers = new Array<UserInfo>();
-	props.currentViewers.forEach((clientSessionId) => {
-		try {
-			const viewingUser = props.presenceManager
-				.getStates()
-				.userInfo.clientValue(clientSessionId).value;
-			if (viewingUser) {
-				currentViewingUsers.push(viewingUser);
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (e) {
-			// Do nothing
-		}
-	});
+	const presentUserInfoList = props.presenceManager.getConnectedUserInfoFromSessionIds(
+		props.currentViewers,
+	);
 
 	return (
 		<div
@@ -161,7 +150,7 @@ export function CandidateView(props: {
 					</Button>
 				)}
 			</div>
-			{userAvatarGroup({ members: currentViewingUsers, size: 24, layout: "stack" })}
+			{userAvatarGroup({ members: presentUserInfoList, size: 24, layout: "stack" })}
 
 			<div className="mb-3">
 				<label className="block mb-1 text-sm font-medium text-gray-900">Name:</label>

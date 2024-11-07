@@ -7,7 +7,7 @@ import { createTestJob } from "../utils/testData.js";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroup } from "./userAvatarGroup.js";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
+import { PresenceManager } from "../utils/presenceManager.js";
 
 export function JobsList(props: {
 	jobs: JobsArray;
@@ -106,20 +106,9 @@ export function JobView(props: {
 		return unsubscribe;
 	}, [invalidations, props.job]);
 
-	const currentViewingUsers = new Array<UserInfo>();
-	props.currentViewers.forEach((clientSessionId) => {
-		try {
-			const viewingUser = props.presenceManager
-				.getStates()
-				.userInfo.clientValue(clientSessionId).value;
-			if (viewingUser) {
-				currentViewingUsers.push(viewingUser);
-			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (e) {
-			// Do nothing
-		}
-	});
+	const presentUserInfoList = props.presenceManager.getConnectedUserInfoFromSessionIds(
+		props.currentViewers,
+	);
 
 	return (
 		<div
@@ -131,7 +120,7 @@ export function JobView(props: {
 		>
 			<div className="flex items-center justify-between gap-2">
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
-					{userAvatarGroup({ members: currentViewingUsers, size: 24, layout: "stack" })}
+					{userAvatarGroup({ members: presentUserInfoList, size: 24, layout: "stack" })}
 				</div>
 				{props.job.isUnseen() && (
 					<div className="flex items-center">
