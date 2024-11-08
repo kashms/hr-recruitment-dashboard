@@ -58,7 +58,7 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 					"Some important information about the schema that you should be aware -- Each Candidate is uniquely identified by `candidateId` field. Each Interviewer is uniquely identified by `interviewerId` field." +
 					"Each Job is uniquely identified by `jobId` field. Each job has an OnSiteSchedule array which is list of scheduled onsite interviews. An OnSiteSchedule object has candidateId which indicates the candidate for onsite and interviewerIds array" +
 					" indicates which interviewers are doing the interviews. These ids help identify the candidate and interviewers uniquely and help map their objects in the app." +
-					"Lastly, any object you update, make sure to set the `llmCollaboration` field to true to indicate that the LLM or AI help was used. Only set the `llmCollboration` fields of object that you modify, not others.",
+					"Lastly, any object you update, make sure to set the `isUnread` field to true to indicate that the LLM or AI help was used. Only set the `llmCollboration` fields of object that you modify, not others.",
 				userAsk: inputPrompt,
 			},
 			limiters: {

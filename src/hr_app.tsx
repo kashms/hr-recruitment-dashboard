@@ -38,25 +38,28 @@ export function HRApp(props: {
 		setOnsiteScheduleSelectedCandidate(undefined);
 		setOpenDrawer(false);
 
-		job?.setSeen();
+		if (job) {
+			job.isUnread = false;
+		}
 	};
 
 	const handleCandidateSelected = (candidate: Candidate | undefined) => {
 		setSelectedCandidate(candidate);
 
-		if (candidate?.candidateId) {
+		if (candidate) {
 			if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
 				const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
 				if (candidateSchedule) {
-					candidateSchedule.setSeen();
+					candidateSchedule.isUnread = false;
 					setOnsiteScheduleSelectedCandidate(candidateSchedule);
 				}
 			} else {
 				setOnsiteScheduleSelectedCandidate(undefined);
 			}
 			setOpenDrawer(false);
+
+			candidate.isUnread = false;
 		}
-		candidate?.setSeen();
 	};
 
 	const handleAddInterviewer = (interviewerId: string) => {

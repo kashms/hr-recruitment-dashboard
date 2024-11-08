@@ -126,7 +126,7 @@ export function JobView(props: {
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
 					{userAvatarGroup({ members: presentUserInfoList, size: 24, layout: "stack" })}
 				</div>
-				{props.job.isUnseen() && (
+				{props.job.isUnread && (
 					<div className="flex items-center">
 						<span className="w-2 h-2 bg-red-500 rounded-full"></span>
 					</div>

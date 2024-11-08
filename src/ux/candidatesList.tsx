@@ -140,8 +140,8 @@ export function CandidateView(props: {
 			}}
 		>
 			<div className="flex justify-end gap-2">
-				{(props.candidate.isUnseen() ||
-					props.job.getOnSiteForCandidate(props.candidate.candidateId)?.isUnseen()) && (
+				{(props.candidate.isUnread ||
+					props.job.getOnSiteForCandidate(props.candidate.candidateId)?.isUnread) && (
 					<div className="flex items-center p-2">
 						<span className="w-2 h-2 bg-red-500 rounded-full"></span>
 					</div>

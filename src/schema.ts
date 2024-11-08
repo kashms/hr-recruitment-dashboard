@@ -26,21 +26,12 @@ export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
 			description: "The candidateId of the candidate that is scheduled for an onsite interview. This field is required. The candidateId should map to the id field in the Candidate object",
 		}
 	}),
-	llmCollaboration: sf.required(sf.boolean, {
+	isUnread: sf.required(sf.boolean, {
 		metadata: {
 			description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
 		}
 	}),
 }) {
-	public readonly isUnseen = () => {
-		return this.llmCollaboration;
-	}
-	public readonly setSeen = () => {
-		if (this.llmCollaboration) {
-			this.llmCollaboration = false;
-		}
-	}
-
 	public readonly addInterviewer = (interviewerId: string) => {
 		if (this.interviewerIds.includes(interviewerId)) {
 			return;
@@ -89,21 +80,12 @@ export class Candidate extends sf.object("Candidate", {
 				"For this field, the only allowed values are the strings Monday,Tuesday,Wednesday,Thursday,Friday",
 		},
 	}),
-	llmCollaboration: sf.required(sf.boolean, {
+	isUnread: sf.required(sf.boolean, {
 		metadata: {
 			description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
 		}
 	}),
-}) {
-	public readonly isUnseen = () => {
-		return this.llmCollaboration;
-	}
-	public readonly setSeen = () => {
-		if (this.llmCollaboration) {
-			this.llmCollaboration = false;
-		}
-	}
-}
+}) { }
 
 export class Job extends sf.object("Job", {
 	jobId: sf.string,
@@ -132,7 +114,7 @@ export class Job extends sf.object("Job", {
 			description: `The schedule of the onsite interviews. This field is required. The default is an empty array. The objects of type OnSiteSchedule are put in arrays here. A valid onsite schedule should have an onsite interview day when the candidate is available, 3 available interviewers and a candidate.`,
 		},
 	}),
-	llmCollaboration: sf.required(sf.boolean, {
+	isUnread: sf.required(sf.boolean, {
 		metadata: {
 			description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
 		}
@@ -144,7 +126,7 @@ export class Job extends sf.object("Job", {
 			day: "Monday",
 			interviewerIds: [],
 			candidateId: candiadteId,
-			llmCollaboration: false,
+			isUnread: false,
 		});
 		this.onSiteSchedule.insertAtEnd(newOnSite);
 	};
@@ -159,15 +141,6 @@ export class Job extends sf.object("Job", {
 
 	public readonly addCandidate = (candidate: Candidate) => {
 		this.candidates.insertAtEnd(candidate);
-	}
-
-	public readonly isUnseen = () => {
-		return this.llmCollaboration;
-	}
-	public readonly setSeen = () => {
-		if (this.llmCollaboration) {
-			this.llmCollaboration = false;
-		}
 	}
 }
 
@@ -260,7 +233,7 @@ export function createTestCandidate() {
 		name: getNextName(),
 		yearsOfExperience: Math.floor(Math.random() * 20) + 1,
 		availability: createFullyAvailable(),
-		llmCollaboration: false,
+		isUnread: false,
 	});
 	return candidate;
 }
@@ -272,7 +245,7 @@ export function createTestJob(addCandidates: boolean) {
 			name: "John Doe",
 			yearsOfExperience: 5,
 			availability: createFullyAvailable(),
-			llmCollaboration: false,
+			isUnread: false,
 		}),
 	];
 
@@ -280,7 +253,7 @@ export function createTestJob(addCandidates: boolean) {
 		day: "Monday",
 		interviewerIds: ["10", "20", "70"],
 		candidateId: "1",
-		llmCollaboration: false,
+		isUnread: false,
 	});
 
 	const job = new Job({
@@ -321,7 +294,7 @@ export function createTestJob(addCandidates: boolean) {
 		`,
 		candidates: addCandidates ? candidates : [],
 		onSiteSchedule: addCandidates ? [onSiteSchedule] : [],
-		llmCollaboration: false,
+		isUnread: false,
 	});
 	return job;
 }
