@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { HRData, Job, JobsArray } from "../schema.js";
-import { Tree, TreeView } from "fluid-framework";
+import { Job, JobsArray } from "../schema.js";
+import { Tree } from "fluid-framework";
 import { Button } from "@fluentui/react-components";
 import { DismissFilled } from "@fluentui/react-icons";
 import { createTestJob } from "../utils/testData.js";
@@ -13,7 +13,6 @@ export function JobsList(props: {
 	jobs: JobsArray;
 	setSelectedJob: (job: Job | undefined) => void;
 	currentlySelectedJob?: Job;
-	treeRoot: TreeView<typeof HRData>;
 	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
@@ -110,9 +109,7 @@ export function JobView(props: {
 		return unsubscribe;
 	}, [invalidations, props.job]);
 
-	const presentUserInfoList = props.presenceManager.getUserInfo(
-		props.currentViewers,
-	);
+	const presentUserInfoList = props.presenceManager.getUserInfo(props.currentViewers);
 
 	return (
 		<div

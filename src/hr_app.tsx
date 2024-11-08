@@ -94,7 +94,6 @@ export function HRApp(props: {
 								jobs={props.data.root.jobsList}
 								setSelectedJob={handleJobSelected}
 								currentlySelectedJob={selectedJob}
-								treeRoot={props.data}
 								presenceManager={props.presenceManager}
 							/>
 							{selectedJob && (
