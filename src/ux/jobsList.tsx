@@ -110,7 +110,7 @@ export function JobView(props: {
 		return unsubscribe;
 	}, [invalidations, props.job]);
 
-	const presentUserInfoList = props.presenceManager.getConnectedUserInfoFromSessionIds(
+	const presentUserInfoList = props.presenceManager.getUserInfo(
 		props.currentViewers,
 	);
 

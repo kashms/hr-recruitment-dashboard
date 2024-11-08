@@ -61,12 +61,11 @@ export class PresenceManager {
         this.userInfoCallback = callback;
     }
 
-    getConnectedUserInfoFromSessionIds(sessionList: ISessionClient<ClientSessionId>[]) {
+    getUserInfo(sessionList: ISessionClient<ClientSessionId>[]) {
         const userInfoList: UserInfo[] = [];
 
         for (const sessionClient of sessionList) {
             // If local user or remote user is connected, then only add it to the list
-            // if (this.presence.getMyself().sessionId === sessionClient.sessionId || this.presence.getAttendee(sessionClient.getConnectionId()).getConnectionStatus() === "Connected") {
             try {
                 const userInfo = this.appSelectionPresenceState.props.userInfo.clientValue(sessionClient).value;
                 if (userInfo) {
@@ -76,13 +75,13 @@ export class PresenceManager {
             } catch (e) {
                 // Do nothing
             }
-            // }
         }
 
         return userInfoList;
     }
 }
 
+// Schema for the Presence Manager
 export const appSelectionSchema = {
     jobSelelction: Latest({ jobSelected: "" }),
     candidateSelection: Latest({ candidateSelected: "" }),

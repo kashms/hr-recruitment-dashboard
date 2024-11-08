@@ -183,7 +183,7 @@ export function AppPresenceGroup(props: { presenceManager: PresenceManager }): J
 
 	const [invalidations, setInvalidations] = useState(0);
 
-	const userInfoList = props.presenceManager.getConnectedUserInfoFromSessionIds(attendeesList);
+	const userInfoList = props.presenceManager.getUserInfo(attendeesList);
 
 	if (userInfoList) {
 		return userAvatarGroup({

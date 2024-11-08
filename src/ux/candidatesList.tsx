@@ -126,7 +126,7 @@ export function CandidateView(props: {
 		return unsubscribe;
 	}, [invalidations, props.candidate]);
 
-	const presentUserInfoList = props.presenceManager.getConnectedUserInfoFromSessionIds(
+	const presentUserInfoList = props.presenceManager.getUserInfo(
 		props.currentViewers,
 	);
 
