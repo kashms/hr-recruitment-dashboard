@@ -34,7 +34,7 @@ export function JobsList(props: {
 	}, [invalidations, props.jobs]);
 
 	useEffect(() => {
-		props.presenceManager.getStates().jobSelelction.events.on("updated", (update) => {
+		props.presenceManager.getStates().props.jobSelelction.events.on("updated", (update) => {
 			const remoteSessionClient = update.client;
 			const remoteSelectedJobId = update.value.jobSelected;
 
@@ -48,6 +48,13 @@ export function JobsList(props: {
 				);
 			}
 		});
+
+		// initialize the job presence map
+		const existingJobSelection = [
+			...props.presenceManager.getStates().props.jobSelelction.clientValues(),
+		].map((cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string]);
+
+		setJobPresenceMap(new Map(existingJobSelection));
 	}, []);
 
 	return (
@@ -63,10 +70,10 @@ export function JobsList(props: {
 						isSelected={props.currentlySelectedJob === job}
 						setSelectedJob={(job: Job) => {
 							props.setSelectedJob(job);
-							props.presenceManager.getStates().jobSelelction.local = {
+							props.presenceManager.getStates().props.jobSelelction.local = {
 								jobSelected: job.jobId,
 							};
-							props.presenceManager.getStates().candidateSelection.local = {
+							props.presenceManager.getStates().props.candidateSelection.local = {
 								candidateSelected: "",
 							};
 						}}

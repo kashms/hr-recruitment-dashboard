@@ -5,7 +5,6 @@
 import React, { useEffect, useState } from "react";
 import { TreeView, IServiceAudience, IMember } from "fluid-framework";
 import { Candidate, HRData, Job, type OnSiteSchedule } from "./schema.js";
-import { OdspMember } from "@fluidframework/odsp-client/beta";
 import { userAvatarGroup } from "./ux/userAvatarGroup.js";
 import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";
@@ -15,7 +14,8 @@ import { AiChatView } from "./ux/aiChat.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
-import { PresenceManager, UserInfo } from "./utils/presenceManager.js";
+import { PresenceManager } from "./utils/presenceManager.js";
+import { ISessionClient } from "@fluid-experimental/presence";
 
 export function HRApp(props: {
 	data: TreeView<typeof HRData>;
@@ -28,11 +28,9 @@ export function HRApp(props: {
 	const [openDrawer, setOpenDrawer] = useState(false);
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
 		useState<OnSiteSchedule>();
-	const [invalidations, setInvalidations] = useState(0);
 
 	// AI in progress state for showing the animation
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
-	const [appUserInfo, setAppUserInfo] = useState<UserInfo[]>();
 
 	const handleJobSelected = (job: Job | undefined) => {
 		setSelectedJob(job);
@@ -69,56 +67,9 @@ export function HRApp(props: {
 		onsiteScheduleSelectedCandidate?.interviewerIds.insertAtEnd(interviewerId);
 	};
 
-	const resetUserInfoList = () => {
-		const userInfoArray = [...props.presenceManager.getStates().userInfo.clientValues()].map(
-			(v) => v.value,
-		);
-		// if user array already contains the local user by using the userId, then don't add it again
-		if (
-			!userInfoArray.some(
-				(v) =>
-					props.presenceManager.getStates() &&
-					v.userId === props.presenceManager.getStates().userInfo.local.userId,
-			)
-		) {
-			userInfoArray.push(props.presenceManager.getStates().userInfo.local);
-		}
-
-		setAppUserInfo(userInfoArray);
-	};
-
-	const updateMyself = () => {
-		const myselfMember = props.audience.getMyself();
-		if (myselfMember) {
-			const odspMember = myselfMember as IMember as OdspMember;
-			props.presenceManager.getStates().userInfo.local = {
-				userId: odspMember.id,
-				userName: odspMember.name,
-				userEmail: odspMember.email,
-			};
-			resetUserInfoList();
-		}
-	};
-
 	/** Unsubscribe to undo-redo events when the component unmounts */
 	useEffect(() => {
 		return props.undoRedo.dispose;
-	}, []);
-
-	useEffect(() => {
-		props.audience.on("membersChanged", updateMyself);
-
-		return () => {
-			props.audience.off("membersChanged", updateMyself);
-		};
-	}, []);
-
-	useEffect(() => {
-		props.presenceManager.getStates().userInfo.events.on("updated", () => {
-			resetUserInfoList();
-		});
-
-		setInvalidations(invalidations + Math.random());
 	}, []);
 
 	return (
@@ -135,7 +86,7 @@ export function HRApp(props: {
 							showAnimatedFrame={(show: boolean) => {
 								setShowAnimatedFrame(show);
 							}}
-							appUserInfo={appUserInfo}
+							presenceManager={props.presenceManager}
 							undoRedo={props.undoRedo}
 						/>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
@@ -182,7 +133,7 @@ export function HeaderBar(props: {
 	audience: IServiceAudience<IMember>;
 	treeRoot: TreeView<typeof HRData>;
 	showAnimatedFrame: (show: boolean) => void;
-	appUserInfo: UserInfo[] | undefined;
+	presenceManager: PresenceManager;
 	undoRedo: undoRedo;
 }): JSX.Element {
 	return (
@@ -190,7 +141,7 @@ export function HeaderBar(props: {
 			<h1 className="text-xl font-bold text-white">HR Recruitment Dashboard</h1>
 			<AiChatView treeRoot={props.treeRoot} showAnimatedFrame={props.showAnimatedFrame} />
 			<ActionToolBar undoRedo={props.undoRedo} />
-			<AppPresenceGroup appUserInfo={props.appUserInfo} />
+			<AppPresenceGroup presenceManager={props.presenceManager} />
 		</div>
 	);
 }
@@ -213,9 +164,33 @@ export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 	);
 }
 
-export function AppPresenceGroup(props: { appUserInfo: UserInfo[] | undefined }): JSX.Element {
-	if (props.appUserInfo) {
-		return userAvatarGroup({ members: props.appUserInfo, size: 40, layout: "spread" });
+export function AppPresenceGroup(props: { presenceManager: PresenceManager }): JSX.Element {
+	const [attendeesList, setAttendeesList] = useState<ISessionClient[]>([
+		...props.presenceManager.getPresence().getAttendees(),
+	]);
+
+	useEffect(() => {
+		props.presenceManager.getPresence().events.on("attendeeJoined", (attendee) => {
+			setAttendeesList([...attendeesList, attendee]);
+		});
+		props.presenceManager.getPresence().events.on("attendeeDisconnected", (attendee) => {
+			setAttendeesList(attendeesList.filter((a) => a.sessionId !== attendee.sessionId));
+		});
+		props.presenceManager.setUserInfoUpdateListener(() => {
+			setInvalidations(invalidations + Math.random());
+		});
+	}, []);
+
+	const [invalidations, setInvalidations] = useState(0);
+
+	const userInfoList = props.presenceManager.getConnectedUserInfoFromSessionIds(attendeesList);
+
+	if (userInfoList) {
+		return userAvatarGroup({
+			members: userInfoList,
+			size: 40,
+			layout: "spread",
+		});
 	} else {
 		return <div>error</div>;
 	}

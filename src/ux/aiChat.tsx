@@ -1,8 +1,8 @@
 import React from "react";
-import { getBranch, TreeView } from "@fluidframework/tree/alpha";
+import { asTreeViewAlpha, TreeView } from "@fluidframework/tree/alpha";
 import { aiCollab, AiCollabOptions } from "@fluid-experimental/ai-collab";
 import { AzureOpenAI } from "openai";
-import { HRData, treeConfiguration } from "../schema.js";
+import { HRData } from "../schema.js";
 
 export interface AiChatViewProps {
 	treeRoot: TreeView<typeof HRData>;
@@ -34,9 +34,9 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 			throw new Error("AZURE_OPENAI_DEPLOYMENT environment variable not set");
 		}
 
-		const originalBranch = getBranch(props.treeRoot);
-		const newBranchFork = originalBranch.branch();
-		const newBranchForkView = newBranchFork.viewWith(treeConfiguration);
+		// const originalBranch = getBranch(props.treeRoot);
+		const viewAlpha = asTreeViewAlpha(props.treeRoot);
+		const newBranchFork = viewAlpha.fork();
 
 		const aiCollabOptions: AiCollabOptions = {
 			openAI: {
@@ -51,7 +51,7 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 			},
 			// planningStep: true,
 			// finalReviewStep: true,
-			treeNode: newBranchForkView.root,
+			treeNode: newBranchFork.root,
 			prompt: {
 				systemRoleContext:
 					"You are an assistant that is helping out with a recruitment tool. You help draft job roles and responsibilities. You also help with on site interview plans and schedule." +
@@ -78,7 +78,7 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 			if (response.status === "success") {
 				console.log("AI has completed request successfully");
 				props.showAnimatedFrame(false);
-				originalBranch.merge(newBranchFork);
+				viewAlpha.merge(newBranchFork);
 			} else {
 				console.log("Copilot: Something went wrong processing your request");
 				props.showAnimatedFrame(false);

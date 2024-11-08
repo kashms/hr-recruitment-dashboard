@@ -167,7 +167,7 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	}
 
 	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
-	const presenceManager: PresenceManager = new PresenceManager(appPresence);
+	const presenceManager: PresenceManager = new PresenceManager(appPresence, services.audience);
 
 	// Create undo/redo stacks for the app
 	const undoRedo = createUndoRedoStacks(appData.events);
