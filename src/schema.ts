@@ -171,11 +171,14 @@ export class Job extends sf.object(
 export class JobsArray extends sf.array(
 	"JobsArray", Job) { }
 
+export class InterviewerPool extends sf.array(
+	"InterviewerPool", Interviewer) { }
+
 export class HRData extends sf.object(
 	"HRData",
 	{
 		jobsList: JobsArray,
-		interviewerPool: sf.required(sf.array(Interviewer), {
+		interviewerPool: sf.required(InterviewerPool, {
 			metadata: {
 				description: `The interviewers who have been allowed to interview candidates that have applied to this role.
 				This field is required. The default is an empty array. The objects of type Interviewer are put in arrays here.

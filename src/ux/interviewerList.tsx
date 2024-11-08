@@ -6,14 +6,14 @@ import {
 	Button,
 	useRestoreFocusSource,
 } from "@fluentui/react-components";
-import { Tree, TreeArrayNode } from "fluid-framework";
-import { Interviewer } from "../schema.js";
+import { Tree } from "fluid-framework";
+import { Interviewer, InterviewerPool } from "../schema.js";
 import React, { useEffect, useState } from "react";
 import { AddFilled } from "@fluentui/react-icons";
 import { AvailabilityView } from "./availabilityView.js";
 
 export function InterviewerList(props: {
-	interviewers: TreeArrayNode<typeof Interviewer>;
+	interviewers: InterviewerPool;
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
 	handleAddInterviewer: (interviewerId: string) => void;

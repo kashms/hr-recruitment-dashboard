@@ -1,5 +1,5 @@
-import { Tree, TreeArrayNode } from "fluid-framework";
-import { Candidate, Interviewer, OnSiteSchedule } from "../schema.js";
+import { Tree } from "fluid-framework";
+import { Candidate, Interviewer, InterviewerPool, OnSiteSchedule } from "../schema.js";
 import { useEffect, useState } from "react";
 import { Button } from "@fluentui/react-components";
 import React from "react";
@@ -10,7 +10,7 @@ import { DAYS_OF_WEEK } from "../utils/util.js";
 export function OnSitePlan(props: {
 	candidate: Candidate;
 	onSiteSchedule: OnSiteSchedule;
-	interviewerPool: TreeArrayNode<typeof Interviewer>;
+	interviewerPool: InterviewerPool;
 	handleToggleInterviewerList: () => void;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
