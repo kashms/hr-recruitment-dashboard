@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Candidate, Job } from "../schema.js";
+import { Candidate, Job, createTestCandidate } from "../schema.js";
 import { Tree } from "fluid-framework";
 import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
-import { createTestCandidate } from "../utils/testData.js";
 import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroup } from "./userAvatarGroup.js";
@@ -126,9 +125,7 @@ export function CandidateView(props: {
 		return unsubscribe;
 	}, [invalidations, props.candidate]);
 
-	const presentUserInfoList = props.presenceManager.getUserInfo(
-		props.currentViewers,
-	);
+	const presentUserInfoList = props.presenceManager.getUserInfo(props.currentViewers);
 
 	return (
 		<div

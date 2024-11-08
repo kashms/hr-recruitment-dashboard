@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Job, JobsArray } from "../schema.js";
+import { Job, JobsArray, createTestJob } from "../schema.js";
 import { Tree } from "fluid-framework";
 import { Button } from "@fluentui/react-components";
 import { DismissFilled } from "@fluentui/react-icons";
-import { createTestJob } from "../utils/testData.js";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroup } from "./userAvatarGroup.js";
 import { ISessionClient } from "@fluid-experimental/presence";

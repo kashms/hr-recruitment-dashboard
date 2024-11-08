@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { loadFluidData, containerSchema } from "./infra/fluid.js";
 import { getClientProps } from "./infra/clientProps.js";
-import { treeConfiguration } from "./schema.js";
+import { createTestAppData, treeConfiguration } from "./schema.js";
 import "./output.css";
 import { SampleOdspTokenProvider } from "./infra/tokenProvider.js";
 import { GraphHelper } from "./infra/graphHelper.js";
@@ -14,7 +14,6 @@ import { AttachState } from "fluid-framework";
 import { HRApp } from "./hr_app.js";
 import { createUndoRedoStacks } from "./utils/undo.js";
 import { acquirePresenceViaDataObject } from "@fluid-experimental/presence";
-import { createTestData } from "./utils/testData.js";
 import { PresenceManager } from "./utils/presenceManager.js";
 
 async function start() {
@@ -163,7 +162,7 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 		treeConfiguration, // This is defined in schema.ts
 	);
 	if (appData.compatibility.canInitialize) {
-		appData.initialize(createTestData());
+		appData.initialize(createTestAppData());
 	}
 
 	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
