@@ -7,7 +7,7 @@ import {
 	useRestoreFocusSource,
 } from "@fluentui/react-components";
 import { Tree } from "fluid-framework";
-import { Interviewer, InterviewerPool } from "../schema.js";
+import { Interviewer, InterviewerPool } from "@lab/appSchema.js";
 import React, { useEffect, useState } from "react";
 import { AddFilled } from "@fluentui/react-icons";
 import { AvailabilityView } from "./availabilityView.js";

@@ -4,7 +4,7 @@
  */
 import React, { useEffect, useState } from "react";
 import { TreeView, IServiceAudience, IMember } from "fluid-framework";
-import { Candidate, HRData, Job, type OnSiteSchedule } from "./schema.js";
+import { Candidate, HRData, Job, type OnSiteSchedule } from "@lab/appSchema.js";
 import { userAvatarGroup } from "./ux/userAvatarGroup.js";
 import { InterviewerList } from "./ux/interviewerList.js";
 import { OnSitePlan } from "./ux/onSitePlan.js";

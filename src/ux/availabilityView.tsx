@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Availability } from "../schema.js";
+import { Availability } from "@lab/appSchema.js";
 import { Tree } from "fluid-framework";
 import { DAYS_OF_WEEK, DAYS_OF_WEEK_SHORT } from "../utils/util.js";
 

@@ -1,5 +1,5 @@
 import { Tree } from "fluid-framework";
-import { Candidate, Interviewer, InterviewerPool, OnSiteSchedule } from "../schema.js";
+import { Candidate, Interviewer, InterviewerPool, OnSiteSchedule } from "@lab/appSchema.js";
 import { useEffect, useState } from "react";
 import { Button } from "@fluentui/react-components";
 import React from "react";
