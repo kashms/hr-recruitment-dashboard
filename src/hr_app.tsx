@@ -79,15 +79,19 @@ export function HRApp(props: {
 			<div className="inner">
 				<FluentProvider theme={webLightTheme}>
 					<div className="flex flex-col h-fit w-full overflow-hidden overscroll-none gap-1">
-						<HeaderBar
-							audience={props.audience}
-							treeRoot={props.data}
-							showAnimatedFrame={(show: boolean) => {
-								setShowAnimatedFrame(show);
-							}}
-							presenceManager={props.presenceManager}
-							undoRedo={props.undoRedo}
-						/>
+						<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
+							<h1 className="text-xl font-bold text-white flex-grow">
+								HR Recruitment Dashboard
+							</h1>
+							<AiChatView
+								treeRoot={props.data}
+								showAnimatedFrame={(show: boolean) => {
+									setShowAnimatedFrame(show);
+								}}
+							/>
+							<ActionToolBar undoRedo={props.undoRedo} />
+							<AppPresenceGroup presenceManager={props.presenceManager} />
+						</div>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
 							<JobsList
 								jobs={props.data.root.jobsList}
@@ -123,23 +127,6 @@ export function HRApp(props: {
 					</div>
 				</FluentProvider>
 			</div>
-		</div>
-	);
-}
-
-export function HeaderBar(props: {
-	audience: IServiceAudience<IMember>;
-	treeRoot: TreeView<typeof HRData>;
-	showAnimatedFrame: (show: boolean) => void;
-	presenceManager: PresenceManager;
-	undoRedo: undoRedo;
-}): JSX.Element {
-	return (
-		<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
-			<h1 className="text-xl font-bold text-white flex-grow">HR Recruitment Dashboard</h1>
-			<AiChatView treeRoot={props.treeRoot} showAnimatedFrame={props.showAnimatedFrame} />
-			<ActionToolBar undoRedo={props.undoRedo} />
-			<AppPresenceGroup presenceManager={props.presenceManager} />
 		</div>
 	);
 }
