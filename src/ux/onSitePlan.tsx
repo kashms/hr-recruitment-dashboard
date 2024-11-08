@@ -61,10 +61,7 @@ export function OnSitePlan(props: {
 	const isValid = checkValidity();
 
 	const handleRemoveInterviewer = (interviewerId: string) => {
-		const index = props.onSiteSchedule.interviewerIds.indexOf(interviewerId);
-		if (index !== -1) {
-			props.onSiteSchedule.interviewerIds.removeAt(index);
-		}
+		props.onSiteSchedule.removeInterviewer(interviewerId);
 	};
 
 	return (

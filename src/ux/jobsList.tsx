@@ -72,6 +72,9 @@ export function JobsList(props: {
 								candidateSelected: "",
 							};
 						}}
+						deleteJob={(job: Job) => {
+							props.jobs.deleteJob(job);
+						}}
 						currentViewers={getKeysByValue(jobPresenceMap, job.jobId)}
 						presenceManager={props.presenceManager}
 					/>
@@ -96,6 +99,7 @@ export function JobView(props: {
 	job: Job;
 	isSelected: boolean;
 	setSelectedJob: (job: Job) => void;
+	deleteJob: (job: Job) => void;
 	currentViewers: ISessionClient[];
 	presenceManager: PresenceManager;
 }): JSX.Element {
@@ -132,7 +136,7 @@ export function JobView(props: {
 					icon={<DismissFilled />}
 					onClick={(event) => {
 						event.stopPropagation();
-						props.job.delete();
+						props.deleteJob(props.job);
 					}}
 				/>
 			</div>

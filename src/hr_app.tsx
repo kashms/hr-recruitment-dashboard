@@ -60,11 +60,7 @@ export function HRApp(props: {
 	};
 
 	const handleAddInterviewer = (interviewerId: string) => {
-		// Check if the interviewer is already in the list
-		if (onsiteScheduleSelectedCandidate?.interviewerIds.includes(interviewerId)) {
-			return;
-		}
-		onsiteScheduleSelectedCandidate?.interviewerIds.insertAtEnd(interviewerId);
+		onsiteScheduleSelectedCandidate?.addInterviewer(interviewerId);
 	};
 
 	/** Unsubscribe to undo-redo events when the component unmounts */

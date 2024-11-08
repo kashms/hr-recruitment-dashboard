@@ -98,7 +98,7 @@ export function CandidatesList(props: {
 					className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
 					onClick={() => {
 						const newCandidate = createTestCandidate();
-						props.job.candidates.insertAt(props.job.candidates.length, newCandidate);
+						props.job.addCandidate(newCandidate);
 					}}
 				>
 					+ Add New Candidate
