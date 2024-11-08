@@ -61,40 +61,24 @@ export class PresenceManager {
         this.userInfoCallback = callback;
     }
 
-    // updateUserInfoList = () => {        
-    //     const userInfoArray = [...this.appSelectionPresenceState.userInfo.clientValues()].map(
-    //         (v) => v.value,
-    //     );
-    //     // if user array already contains the local user by using the userId, then don't add it again
-    //     if (
-    //         !userInfoArray.some(
-    //             (v) =>
-    //                 v.userId === this.appSelectionPresenceState.userInfo.local.userId,
-    //         )
-    //     ) {
-    //         userInfoArray.push(this.appSelectionPresenceState.userInfo.local);
-    //     }
-
-    //     this.appUserInfo = userInfoArray;
-    // };
-
     getConnectedUserInfoFromSessionIds(sessionList: ISessionClient<ClientSessionId>[]) {
         const userInfoList: UserInfo[] = [];
 
         for (const sessionClient of sessionList) {
             // If local user or remote user is connected, then only add it to the list
-            if (this.presence.getMyself().sessionId === sessionClient.sessionId || this.presence.getAttendee(sessionClient.sessionId).getConnectionStatus() === "Connected") {
-                try {
-                    const userInfo = this.appSelectionPresenceState.props.userInfo.clientValue(sessionClient).value;
-                    if (userInfo) {
-                        userInfoList.push(userInfo);
-                    }
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (e) {
-                    // Do nothing
+            // if (this.presence.getMyself().sessionId === sessionClient.sessionId || this.presence.getAttendee(sessionClient.getConnectionId()).getConnectionStatus() === "Connected") {
+            try {
+                const userInfo = this.appSelectionPresenceState.props.userInfo.clientValue(sessionClient).value;
+                if (userInfo) {
+                    userInfoList.push(userInfo);
                 }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (e) {
+                // Do nothing
             }
+            // }
         }
+
         return userInfoList;
     }
 }

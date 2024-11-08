@@ -23,10 +23,7 @@ export function JobsList(props: {
 		const unsubscribe = Tree.on(props.jobs, "nodeChanged", () => {
 			setInvalidations(invalidations + Math.random());
 
-			if (
-				props.currentlySelectedJob === undefined ||
-				(props.currentlySelectedJob && !props.jobs.includes(props.currentlySelectedJob))
-			) {
+			if (props.currentlySelectedJob && !props.jobs.includes(props.currentlySelectedJob)) {
 				props.setSelectedJob(undefined);
 			}
 		});

@@ -43,21 +43,26 @@ export function CandidatesList(props: {
 	}, [invalidations, props.job.onSiteSchedule]);
 
 	useEffect(() => {
-		props.presenceManager.getStates().props.candidateSelection.events.on("updated", (update) => {
-			const remoteSessionClient = update.client;
-			const remoteSelectedCandidateId = update.value.candidateSelected;
+		props.presenceManager
+			.getStates()
+			.props.candidateSelection.events.on("updated", (update) => {
+				const remoteSessionClient = update.client;
+				const remoteSelectedCandidateId = update.value.candidateSelected;
 
-			if (remoteSelectedCandidateId === "") {
-				candidatePresenceMap.delete(remoteSessionClient);
-				setCandidatePresenceMap(new Map(candidatePresenceMap));
-			} else {
-				setCandidatePresenceMap(
-					new Map(
-						candidatePresenceMap.set(remoteSessionClient, remoteSelectedCandidateId),
-					),
-				);
-			}
-		});
+				if (remoteSelectedCandidateId === "") {
+					candidatePresenceMap.delete(remoteSessionClient);
+					setCandidatePresenceMap(new Map(candidatePresenceMap));
+				} else {
+					setCandidatePresenceMap(
+						new Map(
+							candidatePresenceMap.set(
+								remoteSessionClient,
+								remoteSelectedCandidateId,
+							),
+						),
+					);
+				}
+			});
 
 		// initialize the candidate presence map
 		const existingCandidateSelections = [

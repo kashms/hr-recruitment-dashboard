@@ -23,7 +23,7 @@ export function userAvatarGroup(props: {
 			{inlineItems.map((member) => (
 				<Tooltip
 					content={`${member.userName} - ${member.userEmail}`}
-					key={member.userId}
+					key={member.userId + Math.random()}
 					relationship="description"
 				>
 					<AvatarGroupItem
@@ -31,7 +31,7 @@ export function userAvatarGroup(props: {
 						activeAppearance="ring-shadow"
 						color="colorful"
 						name={`${member.userName} - ${member.userEmail}`}
-						key={member.userId}
+						key={member.userId + Math.random()}
 					/>
 				</Tooltip>
 			))}
@@ -40,7 +40,7 @@ export function userAvatarGroup(props: {
 					{overflowItems.map((member) => (
 						<AvatarGroupItem
 							name={`${member.userName} - ${member.userEmail}`}
-							key={member.userId}
+							key={member.userId + Math.random()}
 							active="active"
 							color="colorful"
 							activeAppearance="ring-shadow"
