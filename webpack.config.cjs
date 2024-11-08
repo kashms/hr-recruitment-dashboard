@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /*!
  * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
  * Licensed under the MIT License.
@@ -45,6 +46,9 @@ module.exports = {
 			".js": [".ts", ".tsx", ".js", ".cjs", ".mjs"],
 		},
 		extensions: [".ts", ".tsx", ".js", ".cjs", ".mjs"],
+		alias: {
+			"@lab": path.resolve(__dirname, "src/mod3"),  // Change this line to change import paths!
+		   }
 	},
 	output: {
 		filename: "bundle.js",
