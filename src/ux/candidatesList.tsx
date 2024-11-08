@@ -15,11 +15,11 @@ export function CandidatesList(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 	presenceManager: PresenceManager;
 }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
 	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
 		new Map(),
 	);
-
+	
+	const [invalidations, setInvalidations] = useState(0);
 	useEffect(() => {
 		const unsubscribe = Tree.on(props.job.candidates, "nodeChanged", () => {
 			setInvalidations(invalidations + Math.random());
@@ -117,7 +117,6 @@ export function CandidateView(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
-
 	useEffect(() => {
 		const unsubscribe = Tree.on(props.candidate, "nodeChanged", () => {
 			setInvalidations(invalidations + Math.random());

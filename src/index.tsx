@@ -164,12 +164,11 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	if (appData.compatibility.canInitialize) {
 		appData.initialize(createTestAppData());
 	}
+	// Create undo/redo stacks for the app
+	const undoRedo = createUndoRedoStacks(appData.events);
 
 	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
 	const presenceManager: PresenceManager = new PresenceManager(appPresence, services.audience);
-
-	// Create undo/redo stacks for the app
-	const undoRedo = createUndoRedoStacks(appData.events);
 
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be
@@ -177,9 +176,9 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	root.render(
 		<HRApp
 			data={appData}
+			undoRedo={undoRedo}
 			audience={services.audience}
 			presenceManager={presenceManager}
-			undoRedo={undoRedo}
 		/>,
 	);
 
