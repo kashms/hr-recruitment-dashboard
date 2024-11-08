@@ -1,4 +1,4 @@
-import { Availability, Candidate, HRData, Interviewer, Job, OnSiteSchedule } from "./appSchema.js";
+import { Availability, Candidate, HRData, Interviewer, Job, OnSiteSchedule } from "@lab/appSchema.js";
 
 export function createTestAppData() {
     const interviewers = [

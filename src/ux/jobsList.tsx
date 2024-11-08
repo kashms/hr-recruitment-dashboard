@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Job, JobsArray } from "@lab/appSchema.js";
-import { createTestJob } from "@lab/testData.js";
+import { createTestJob } from "../utils/testData.js";
 import { Tree } from "fluid-framework";
 import { Button } from "@fluentui/react-components";
 import { DismissFilled } from "@fluentui/react-icons";

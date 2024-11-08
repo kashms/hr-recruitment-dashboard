@@ -5,7 +5,6 @@ import { DAYS_OF_WEEK, DAYS_OF_WEEK_SHORT } from "../utils/util.js";
 
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
-
 	useEffect(() => {
 		const unsubscribe = Tree.on(props.avail, "treeChanged", () => {
 			setInvalidations(invalidations + Math.random());

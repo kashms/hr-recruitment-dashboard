@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Candidate, Job } from "@lab/appSchema.js";
-import { createTestCandidate } from "@lab/testData.js";
+import { createTestCandidate } from "../utils/testData.js";
 import { Tree } from "fluid-framework";
 import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
@@ -19,12 +19,11 @@ export function CandidatesList(props: {
 	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
 		new Map(),
 	);
-	
+
 	const [invalidations, setInvalidations] = useState(0);
 	useEffect(() => {
 		const unsubscribe = Tree.on(props.job.candidates, "nodeChanged", () => {
 			setInvalidations(invalidations + Math.random());
-
 			if (
 				props.selectedCandidate === undefined ||
 				(props.selectedCandidate && !props.job.candidates.includes(props.selectedCandidate))

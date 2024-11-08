@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import { loadFluidData, containerSchema } from "./infra/fluid.js";
 import { getClientProps } from "./infra/clientProps.js";
 import { treeConfiguration } from "@lab/appSchema.js";
-import { createTestAppData } from "@lab/testData.js";
+import { createTestAppData } from "./utils/testData.js";
 import "./output.css";
 import { SampleOdspTokenProvider } from "./infra/tokenProvider.js";
 import { GraphHelper } from "./infra/graphHelper.js";

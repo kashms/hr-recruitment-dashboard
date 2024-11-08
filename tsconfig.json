@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		// DO NOT EDIT
 		"outDir": "./dist",
 		"target": "es6",
 		"module": "Node16",
