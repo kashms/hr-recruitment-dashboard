@@ -85,8 +85,7 @@ export function JobsListView(props: {
 				<button
 					className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
 					onClick={() => {
-						const newJob = createTestJob(false);
-						props.jobs.insertAt(props.jobs.length, newJob);
+						props.jobs.addJob(createTestJob(false));
 					}}
 				>
 					+ Add New Job
@@ -125,7 +124,11 @@ export function JobView(props: {
 		>
 			<div className="flex items-center justify-between gap-2">
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
-					{userAvatarGroupView({ members: presentUserInfoList, size: 24, layout: "stack" })}
+					{userAvatarGroupView({
+						members: presentUserInfoList,
+						size: 24,
+						layout: "stack",
+					})}
 				</div>
 				{props.job.isUnread && (
 					<div className="flex items-center">

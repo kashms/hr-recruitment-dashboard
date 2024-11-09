@@ -8,7 +8,18 @@ import { TreeViewConfiguration, SchemaFactory } from "fluid-framework";
 // Define a schema factory that is used to generate classes for the schema
 const sf = new SchemaFactory("ef0b8eff-2876-4801-9b6a-973f09aab904");
 
-export class Availability extends sf.array("Availability", sf.string) { }
+export class Availability extends sf.array("Availability", sf.string) {
+	public readonly setDayAvailability = (day: string, available: boolean) => {
+		if (available && !this.includes(day)) {
+			this.insertAtStart(day);
+		} else {
+			const index = this.indexOf(day);
+			if (index !== -1) {
+				this.removeAt(index);
+			}
+		}
+	}
+}
 
 export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
 	day: sf.required(sf.string),
@@ -80,6 +91,10 @@ export class Job extends sf.object("Job", {
 }
 
 export class JobsArray extends sf.array("JobsArray", Job) {
+	public readonly addJob = (job: Job) => {
+		this.insertAtEnd(job);
+	}
+
 	public readonly deleteJob = (job: Job) => {
 		const index = this.indexOf(job);
 		if (index !== -1) {

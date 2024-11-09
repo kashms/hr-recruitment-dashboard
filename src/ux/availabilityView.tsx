@@ -12,15 +12,6 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 		return unsubscribe;
 	}, [invalidations, props.avail]);
 
-	const handleAvailabilityChange = (checked: boolean, dayName: string) => {
-		if (checked && !props.avail.includes(dayName)) {
-			props.avail.insertAtStart(dayName);
-		} else {
-			const index = props.avail.indexOf(dayName);
-			props.avail.removeAt(index);
-		}
-	};
-
 	return (
 		<div className="flex flex-col gap-1 justify-center content-center m-1">
 			<div className="flex flex-row gap-1">
@@ -30,7 +21,9 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 						dayName={DAYS_OF_WEEK_SHORT[index]}
 						isAvailable={props.avail.includes(day)}
 						readOnly={props.readOnly}
-						onChange={(checked: boolean) => handleAvailabilityChange(checked, day)}
+						onChange={(checked: boolean) =>
+							props.avail.setDayAvailability(day, checked)
+						}
 					/>
 				))}
 			</div>
