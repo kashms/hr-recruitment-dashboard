@@ -5,11 +5,11 @@ import { Tree } from "fluid-framework";
 import { Button } from "@fluentui/react-components";
 import { DismissFilled } from "@fluentui/react-icons";
 import { getKeysByValue } from "../utils/util.js";
-import { userAvatarGroup } from "./userAvatarGroup.js";
+import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
 import { PresenceManager } from "../utils/presenceManager.js";
 
-export function JobsList(props: {
+export function JobsListView(props: {
 	jobs: JobsArray;
 	setSelectedJob: (job: Job | undefined) => void;
 	currentlySelectedJob?: Job;
@@ -125,7 +125,7 @@ export function JobView(props: {
 		>
 			<div className="flex items-center justify-between gap-2">
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
-					{userAvatarGroup({ members: presentUserInfoList, size: 24, layout: "stack" })}
+					{userAvatarGroupView({ members: presentUserInfoList, size: 24, layout: "stack" })}
 				</div>
 				{props.job.isUnread && (
 					<div className="flex items-center">

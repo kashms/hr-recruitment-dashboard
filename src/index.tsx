@@ -159,9 +159,7 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	);
 
 	// Initialize the SharedTree Data Structure
-	const appData = container.initialObjects.appData.viewWith(
-		treeConfiguration, // This is defined in schema.ts
-	);
+	const appData = container.initialObjects.appData.viewWith(treeConfiguration);
 	if (appData.compatibility.canInitialize) {
 		appData.initialize(createTestAppData());
 	}
@@ -174,14 +172,7 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be
 	// interactive immediately.
-	root.render(
-		<HRApp
-			data={appData}
-			undoRedo={undoRedo}
-			audience={services.audience}
-			presenceManager={presenceManager}
-		/>,
-	);
+	root.render(<HRApp data={appData} undoRedo={undoRedo} presenceManager={presenceManager} />);
 
 	// If the app is in a `createNew` state - no containerId, and the container is detached, we attach the container.
 	// This uploads the container to the service and connects to the collaboration session.

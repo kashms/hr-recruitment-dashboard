@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { UserInfo } from "../utils/presenceManager.js";
 
-export function userAvatarGroup(props: {
+export function userAvatarGroupView(props: {
 	members: UserInfo[];
 	size: AvatarSize;
 	layout: "spread" | "stack";

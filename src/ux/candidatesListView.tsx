@@ -6,11 +6,11 @@ import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
-import { userAvatarGroup } from "./userAvatarGroup.js";
+import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
 import { PresenceManager } from "../utils/presenceManager.js";
 
-export function CandidatesList(props: {
+export function CandidatesListView(props: {
 	job: Job;
 	selectedCandidate: Candidate | undefined;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
@@ -158,7 +158,7 @@ export function CandidateView(props: {
 					</Button>
 				)}
 			</div>
-			{userAvatarGroup({ members: presentUserInfoList, size: 24, layout: "stack" })}
+			{userAvatarGroupView({ members: presentUserInfoList, size: 24, layout: "stack" })}
 
 			<div className="mb-3">
 				<label className="block mb-1 text-sm font-medium text-gray-900">Name:</label>

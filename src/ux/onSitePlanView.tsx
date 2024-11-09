@@ -7,7 +7,7 @@ import { AvailabilityView } from "./availabilityView.js";
 import { DismissFilled, ListFilled } from "@fluentui/react-icons";
 import { DAYS_OF_WEEK } from "../utils/util.js";
 
-export function OnSitePlan(props: {
+export function OnSitePlanView(props: {
 	candidate: Candidate;
 	onSiteSchedule: OnSiteSchedule;
 	interviewerPool: InterviewerPool;

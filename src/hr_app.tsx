@@ -3,14 +3,14 @@
  * Licensed under the MIT License.
  */
 import React, { useEffect, useState } from "react";
-import { TreeView, IServiceAudience, IMember } from "fluid-framework";
+import { TreeView } from "fluid-framework";
 import { Candidate, HRData, Job, type OnSiteSchedule } from "@lab/appSchema.js";
-import { userAvatarGroup } from "./ux/userAvatarGroup.js";
-import { InterviewerList } from "./ux/interviewerList.js";
-import { OnSitePlan } from "./ux/onSitePlan.js";
-import { CandidatesList } from "./ux/candidatesList.js";
-import { JobsList } from "./ux/jobsList.js";
-import { AiChatView } from "./ux/aiChat.js";
+import { userAvatarGroupView } from "./ux/userAvatarGroupView.js";
+import { InterviewerPoolView } from "./ux/interviewerPoolView.js";
+import { OnSitePlanView } from "./ux/onSitePlanView.js";
+import { CandidatesListView } from "./ux/candidatesListView.js";
+import { JobsListView } from "./ux/jobsListView.js";
+import { AiChatView } from "./ux/aiChatView.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
@@ -19,18 +19,14 @@ import { ISessionClient } from "@fluid-experimental/presence";
 
 export function HRApp(props: {
 	data: TreeView<typeof HRData>;
-	audience: IServiceAudience<IMember>;
-	presenceManager: PresenceManager;
 	undoRedo: undoRedo;
+	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
-	const [openDrawer, setOpenDrawer] = useState(false);
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
 		useState<OnSiteSchedule>();
-
-	// AI in progress state for showing the animation
-	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
+	const [openDrawer, setOpenDrawer] = useState(false);
 
 	const handleJobSelected = (job: Job | undefined) => {
 		setSelectedJob(job);
@@ -45,7 +41,6 @@ export function HRApp(props: {
 
 	const handleCandidateSelected = (candidate: Candidate | undefined) => {
 		setSelectedCandidate(candidate);
-
 		if (candidate) {
 			if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
 				const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
@@ -57,7 +52,6 @@ export function HRApp(props: {
 				setOnsiteScheduleSelectedCandidate(undefined);
 			}
 			setOpenDrawer(false);
-
 			candidate.isUnread = false;
 		}
 	};
@@ -66,7 +60,10 @@ export function HRApp(props: {
 		onsiteScheduleSelectedCandidate?.addInterviewer(interviewerId);
 	};
 
-	/** Unsubscribe to undo-redo events when the component unmounts */
+	// Animation to show AI actions in progress
+	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
+
+	// Unsubscribe to undo-redo events when the component unmounts
 	useEffect(() => {
 		return props.undoRedo.dispose;
 	}, []);
@@ -93,14 +90,14 @@ export function HRApp(props: {
 							<AppPresenceGroup presenceManager={props.presenceManager} />
 						</div>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
-							<JobsList
+							<JobsListView
 								jobs={props.data.root.jobsList}
 								setSelectedJob={handleJobSelected}
 								currentlySelectedJob={selectedJob}
 								presenceManager={props.presenceManager}
 							/>
 							{selectedJob && (
-								<CandidatesList
+								<CandidatesListView
 									job={selectedJob}
 									selectedCandidate={selectedCandidate}
 									setSelectedCandidate={handleCandidateSelected}
@@ -108,7 +105,7 @@ export function HRApp(props: {
 								/>
 							)}
 							{selectedCandidate && onsiteScheduleSelectedCandidate && (
-								<OnSitePlan
+								<OnSitePlanView
 									candidate={selectedCandidate}
 									onSiteSchedule={onsiteScheduleSelectedCandidate!}
 									interviewerPool={props.data.root.interviewerPool}
@@ -116,7 +113,7 @@ export function HRApp(props: {
 								/>
 							)}
 							{onsiteScheduleSelectedCandidate && (
-								<InterviewerList
+								<InterviewerPoolView
 									interviewers={props.data.root.interviewerPool}
 									isOpen={openDrawer}
 									setIsOpen={setOpenDrawer}
@@ -171,7 +168,7 @@ export function AppPresenceGroup(props: { presenceManager: PresenceManager }): J
 	const userInfoList = props.presenceManager.getUserInfo(attendeesList);
 
 	if (userInfoList) {
-		return userAvatarGroup({
+		return userAvatarGroupView({
 			members: userInfoList,
 			size: 40,
 			layout: "spread",

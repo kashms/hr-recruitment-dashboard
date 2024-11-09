@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { AddFilled } from "@fluentui/react-icons";
 import { AvailabilityView } from "./availabilityView.js";
 
-export function InterviewerList(props: {
+export function InterviewerPoolView(props: {
 	interviewers: InterviewerPool;
 	isOpen: boolean;
 	setIsOpen: (isOpen: boolean) => void;
