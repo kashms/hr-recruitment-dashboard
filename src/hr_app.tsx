@@ -63,6 +63,7 @@ export function HRApp(props: {
 	// Animation to show AI actions in progress
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
+	const appData = props.data.root;
 	// Unsubscribe to undo-redo events when the component unmounts
 	useEffect(() => {
 		return props.undoRedo ? props.undoRedo.dispose : undefined;
@@ -91,7 +92,7 @@ export function HRApp(props: {
 						</div>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
 							<JobsListView
-								jobs={props.data.root.jobsList}
+								jobs={appData.jobsList}
 								setSelectedJob={handleJobSelected}
 								selectedJob={selectedJob}
 								presenceManager={props.presenceManager}
@@ -108,13 +109,13 @@ export function HRApp(props: {
 								<OnSitePlanView
 									candidate={selectedCandidate}
 									onSiteSchedule={onsiteScheduleSelectedCandidate!}
-									interviewerPool={props.data.root.interviewerPool}
+									interviewerPool={appData.interviewerPool}
 									handleToggleInterviewerList={() => setOpenDrawer(!openDrawer)}
 								/>
 							)}
 							{onsiteScheduleSelectedCandidate && (
 								<InterviewerPoolView
-									interviewers={props.data.root.interviewerPool}
+									interviewers={appData.interviewerPool}
 									isOpen={openDrawer}
 									setIsOpen={setOpenDrawer}
 									handleAddInterviewer={handleAddInterviewer}

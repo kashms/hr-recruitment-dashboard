@@ -1,5 +1,5 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import { loadFluidData, containerSchema } from "./infra/fluid.js";
 import { getClientProps } from "./infra/clientProps.js";
 import { treeConfiguration } from "@lab/appSchema.js";
@@ -64,6 +64,22 @@ function showErrorMessage(message?: string, ...optionalParams: string[]) {
 }
 
 async function signedInStart(msalInstance: PublicClientApplication, account: AccountInfo) {
+	// Create the root element for React
+	const app = document.createElement("div");
+	app.id = "app";
+	document.body.appendChild(app);
+	const root = createRoot(app);
+
+	// root.render(<HRApp data={createTestAppData()} />)
+
+	createFluidApp(root, msalInstance, account);
+}
+
+async function createFluidApp(
+	root: Root,
+	msalInstance: PublicClientApplication,
+	account: AccountInfo,
+) {
 	// Set the active account
 	msalInstance.setActiveAccount(account);
 
@@ -144,12 +160,6 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	// Create the Fluid client instance
 	const client = new OdspClient(clientProps);
 
-	// Create the root element for React
-	const app = document.createElement("div");
-	app.id = "app";
-	document.body.appendChild(app);
-	const root = createRoot(app);
-
 	// Initialize Fluid Container - this will either make a new container or load an existing one
 	const { container, services } = await loadFluidData(
 		containerId,
@@ -172,9 +182,7 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be
 	// interactive immediately.
-	root.render(<HRApp data={appData} 
-		undoRedo={undoRedo} 
-		presenceManager={presenceManager} />);
+	root.render(<HRApp data={appData} undoRedo={undoRedo} presenceManager={presenceManager} />);
 
 	// If the app is in a `createNew` state - no containerId, and the container is detached, we attach the container.
 	// This uploads the container to the service and connects to the collaboration session.
