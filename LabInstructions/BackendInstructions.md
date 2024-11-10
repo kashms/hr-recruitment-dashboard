@@ -35,32 +35,32 @@ The first step to setup the Sharepoint Embedded Container for powering the data 
 	Password:
 	+++@lab.CloudCredential(IgniteLAB440-CredentialPool).AdministrativePassword+++
 
-	!IMAGE[SPE1.png](instructions276017/SPE1.png)
+	![SPE1.png](instructions276017/SPE1.png)
 
 1. Allow VS Code Extension to manage your resources
 
 	Once signed in, give VS Code extension the permissions to create resources on your behalf. See the image below for reference.
 
-	!IMAGE[SPE2.png](instructions276017/SPE2.png)
+	![SPE2.png](instructions276017/SPE2.png)
 
 1. Complete the sign in process
 
 	Follow the prompts and allow the sign in process to complete. Some pop-ups that would come to allow sign in redirects (see image below for reference)
 
-	!IMAGE[SPE3.png](instructions276017/SPE3.png)
-	!IMAGE[SPE4.png](instructions276017/SPE4.png)
+	![SPE3.png](instructions276017/SPE3.png)
+	![SPE4.png](instructions276017/SPE4.png)
 
 1. Create Container Type
 
 	Next, we will create a container type which is of type trial container that allows creation of temporary development resources. See the image below for reference.
 
-	!IMAGE[SPE5.png](instructions276017/SPE5.png)
+	![SPE5.png](instructions276017/SPE5.png)
 
 1. Configure Owning App for Container Type
 
 	Next, it will give you a prompt to select the owning app for this new container type. We will create a new Sharepoint Embedded App which will own this new container type. See the image below for reference.
 
-	!IMAGE[SPE6.png](instructions276017/SPE6.png)
+	![SPE6.png](instructions276017/SPE6.png)
 
 	Recap of what we have done so far: 
 	## TODO: Add recap here.
@@ -69,7 +69,7 @@ The first step to setup the Sharepoint Embedded Container for powering the data 
 
 	This is what the SharePoint Embedded VS Code Extension should show at this point:
 
-	!IMAGE[SPE7.png](instructions276017/SPE7.png)
+	![SPE7.png](instructions276017/SPE7.png)
 
 1. Add required permissions for the app
 	Next we will add the permissions required for our new SharePoint Embedded App to access container and also add permissions that will be required by the app. To do that, we will open the Azure Portal and search - select `App Registrations` from the Search Bar. See image below for reference.
@@ -78,19 +78,19 @@ The first step to setup the Sharepoint Embedded Container for powering the data 
 
 	> Note: You do not need any new login for this Azure Portal. The M365 credentials which you used to login should be automatically picked for this Azure portal.
 
-	!IMAGE[SPE8.png](instructions276017/SPE8.png)
+	![SPE8.png](instructions276017/SPE8.png)
 
 	Once you open the `App Registrations` pane, select "All applications" pane and then select "SharePoint Embedded App." Please see image below for reference.
 
-	!IMAGE[SPE9.png](instructions276017/SPE9.png)
+	![SPE9.png](instructions276017/SPE9.png)
 
 	In the new App registration page for SharePoint Embedded, select he Manifest option from the left pane as shown in image below. 
 
-	!IMAGE[SPE9_1.png](instructions276017/SPE9_1.png)
+	![SPE9_1.png](instructions276017/SPE9_1.png)
 
 	On the Manifests page, we will udpate the permissions that the new app requires to function correctly. To do that we will locate the "requiredResourceAccess" section and replace it with the permissions listed below the reference image.
 
-	!IMAGE[SPE9_2.png](instructions276017/SPE9_2.png)
+	![SPE9_2.png](instructions276017/SPE9_2.png)
 
 	```
 	"requiredResourceAccess": [
@@ -156,15 +156,15 @@ The first step to setup the Sharepoint Embedded Container for powering the data 
 
 	Now that we have specified the permissions required, we will now register this new container type and associated permissiosn with the tenant to allow these new permissions that the consuming app will need. To do that, we will come back to VS Code SharePoint Embedded Extension, select the Container Type that we created, Right Click it and select "Register on local tenant". Please refer to image below.
 
-	!IMAGE[SPE10.png](instructions276017/SPE10.png)
+	![SPE10.png](instructions276017/SPE10.png)
 
 	This will create a pop-up on bottom right side in VS Code. In the pop-up, select the "Open Consent Link" button. This will open a permissions prompt where we view and verify the permissions the App is going to get, and then allow it.
 
-	!IMAGE[SPE11.png](instructions276017/SPE11.png)
+	![SPE11.png](instructions276017/SPE11.png)
 
 	This will open a page in browser with list of permissions, which we will Accept to proceed further.
 
-	!IMAGE[SPE12.png](instructions276017/SPE12.png)
+	![SPE12.png](instructions276017/SPE12.png)
 
 	That's it! Now all the permissions and backend for using SharePoint Embedded is fully setup. 
 	
@@ -172,7 +172,7 @@ The first step to setup the Sharepoint Embedded Container for powering the data 
 
 	The last step is to retrieve the configuration for this setup. We can easily fetch that from the VS Code SharePoint Embedded Extension also. In VS Code, Right-click on the Container Type and select "View Properties". See image below for reference.
 
-	!IMAGE[SPE13.png](instructions276017/SPE13.png)
+	![SPE13.png](instructions276017/SPE13.png)
 
 	This will display all the configration properties. The following keys are of our interest which we will copy into the `.env` file of our app.
 
