@@ -6,11 +6,11 @@ import {
 	Button,
 	useRestoreFocusSource,
 } from "@fluentui/react-components";
-import { Tree } from "fluid-framework";
 import { Interviewer, InterviewerPool } from "@lab/appSchema.js";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { AddFilled } from "@fluentui/react-icons";
 import { AvailabilityView } from "./availabilityView.js";
+import { useTreeNode } from "../utils/treeReactHooks.js";
 
 export function InterviewerPoolView(props: {
 	interviewers: InterviewerPool;
@@ -50,13 +50,7 @@ export function InterviewerView(props: {
 	interviewer: Interviewer;
 	handleAddInterviewer: (interviewerId: string) => void;
 }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.interviewer, "nodeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.interviewer]);
+	useTreeNode(props.interviewer);
 
 	return (
 		<div className="flex flex-col gap-1 content-center my-2 border border-gray-300 p-2 rounded">

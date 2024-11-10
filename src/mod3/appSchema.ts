@@ -131,7 +131,6 @@ export class Job extends sf.object("Job", {
 		}
 	}),
 }) {
-
 	public readonly addNewOnSiteForCandidate = (candiadteId: string) => {
 		const newOnSite = new OnSiteSchedule({
 			day: "Monday",

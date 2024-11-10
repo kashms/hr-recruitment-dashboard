@@ -1,11 +1,10 @@
-import { Tree } from "fluid-framework";
 import { Candidate, Interviewer, InterviewerPool, OnSiteSchedule } from "@lab/appSchema.js";
-import { useEffect, useState } from "react";
 import { Button } from "@fluentui/react-components";
 import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { DismissFilled, ListFilled } from "@fluentui/react-icons";
 import { DAYS_OF_WEEK } from "../utils/util.js";
+import { useTree, useTreeNode } from "../utils/treeReactHooks.js";
 
 export function OnSitePlanView(props: {
 	candidate: Candidate;
@@ -13,28 +12,9 @@ export function OnSitePlanView(props: {
 	interviewerPool: InterviewerPool;
 	handleToggleInterviewerList: () => void;
 }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
-
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.onSiteSchedule, "treeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.onSiteSchedule]);
-
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.candidate, "treeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.candidate]);
-
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.interviewerPool, "treeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.interviewerPool]);
+	useTree(props.onSiteSchedule);
+	useTree(props.candidate);
+	useTree(props.interviewerPool);
 
 	const onSiteInterviewers = props.onSiteSchedule.interviewerIds
 		.map((intId) =>
@@ -96,9 +76,6 @@ export function OnSitePlanView(props: {
 							key={interviewer.interviewerId}
 							interviewer={interviewer}
 							removeHandler={handleRemoveInterviewer}
-							interviewerChanged={() =>
-								setInvalidations(invalidations + Math.random())
-							}
 						/>
 					))}
 				</div>
@@ -110,16 +87,8 @@ export function OnSitePlanView(props: {
 export function InterviewerReadView(props: {
 	interviewer: Interviewer;
 	removeHandler: (interviewerId: string) => void;
-	interviewerChanged: () => void;
 }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
-
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.interviewer, "nodeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.interviewer]);
+	useTreeNode(props.interviewer);
 
 	return (
 		<div className="relative flex flex-col gap-1 justify-center content-center m-2 border border-gray-300 p-2 rounded">

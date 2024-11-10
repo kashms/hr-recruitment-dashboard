@@ -93,7 +93,7 @@ export function HRApp(props: {
 							<JobsListView
 								jobs={props.data.root.jobsList}
 								setSelectedJob={handleJobSelected}
-								currentlySelectedJob={selectedJob}
+								selectedJob={selectedJob}
 								presenceManager={props.presenceManager}
 							/>
 							{selectedJob && (
@@ -151,6 +151,7 @@ export function AppPresenceGroup(props: { presenceManager: PresenceManager }): J
 		...props.presenceManager.getPresence().getAttendees(),
 	]);
 
+	const [invalidations, setInvalidations] = useState(0);
 	useEffect(() => {
 		props.presenceManager.getPresence().events.on("attendeeJoined", (attendee) => {
 			setAttendeesList([...attendeesList, attendee]);
@@ -162,8 +163,6 @@ export function AppPresenceGroup(props: { presenceManager: PresenceManager }): J
 			setInvalidations(invalidations + Math.random());
 		});
 	}, []);
-
-	const [invalidations, setInvalidations] = useState(0);
 
 	const userInfoList = props.presenceManager.getUserInfo(attendeesList);
 

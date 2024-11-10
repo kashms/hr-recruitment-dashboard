@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Candidate, Job } from "@lab/appSchema.js";
 import { createTestCandidate } from "../utils/testData.js";
-import { Tree } from "fluid-framework";
 import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { Button } from "@fluentui/react-components";
@@ -9,6 +8,7 @@ import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
 import { PresenceManager } from "../utils/presenceManager.js";
+import { useTreeNode } from "../utils/treeReactHooks.js";
 
 export function CandidatesListView(props: {
 	job: Job;
@@ -20,26 +20,8 @@ export function CandidatesListView(props: {
 		new Map(),
 	);
 
-	const [invalidations, setInvalidations] = useState(0);
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.job.candidates, "nodeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-			if (
-				props.selectedCandidate === undefined ||
-				(props.selectedCandidate && !props.job.candidates.includes(props.selectedCandidate))
-			) {
-				props.setSelectedCandidate(undefined);
-			}
-		});
-		return unsubscribe;
-	}, [invalidations, props.job.candidates]);
-
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.job.onSiteSchedule, "nodeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.job.onSiteSchedule]);
+	useTreeNode(props.job.candidates);
+	useTreeNode(props.job.onSiteSchedule);
 
 	useEffect(() => {
 		props.presenceManager
@@ -116,13 +98,7 @@ export function CandidateView(props: {
 	presenceManager: PresenceManager;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.candidate, "nodeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.candidate]);
+	useTreeNode(props.candidate);
 
 	const presentUserInfoList = props.presenceManager.getUserInfo(props.currentViewers);
 

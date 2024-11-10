@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Job, JobsArray } from "@lab/appSchema.js";
 import { createTestJob } from "../utils/testData.js";
-import { Tree } from "fluid-framework";
 import { Button } from "@fluentui/react-components";
 import { DismissFilled } from "@fluentui/react-icons";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
 import { PresenceManager } from "../utils/presenceManager.js";
+import { useTreeNode } from "../utils/treeReactHooks.js";
 
 export function JobsListView(props: {
 	jobs: JobsArray;
 	setSelectedJob: (job: Job | undefined) => void;
-	currentlySelectedJob?: Job;
+	selectedJob?: Job;
 	presenceManager: PresenceManager;
 }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
 	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(new Map());
 
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.jobs, "nodeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-
-			if (props.currentlySelectedJob && !props.jobs.includes(props.currentlySelectedJob)) {
-				props.setSelectedJob(undefined);
-			}
-		});
-		return unsubscribe;
-	}, [invalidations, props.jobs]);
+	useTreeNode(props.jobs);
 
 	useEffect(() => {
 		props.presenceManager.getStates().props.jobSelelction.events.on("updated", (update) => {
@@ -63,11 +53,11 @@ export function JobsListView(props: {
 					<JobView
 						key={index}
 						job={job}
-						isSelected={props.currentlySelectedJob === job}
-						setSelectedJob={(job: Job) => {
+						isSelected={props.selectedJob === job}
+						setSelectedJob={(job: Job | undefined) => {
 							props.setSelectedJob(job);
 							props.presenceManager.getStates().props.jobSelelction.local = {
-								jobSelected: job.jobId,
+								jobSelected: job ? job.jobId : "",
 							};
 							props.presenceManager.getStates().props.candidateSelection.local = {
 								candidateSelected: "",
@@ -98,19 +88,12 @@ export function JobsListView(props: {
 export function JobView(props: {
 	job: Job;
 	isSelected: boolean;
-	setSelectedJob: (job: Job) => void;
+	setSelectedJob: (job: Job | undefined) => void;
 	deleteJob: (job: Job) => void;
 	currentViewers: ISessionClient[];
 	presenceManager: PresenceManager;
 }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
-
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.job, "nodeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.job]);
+	useTreeNode(props.job);
 
 	const presentUserInfoList = props.presenceManager.getUserInfo(props.currentViewers);
 
@@ -141,6 +124,9 @@ export function JobView(props: {
 					onClick={(event) => {
 						event.stopPropagation();
 						props.deleteJob(props.job);
+						if (props.isSelected) {
+							props.setSelectedJob(undefined);
+						}
 					}}
 				/>
 			</div>

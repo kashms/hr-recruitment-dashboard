@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Availability } from "@lab/appSchema.js";
-import { Tree } from "fluid-framework";
 import { DAYS_OF_WEEK, DAYS_OF_WEEK_SHORT } from "../utils/util.js";
+import { useTree } from "../utils/treeReactHooks.js";
 
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
-	const [invalidations, setInvalidations] = useState(0);
-	useEffect(() => {
-		const unsubscribe = Tree.on(props.avail, "treeChanged", () => {
-			setInvalidations(invalidations + Math.random());
-		});
-		return unsubscribe;
-	}, [invalidations, props.avail]);
+	useTree(props.avail);
 
 	return (
 		<div className="flex flex-col gap-1 justify-center content-center m-1">
