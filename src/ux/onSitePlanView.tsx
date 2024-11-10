@@ -4,7 +4,7 @@ import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { DismissFilled, ListFilled } from "@fluentui/react-icons";
 import { DAYS_OF_WEEK } from "../utils/util.js";
-import { useTree, useTreeNode } from "../utils/treeReactHooks.js";
+import { useTree } from "../utils/treeReactHooks.js";
 
 export function OnSitePlanView(props: {
 	candidate: Candidate;
@@ -88,8 +88,6 @@ export function InterviewerReadView(props: {
 	interviewer: Interviewer;
 	removeHandler: (interviewerId: string) => void;
 }): JSX.Element {
-	useTreeNode(props.interviewer);
-
 	return (
 		<div className="relative flex flex-col gap-1 justify-center content-center m-2 border border-gray-300 p-2 rounded">
 			<div className="flex items-center justify-between">

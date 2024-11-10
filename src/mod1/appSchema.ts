@@ -138,3 +138,5 @@ export class HRData {
 		this.interviewerPool = new InterviewerPool(...interviewerPool);
 	}
 }
+
+export const treeConfiguration = undefined;

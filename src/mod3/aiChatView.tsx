@@ -2,7 +2,7 @@ import React from "react";
 import { asTreeViewAlpha, TreeView } from "@fluidframework/tree/alpha";
 import { aiCollab, AiCollabOptions } from "@fluid-experimental/ai-collab";
 import { AzureOpenAI } from "openai";
-import { HRData } from "@lab/appSchema.js";
+import { HRData } from "./appSchema.js";
 
 export interface AiChatViewProps {
 	treeRoot: TreeView<typeof HRData>;

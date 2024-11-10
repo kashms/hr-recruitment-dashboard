@@ -10,7 +10,7 @@ import { InterviewerPoolView } from "./ux/interviewerPoolView.js";
 import { OnSitePlanView } from "./ux/onSitePlanView.js";
 import { CandidatesListView } from "./ux/candidatesListView.js";
 import { JobsListView } from "./ux/jobsListView.js";
-import { AiChatView } from "./ux/aiChatView.js";
+import { AiChatView } from "./mod3/aiChatView.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
@@ -19,7 +19,7 @@ import { ISessionClient } from "@fluid-experimental/presence";
 
 export function HRApp(props: {
 	data: TreeView<typeof HRData>;
-	undoRedo: undoRedo;
+	undoRedo: undoRedo | null;
 	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [selectedJob, setSelectedJob] = useState<Job>();
@@ -27,8 +27,6 @@ export function HRApp(props: {
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
 		useState<OnSiteSchedule>();
 	const [openDrawer, setOpenDrawer] = useState(false);
-
-	console.log("HRApp render");
 
 	const handleJobSelected = (job: Job | undefined) => {
 		setSelectedJob(job);
@@ -67,7 +65,7 @@ export function HRApp(props: {
 
 	// Unsubscribe to undo-redo events when the component unmounts
 	useEffect(() => {
-		return props.undoRedo.dispose;
+		return props.undoRedo ? props.undoRedo.dispose : undefined;
 	}, []);
 
 	return (
@@ -88,7 +86,7 @@ export function HRApp(props: {
 									setShowAnimatedFrame(show);
 								}}
 							/>
-							<ActionToolBar undoRedo={props.undoRedo} />
+							{props.undoRedo && <ActionToolBar undoRedo={props.undoRedo} />}
 							<AppPresenceGroup presenceManager={props.presenceManager} />
 						</div>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
