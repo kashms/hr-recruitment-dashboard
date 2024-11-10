@@ -17,14 +17,18 @@ export function CandidatesListView(props: {
 	presenceManager: PresenceManager;
 }): JSX.Element {
 	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
-		new Map(),
+		new Map(
+			[...props.presenceManager.getStates().props.candidateSelection.clientValues()].map(
+				(cv) => [cv.client, cv.value.candidateSelected] as [ISessionClient, string],
+			),
+		),
 	);
 
 	useTreeNode(props.job.candidates);
 	useTreeNode(props.job.onSiteSchedule);
 
 	useEffect(() => {
-		props.presenceManager
+		return props.presenceManager
 			.getStates()
 			.props.candidateSelection.events.on("updated", (update) => {
 				const remoteSessionClient = update.client;
@@ -44,13 +48,6 @@ export function CandidatesListView(props: {
 					);
 				}
 			});
-
-		// initialize the candidate presence map
-		const existingCandidateSelections = [
-			...props.presenceManager.getStates().props.candidateSelection.clientValues(),
-		].map((cv) => [cv.client, cv.value.candidateSelected] as [ISessionClient, string]);
-
-		setCandidatePresenceMap(new Map(existingCandidateSelections));
 	}, []);
 
 	return (

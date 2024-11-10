@@ -28,6 +28,8 @@ export function HRApp(props: {
 		useState<OnSiteSchedule>();
 	const [openDrawer, setOpenDrawer] = useState(false);
 
+	console.log("HRApp render");
+
 	const handleJobSelected = (job: Job | undefined) => {
 		setSelectedJob(job);
 		setSelectedCandidate(undefined);

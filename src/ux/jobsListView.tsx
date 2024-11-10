@@ -15,32 +15,33 @@ export function JobsListView(props: {
 	selectedJob?: Job;
 	presenceManager: PresenceManager;
 }): JSX.Element {
-	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(new Map());
+	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(
+		new Map(
+			[...props.presenceManager.getStates().props.jobSelelction.clientValues()].map(
+				(cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string],
+			),
+		),
+	);
 
 	useTreeNode(props.jobs);
 
 	useEffect(() => {
-		props.presenceManager.getStates().props.jobSelelction.events.on("updated", (update) => {
-			const remoteSessionClient = update.client;
-			const remoteSelectedJobId = update.value.jobSelected;
+		return props.presenceManager
+			.getStates()
+			.props.jobSelelction.events.on("updated", (update) => {
+				const remoteSessionClient = update.client;
+				const remoteSelectedJobId = update.value.jobSelected;
 
-			// if empty string, then no job is selected, remove it from the map
-			if (remoteSelectedJobId === "") {
-				jobPresenceMap.delete(remoteSessionClient);
-				setJobPresenceMap(new Map(jobPresenceMap));
-			} else {
-				setJobPresenceMap(
-					new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
-				);
-			}
-		});
-
-		// initialize the job presence map
-		const existingJobSelection = [
-			...props.presenceManager.getStates().props.jobSelelction.clientValues(),
-		].map((cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string]);
-
-		setJobPresenceMap(new Map(existingJobSelection));
+				// if empty string, then no job is selected, remove it from the map
+				if (remoteSelectedJobId === "") {
+					jobPresenceMap.delete(remoteSessionClient);
+					setJobPresenceMap(new Map(jobPresenceMap));
+				} else {
+					setJobPresenceMap(
+						new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
+					);
+				}
+			});
 	}, []);
 
 	return (
