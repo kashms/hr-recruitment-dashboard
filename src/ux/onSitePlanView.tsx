@@ -12,9 +12,13 @@ export function OnSitePlanView(props: {
 	interviewerPool: InterviewerPool;
 	handleToggleInterviewerList: () => void;
 }): JSX.Element {
+	// {START MOD_1}
+	
 	useTree(props.onSiteSchedule);
 	useTree(props.candidate);
 	useTree(props.interviewerPool);
+	
+	// {END MOD_1}
 
 	const onSiteInterviewers = props.onSiteSchedule.interviewerIds
 		.map((intId) =>

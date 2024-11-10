@@ -4,7 +4,11 @@ import { DAYS_OF_WEEK, DAYS_OF_WEEK_SHORT } from "../utils/util.js";
 import { useTree } from "../utils/treeReactHooks.js";
 
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
+	// {START MOD_1}
+	
 	useTree(props.avail);
+	
+	// {END MOD_1}
 
 	return (
 		<div className="flex flex-col gap-1 justify-center content-center m-1">

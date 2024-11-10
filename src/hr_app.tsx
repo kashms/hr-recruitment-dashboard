@@ -18,9 +18,19 @@ import { PresenceManager } from "./utils/presenceManager.js";
 import { ISessionClient } from "@fluid-experimental/presence";
 
 export function HRApp(props: {
+	//data: HRData;
+	// {START MOD_1}
+	
 	data: TreeView<typeof HRData>;
 	undoRedo: undoRedo | null;
+	
+	// {END MOD_1}
+
+	// {START MOD_2}
+	
 	presenceManager: PresenceManager;
+	
+	// {END MOD_2}
 }): JSX.Element {
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
@@ -63,11 +73,28 @@ export function HRApp(props: {
 	// Animation to show AI actions in progress
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
-	const appData = props.data.root;
+	// let appData = props.data;
+	// {START MOD_1}
+	let appData = props.data.root;
 	// Unsubscribe to undo-redo events when the component unmounts
 	useEffect(() => {
 		return props.undoRedo ? props.undoRedo.dispose : undefined;
 	}, []);
+
+	const headerViews = [];
+	headerViews.push(<AiChatView
+		treeRoot={props.data}
+		showAnimatedFrame={(show: boolean) => {
+			setShowAnimatedFrame(show);
+		}}
+	/>);
+	headerViews.push(<AppPresenceGroup presenceManager={props.presenceManager} />);
+
+	if (props.undoRedo) {
+		headerViews.push(<ActionToolBar undoRedo={props.undoRedo} />);
+	}
+
+	// {END MOD_1}
 
 	return (
 		<div
@@ -81,14 +108,7 @@ export function HRApp(props: {
 							<h1 className="text-xl font-bold text-white flex-grow">
 								HR Recruitment Dashboard
 							</h1>
-							<AiChatView
-								treeRoot={props.data}
-								showAnimatedFrame={(show: boolean) => {
-									setShowAnimatedFrame(show);
-								}}
-							/>
-							{props.undoRedo && <ActionToolBar undoRedo={props.undoRedo} />}
-							<AppPresenceGroup presenceManager={props.presenceManager} />
+							{headerViews}
 						</div>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
 							<JobsListView

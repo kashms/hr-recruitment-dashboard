@@ -64,25 +64,26 @@ function showErrorMessage(message?: string, ...optionalParams: string[]) {
 }
 
 async function signedInStart(msalInstance: PublicClientApplication, account: AccountInfo) {
+	// Set the active account
+	msalInstance.setActiveAccount(account);
+
 	// Create the root element for React
 	const app = document.createElement("div");
 	app.id = "app";
 	document.body.appendChild(app);
 	const root = createRoot(app);
 
-	// root.render(<HRApp data={createTestAppData()} />)
+	// root.render(<HRApp data={createTestAppData()} />);
 
 	createFluidApp(root, msalInstance, account);
 }
+
 
 async function createFluidApp(
 	root: Root,
 	msalInstance: PublicClientApplication,
 	account: AccountInfo,
 ) {
-	// Set the active account
-	msalInstance.setActiveAccount(account);
-
 	// Create the GraphHelper instance
 	// This is used to interact with the Graph API
 	// Which allows the app to get the file storage container id, the Fluid container id,

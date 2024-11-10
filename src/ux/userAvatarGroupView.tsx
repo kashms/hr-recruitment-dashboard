@@ -10,10 +10,14 @@ import React from "react";
 import { UserInfo } from "../utils/presenceManager.js";
 
 export function userAvatarGroupView(props: {
-	members: UserInfo[];
+	members?: UserInfo[];
 	size: AvatarSize;
 	layout: "spread" | "stack";
 }): JSX.Element {
+	if (!props.members) {
+		return <></>;
+	}
+
 	const { inlineItems, overflowItems } = partitionAvatarGroupItems({
 		items: props.members,
 	});

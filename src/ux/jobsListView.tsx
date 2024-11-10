@@ -6,7 +6,7 @@ import { DismissFilled } from "@fluentui/react-icons";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { PresenceManager } from "../utils/presenceManager.js";
+import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
 
 export function JobsListView(props: {
@@ -15,6 +15,14 @@ export function JobsListView(props: {
 	selectedJob?: Job;
 	presenceManager: PresenceManager;
 }): JSX.Element {
+	// {START MOD_1}
+	
+	useTreeNode(props.jobs);
+	
+	// {END MOD_1}
+
+	// {START MOD_2}
+	
 	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(
 		new Map(
 			[...props.presenceManager.getStates().props.jobSelelction.clientValues()].map(
@@ -22,16 +30,12 @@ export function JobsListView(props: {
 			),
 		),
 	);
-
-	useTreeNode(props.jobs);
-
 	useEffect(() => {
 		return props.presenceManager
 			.getStates()
 			.props.jobSelelction.events.on("updated", (update) => {
 				const remoteSessionClient = update.client;
 				const remoteSelectedJobId = update.value.jobSelected;
-
 				// if empty string, then no job is selected, remove it from the map
 				if (remoteSelectedJobId === "") {
 					jobPresenceMap.delete(remoteSessionClient);
@@ -43,6 +47,23 @@ export function JobsListView(props: {
 				}
 			});
 	}, []);
+	
+	// {END MOD_2}
+
+	const setSelectedJob = (job: Job | undefined) => {
+		props.setSelectedJob(job);
+
+		// {START MOD_2}
+		
+		props.presenceManager.getStates().props.jobSelelction.local = {
+			jobSelected: job ? job.jobId : "",
+		};
+		props.presenceManager.getStates().props.candidateSelection.local = {
+			candidateSelected: "",
+		};
+		
+		// {END MOD_2}
+	};
 
 	return (
 		<div className="flex flex-col gap-1 content-center w-96 h-full border-r-4 overflow-auto">
@@ -55,20 +76,15 @@ export function JobsListView(props: {
 						key={index}
 						job={job}
 						isSelected={props.selectedJob === job}
-						setSelectedJob={(job: Job | undefined) => {
-							props.setSelectedJob(job);
-							props.presenceManager.getStates().props.jobSelelction.local = {
-								jobSelected: job ? job.jobId : "",
-							};
-							props.presenceManager.getStates().props.candidateSelection.local = {
-								candidateSelected: "",
-							};
-						}}
+						setSelectedJob={setSelectedJob}
 						deleteJob={(job: Job) => {
 							props.jobs.deleteJob(job);
 						}}
-						currentViewers={getKeysByValue(jobPresenceMap, job.jobId)}
-						presenceManager={props.presenceManager}
+						// {START MOD_2}
+						
+						presenceUserInfoList={props.presenceManager.getUserInfo(getKeysByValue(jobPresenceMap, job.jobId))}
+						
+						// {END MOD_2}
 					/>
 				))}
 			</div>
@@ -91,12 +107,13 @@ export function JobView(props: {
 	isSelected: boolean;
 	setSelectedJob: (job: Job | undefined) => void;
 	deleteJob: (job: Job) => void;
-	currentViewers: ISessionClient[];
-	presenceManager: PresenceManager;
+	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
+	// {START MOD_1}
+	
 	useTreeNode(props.job);
-
-	const presentUserInfoList = props.presenceManager.getUserInfo(props.currentViewers);
+	
+	// {END MOD_1}
 
 	return (
 		<div
@@ -108,11 +125,17 @@ export function JobView(props: {
 		>
 			<div className="flex items-center justify-between gap-2">
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
-					{userAvatarGroupView({
-						members: presentUserInfoList,
-						size: 24,
-						layout: "stack",
-					})}
+					{
+						// {START MOD_2}
+						
+						userAvatarGroupView({
+							members: props.presenceUserInfoList,
+							size: 24,
+							layout: "stack",
+						})
+						
+						// {END MOD_2}
+					}
 				</div>
 				{props.job.isUnread && (
 					<div className="flex items-center">

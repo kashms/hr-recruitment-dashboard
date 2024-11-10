@@ -7,7 +7,7 @@ import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { PresenceManager } from "../utils/presenceManager.js";
+import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
 
 export function CandidatesListView(props: {
@@ -16,6 +16,15 @@ export function CandidatesListView(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 	presenceManager: PresenceManager;
 }): JSX.Element {
+	// {START MOD_1}
+	
+	useTreeNode(props.job.candidates);
+	useTreeNode(props.job.onSiteSchedule);
+	
+	// {END MOD_1}
+
+	// {START MOD_2}
+	
 	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
 		new Map(
 			[...props.presenceManager.getStates().props.candidateSelection.clientValues()].map(
@@ -23,10 +32,6 @@ export function CandidatesListView(props: {
 			),
 		),
 	);
-
-	useTreeNode(props.job.candidates);
-	useTreeNode(props.job.onSiteSchedule);
-
 	useEffect(() => {
 		return props.presenceManager
 			.getStates()
@@ -49,6 +54,20 @@ export function CandidatesListView(props: {
 				}
 			});
 	}, []);
+	
+	// {END MOD_2}
+
+	const setSelectedCandidate = (candidate: Candidate | undefined) => {
+		props.setSelectedCandidate(candidate);
+
+		// {START MOD_2}
+		
+		props.presenceManager.getStates().props.candidateSelection.local = {
+			candidateSelected: candidate ? candidate.candidateId : "",
+		};
+		
+		// {END MOD_2}
+	};
 
 	return (
 		<div className="flex flex-col gap-1 content-center w-96 h-full border-r-4 overflow-auto">
@@ -63,11 +82,17 @@ export function CandidatesListView(props: {
 						<CandidateView
 							key={index}
 							candidate={candidate}
-							currentViewers={getKeysByValue(
+							// {START MOD_2}
+							
+							presenceUserInfoList={props.presenceManager.getUserInfo(getKeysByValue(
 								candidatePresenceMap,
 								candidate.candidateId,
-							)}
-							{...props}
+							))}
+							
+							// {END MOD_2}
+							job={props.job}
+							selectedCandidate={props.selectedCandidate}
+							setSelectedCandidate={setSelectedCandidate}
 						/>
 					))
 				)}
@@ -91,13 +116,14 @@ export function CandidateView(props: {
 	candidate: Candidate;
 	job: Job;
 	selectedCandidate?: Candidate;
-	currentViewers: ISessionClient[];
-	presenceManager: PresenceManager;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
+	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
+	// {START MOD_1}
+	
 	useTreeNode(props.candidate);
-
-	const presentUserInfoList = props.presenceManager.getUserInfo(props.currentViewers);
+	
+	// {END MOD_1}
 
 	return (
 		<div
@@ -106,10 +132,6 @@ export function CandidateView(props: {
            `}
 			onClick={() => {
 				props.setSelectedCandidate(props.candidate);
-
-				props.presenceManager.getStates().props.candidateSelection.local = {
-					candidateSelected: props.candidate.candidateId,
-				};
 			}}
 		>
 			<div className="flex justify-end gap-2">
@@ -131,7 +153,13 @@ export function CandidateView(props: {
 					</Button>
 				)}
 			</div>
-			{userAvatarGroupView({ members: presentUserInfoList, size: 24, layout: "stack" })}
+			{
+				// {START MOD_2}
+				
+				userAvatarGroupView({ members: props.presenceUserInfoList, size: 24, layout: "stack" })
+				
+				// {END MOD_2}
+			}
 
 			<div className="mb-3">
 				<label className="block mb-1 text-sm font-medium text-gray-900">Name:</label>
