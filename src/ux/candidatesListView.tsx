@@ -17,8 +17,8 @@ export function CandidatesListView(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
 	// {START MOD_1}
-	useTreeNode(props.job.candidates);
-	useTreeNode(props.job.onSiteSchedule);
+	// useTreeNode(props.job.candidates);
+	// useTreeNode(props.job.onSiteSchedule);
 	// {END MOD_1}
 
 	// {VIEW MOD_2}
@@ -123,7 +123,7 @@ export function CandidateView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_1}
-	useTreeNode(props.candidate);
+	// useTreeNode(props.candidate);
 	// {END MOD_1}
 
 	return (

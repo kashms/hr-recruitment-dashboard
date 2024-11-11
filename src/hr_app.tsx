@@ -18,13 +18,13 @@ import { ISessionClient } from "@fluid-experimental/presence";
 import { UndoRedoContext, PresenceContext } from "./index.js";
 
 // {START MOD_1}
-export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
-	const appData = props.data.root;
+// export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
+// 	const appData = props.data.root;
 	// {END MOD_1}
 
 	// {START MOD_0}
-	// export function HRApp(props: { data: HRData }): JSX.Element {
-	// 	const appData = props.data;
+	export function HRApp(props: { data: HRData }): JSX.Element {
+		const appData = props.data;
 	// {END MOD_0}
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
@@ -72,14 +72,14 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
 	// {START MOD_3}
-	headerViews.push(
-		<AiChatView
-			treeRoot={props.data}
-			showAnimatedFrame={(show: boolean) => {
-				setShowAnimatedFrame(show);
-			}}
-		/>,
-	);
+	// headerViews.push(
+	// 	<AiChatView
+	// 		treeRoot={props.data}
+	// 		showAnimatedFrame={(show: boolean) => {
+	// 			setShowAnimatedFrame(show);
+	// 		}}
+	// 	/>,
+	// );
 	// {END MOD_3}
 
 	const undoRedo = useContext(UndoRedoContext);

@@ -51,7 +51,7 @@ export function InterviewerView(props: {
 	handleAddInterviewer: (interviewerId: string) => void;
 }): JSX.Element {
 	// {START MOD_1}
-	useTreeNode(props.interviewer);
+	// useTreeNode(props.interviewer);
 	// {END MOD_1}
 
 	return (

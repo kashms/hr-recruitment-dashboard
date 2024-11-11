@@ -16,7 +16,7 @@ export function JobsListView(props: {
 	selectedJob?: Job;
 }): JSX.Element {
 	// {START MOD_1}
-	useTreeNode(props.jobs);
+	// useTreeNode(props.jobs);
 	// {END MOD_1}
 
 	// {VIEW MOD_2}
@@ -115,7 +115,7 @@ export function JobView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_1}
-	useTreeNode(props.job);
+	// useTreeNode(props.job);
 	// {END MOD_1}
 
 	return (
