@@ -5,6 +5,12 @@
 2. Checkout the repository - `git clone https://github.com/kashms/hr-recruitment-dashboard.git`
 3. Make sure you are on the mod0 branch - `git checkout mod0`
 4. Change into the hr-recruitment-dashboard directory - `cd hr-recruitment-dashboard`
+5. Launch VSCode to start editing the project - `code .`
+6. Update the environment file to add the values needed to run the app
+    * Rename the .env.default file to .env
+    * Copy over the values from the VM setup including OwningAppId, ContainerTypeId and OwningTenantId to the .env file
+    * Copy over the Azure OpenAI APIs endpoint and key to the .env file
+    * Save the environment file.
 5. Install the dependencies - `npm i`
 6. Run the app - `npm run dev`
 
