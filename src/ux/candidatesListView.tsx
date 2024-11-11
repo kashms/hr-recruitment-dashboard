@@ -9,7 +9,7 @@ import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
 import { UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
-import { PresenceContext } from "../index.js";
+import { AppContext } from "../index.js";
 
 export function CandidatesListView(props: {
 	job: Job;
@@ -24,7 +24,7 @@ export function CandidatesListView(props: {
 	// {END MOD_1}
 
 	// {START MOD_2}
-	const presenceManager = useContext(PresenceContext);
+	const presenceManager = useContext(AppContext)?.presenceManager;
 	let presenceUserInfoList: UserInfo[][] = [];
 
 	if (presenceManager) {

@@ -15,15 +15,19 @@ import { Button, FluentProvider, webLightTheme } from "@fluentui/react-component
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { PresenceContext } from "./index.js";
+import { AppContext } from "./index.js";
 
 export function HRApp(props: {
 	//data: HRData;
 	// {START MOD_1}
 	data: TreeView<typeof HRData>;
-	undoRedo: undoRedo | null;
 	// {END MOD_1}
 }): JSX.Element {
+	// const appData = props.data;
+	// {START MOD_1}
+	const appData = props.data.root;
+	// {END MOD_1}
+
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
@@ -81,19 +85,15 @@ export function HRApp(props: {
 	);
 	// {END MOD_3}
 
-	// const appData = props.data;
-	// {START MOD_1}
-	const appData = props.data.root;
-	// Unsubscribe to undo-redo events when the component unmounts
-	useEffect(() => {
-		return props.undoRedo ? props.undoRedo.dispose : undefined;
-	}, []);
+	const undoRedo = useContext(AppContext)?.undoRedo;
+	if (undoRedo) {
+		// Unsubscribe to undo-redo events when the component unmounts
+		useEffect(() => {
+			return undoRedo ? undoRedo.dispose : undefined;
+		}, []);
 
-	if (props.undoRedo) {
-		headerViews.push(<ActionToolBar undoRedo={props.undoRedo} />);
+		headerViews.push(<ActionToolBar undoRedo={undoRedo} />);
 	}
-
-	// {END MOD_1}
 
 	// {START MOD_2}
 
@@ -168,8 +168,8 @@ export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 }
 
 export function AppPresenceGroup(): JSX.Element {
-	const presenceManager = useContext(PresenceContext);
-	if (presenceManager === null) {
+	const presenceManager = useContext(AppContext)?.presenceManager;
+	if (presenceManager === undefined) {
 		return <div></div>;
 	}
 

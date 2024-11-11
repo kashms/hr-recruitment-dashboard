@@ -13,7 +13,7 @@ import { OdspClient } from "@fluidframework/odsp-client/beta";
 import { PublicClientApplication, AccountInfo } from "@azure/msal-browser";
 import { AttachState } from "fluid-framework";
 import { HRApp } from "./hr_app.js";
-import { createUndoRedoStacks } from "./utils/undo.js";
+import { createUndoRedoStacks, undoRedo } from "./utils/undo.js";
 import { acquirePresenceViaDataObject } from "@fluid-experimental/presence";
 import { PresenceManager } from "./utils/presenceManager.js";
 
@@ -47,24 +47,6 @@ async function start() {
 	}
 }
 
-function showErrorMessage(message?: string, ...optionalParams: string[]) {
-	// create the root element for React
-	const error = document.createElement("div");
-	error.id = "app";
-	document.body.appendChild(error);
-	const root = createRoot(error);
-
-	// Render the error message
-	root.render(
-		<div className="container mx-auto p-2 m-4 border-2 border-black rounded">
-			<p>{message}</p>
-			<p>{optionalParams.join(" ")}</p>
-		</div>,
-	);
-}
-
-export const PresenceContext = createContext<PresenceManager | null>(null);
-
 async function signedInStart(msalInstance: PublicClientApplication, account: AccountInfo) {
 	// Set the active account
 	msalInstance.setActiveAccount(account);
@@ -79,6 +61,10 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 
 	createFluidApp(root, msalInstance, account);
 }
+
+export const AppContext = createContext<
+	{ presenceManager: PresenceManager; undoRedo: undoRedo } | undefined
+>(undefined);
 
 async function createFluidApp(
 	root: Root,
@@ -176,18 +162,23 @@ async function createFluidApp(
 		appData.initialize(createTestAppData());
 	}
 	// Create undo/redo stacks for the app
-	const undoRedo = createUndoRedoStacks(appData.events);
+	const undoRedoContext = createUndoRedoStacks(appData.events);
 
 	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
-	const presenceManager: PresenceManager = new PresenceManager(appPresence, services.audience);
+	const presenceManagerContext: PresenceManager = new PresenceManager(
+		appPresence,
+		services.audience,
+	);
 
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be
 	// interactive immediately.
 	root.render(
-		<PresenceContext.Provider value={presenceManager}>
-			<HRApp data={appData} undoRedo={undoRedo} />
-		</PresenceContext.Provider>,
+		<AppContext.Provider
+			value={{ presenceManager: presenceManagerContext, undoRedo: undoRedoContext }}
+		>
+			<HRApp data={appData} />
+		</AppContext.Provider>,
 	);
 
 	// If the app is in a `createNew` state - no containerId, and the container is detached, we attach the container.
@@ -210,6 +201,22 @@ async function createFluidApp(
 		// Set the URL hash to the sharing id.
 		history.replaceState(undefined, "", "#" + shareId);
 	}
+}
+
+function showErrorMessage(message?: string, ...optionalParams: string[]) {
+	// create the root element for React
+	const error = document.createElement("div");
+	error.id = "app";
+	document.body.appendChild(error);
+	const root = createRoot(error);
+
+	// Render the error message
+	root.render(
+		<div className="container mx-auto p-2 m-4 border-2 border-black rounded">
+			<p>{message}</p>
+			<p>{optionalParams.join(" ")}</p>
+		</div>,
+	);
 }
 
 start().catch((error) => console.error(error));
