@@ -8,7 +8,7 @@ import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
 import { UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
-import { AppContext } from "../index.js";
+import { PresenceContext } from "../index.js";
 
 export function JobsListView(props: {
 	jobs: JobsArray;
@@ -22,7 +22,7 @@ export function JobsListView(props: {
 	// {END MOD_1}
 
 	// {START MOD_2}
-	const presenceManager = useContext(AppContext)?.presenceManager;
+	const presenceManager = useContext(PresenceContext);
 	let presenceUserInfoList: UserInfo[][] = [];
 	if (presenceManager) {
 		const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(

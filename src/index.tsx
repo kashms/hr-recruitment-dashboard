@@ -62,9 +62,8 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	createFluidApp(root, msalInstance, account);
 }
 
-export const AppContext = createContext<
-	{ presenceManager: PresenceManager; undoRedo: undoRedo } | undefined
->(undefined);
+export const PresenceContext = createContext<PresenceManager | undefined>(undefined);
+export const UndoRedoContext = createContext<undoRedo | undefined>(undefined);
 
 async function createFluidApp(
 	root: Root,
@@ -170,16 +169,26 @@ async function createFluidApp(
 		services.audience,
 	);
 
+	let appView = (
+		<UndoRedoContext.Provider value={undoRedoContext}>
+			<HRApp data={appData} />
+		</UndoRedoContext.Provider>
+	);
+
+	// {START MOD_2}
+	appView = (
+		<PresenceContext.Provider value={presenceManagerContext}>
+			<UndoRedoContext.Provider value={undoRedoContext}>
+				<HRApp data={appData} />
+			</UndoRedoContext.Provider>
+		</PresenceContext.Provider>
+	);
+	// {END MOD_2}
+
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be
 	// interactive immediately.
-	root.render(
-		<AppContext.Provider
-			value={{ presenceManager: presenceManagerContext, undoRedo: undoRedoContext }}
-		>
-			<HRApp data={appData} />
-		</AppContext.Provider>,
-	);
+	root.render(appView);
 
 	// If the app is in a `createNew` state - no containerId, and the container is detached, we attach the container.
 	// This uploads the container to the service and connects to the collaboration session.

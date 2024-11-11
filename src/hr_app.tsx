@@ -15,19 +15,15 @@ import { Button, FluentProvider, webLightTheme } from "@fluentui/react-component
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { AppContext } from "./index.js";
+import { UndoRedoContext, PresenceContext } from "./index.js";
 
-export function HRApp(props: {
-	//data: HRData;
-	// {START MOD_1}
-	data: TreeView<typeof HRData>;
-	// {END MOD_1}
-}): JSX.Element {
-	// const appData = props.data;
-	// {START MOD_1}
+// {START MOD_1}
+export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 	const appData = props.data.root;
 	// {END MOD_1}
 
+	// export function HRApp(props: { data: HRData }): JSX.Element {
+	// 	const appData = props.data;
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
@@ -71,10 +67,9 @@ export function HRApp(props: {
 		<h1 className="text-xl font-bold text-white flex-grow">HR Recruitment Dashboard</h1>,
 	);
 
-	// {START MOD_3}
-	// Animation to show AI actions in progress
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
+	// {START MOD_3}
 	headerViews.push(
 		<AiChatView
 			treeRoot={props.data}
@@ -85,7 +80,7 @@ export function HRApp(props: {
 	);
 	// {END MOD_3}
 
-	const undoRedo = useContext(AppContext)?.undoRedo;
+	const undoRedo = useContext(UndoRedoContext);
 	if (undoRedo) {
 		// Unsubscribe to undo-redo events when the component unmounts
 		useEffect(() => {
@@ -96,9 +91,7 @@ export function HRApp(props: {
 	}
 
 	// {START MOD_2}
-
-	headerViews.push(<AppPresenceGroup />);
-
+	// headerViews.push(<AppPresenceGroup />);
 	// {END MOD_2}
 
 	return (
@@ -168,7 +161,7 @@ export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 }
 
 export function AppPresenceGroup(): JSX.Element {
-	const presenceManager = useContext(AppContext)?.presenceManager;
+	const presenceManager = useContext(PresenceContext);
 	if (presenceManager === undefined) {
 		return <div></div>;
 	}
