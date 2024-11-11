@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Candidate, Job } from "@lab/appSchema.js";
 import { createTestCandidate } from "../utils/testData.js";
 import React from "react";
@@ -7,65 +7,77 @@ import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
+import { UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
+import { PresenceContext } from "../index.js";
 
 export function CandidatesListView(props: {
 	job: Job;
 	selectedCandidate: Candidate | undefined;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
-	presenceManager: PresenceManager;
 }): JSX.Element {
 	// {START MOD_1}
-	
+
 	useTreeNode(props.job.candidates);
 	useTreeNode(props.job.onSiteSchedule);
-	
+
 	// {END MOD_1}
 
 	// {START MOD_2}
-	
-	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
-		new Map(
-			[...props.presenceManager.getStates().props.candidateSelection.clientValues()].map(
-				(cv) => [cv.client, cv.value.candidateSelected] as [ISessionClient, string],
-			),
-		),
-	);
-	useEffect(() => {
-		return props.presenceManager
-			.getStates()
-			.props.candidateSelection.events.on("updated", (update) => {
-				const remoteSessionClient = update.client;
-				const remoteSelectedCandidateId = update.value.candidateSelected;
+	const presenceManager = useContext(PresenceContext);
+	let presenceUserInfoList: UserInfo[][] = [];
 
-				if (remoteSelectedCandidateId === "") {
-					candidatePresenceMap.delete(remoteSessionClient);
-					setCandidatePresenceMap(new Map(candidatePresenceMap));
-				} else {
-					setCandidatePresenceMap(
-						new Map(
-							candidatePresenceMap.set(
-								remoteSessionClient,
-								remoteSelectedCandidateId,
+	if (presenceManager) {
+		const [candidatePresenceMap, setCandidatePresenceMap] = useState<
+			Map<ISessionClient, string>
+		>(
+			new Map(
+				[...presenceManager.getStates().props.candidateSelection.clientValues()].map(
+					(cv) => [cv.client, cv.value.candidateSelected] as [ISessionClient, string],
+				),
+			),
+		);
+		useEffect(() => {
+			return presenceManager
+				.getStates()
+				.props.candidateSelection.events.on("updated", (update) => {
+					const remoteSessionClient = update.client;
+					const remoteSelectedCandidateId = update.value.candidateSelected;
+
+					if (remoteSelectedCandidateId === "") {
+						candidatePresenceMap.delete(remoteSessionClient);
+						setCandidatePresenceMap(new Map(candidatePresenceMap));
+					} else {
+						setCandidatePresenceMap(
+							new Map(
+								candidatePresenceMap.set(
+									remoteSessionClient,
+									remoteSelectedCandidateId,
+								),
 							),
-						),
-					);
-				}
-			});
-	}, []);
-	
+						);
+					}
+				});
+		}, []);
+		presenceUserInfoList = props.job.candidates.map((candidate) => {
+			return presenceManager.getUserInfo(
+				getKeysByValue(candidatePresenceMap, candidate.candidateId),
+			);
+		});
+	}
+
 	// {END MOD_2}
 
 	const setSelectedCandidate = (candidate: Candidate | undefined) => {
 		props.setSelectedCandidate(candidate);
 
 		// {START MOD_2}
-		
-		props.presenceManager.getStates().props.candidateSelection.local = {
-			candidateSelected: candidate ? candidate.candidateId : "",
-		};
-		
+		if (presenceManager) {
+			presenceManager.getStates().props.candidateSelection.local = {
+				candidateSelected: candidate ? candidate.candidateId : "",
+			};
+		}
+
 		// {END MOD_2}
 	};
 
@@ -83,12 +95,7 @@ export function CandidatesListView(props: {
 							key={index}
 							candidate={candidate}
 							// {START MOD_2}
-							
-							presenceUserInfoList={props.presenceManager.getUserInfo(getKeysByValue(
-								candidatePresenceMap,
-								candidate.candidateId,
-							))}
-							
+							presenceUserInfoList={presenceUserInfoList[index]}
 							// {END MOD_2}
 							job={props.job}
 							selectedCandidate={props.selectedCandidate}
@@ -120,9 +127,9 @@ export function CandidateView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_1}
-	
+
 	useTreeNode(props.candidate);
-	
+
 	// {END MOD_1}
 
 	return (
@@ -155,9 +162,13 @@ export function CandidateView(props: {
 			</div>
 			{
 				// {START MOD_2}
-				
-				userAvatarGroupView({ members: props.presenceUserInfoList, size: 24, layout: "stack" })
-				
+
+				userAvatarGroupView({
+					members: props.presenceUserInfoList,
+					size: 24,
+					layout: "stack",
+				})
+
 				// {END MOD_2}
 			}
 

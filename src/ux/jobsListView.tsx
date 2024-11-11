@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Job, JobsArray } from "@lab/appSchema.js";
 import { createTestJob } from "../utils/testData.js";
 import { Button } from "@fluentui/react-components";
@@ -6,62 +6,71 @@ import { DismissFilled } from "@fluentui/react-icons";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluid-experimental/presence";
-import { PresenceManager, UserInfo } from "../utils/presenceManager.js";
+import { UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
+import { PresenceContext } from "../index.js";
 
 export function JobsListView(props: {
 	jobs: JobsArray;
 	setSelectedJob: (job: Job | undefined) => void;
 	selectedJob?: Job;
-	presenceManager: PresenceManager;
 }): JSX.Element {
 	// {START MOD_1}
-	
+
 	useTreeNode(props.jobs);
-	
+
 	// {END MOD_1}
 
 	// {START MOD_2}
-	
-	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(
-		new Map(
-			[...props.presenceManager.getStates().props.jobSelelction.clientValues()].map(
-				(cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string],
+	const presenceManager = useContext(PresenceContext);
+	let presenceUserInfoList: UserInfo[][] = [];
+	if (presenceManager) {
+		const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(
+			new Map(
+				[...presenceManager.getStates().props.jobSelelction.clientValues()].map(
+					(cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string],
+				),
 			),
-		),
-	);
-	useEffect(() => {
-		return props.presenceManager
-			.getStates()
-			.props.jobSelelction.events.on("updated", (update) => {
-				const remoteSessionClient = update.client;
-				const remoteSelectedJobId = update.value.jobSelected;
-				// if empty string, then no job is selected, remove it from the map
-				if (remoteSelectedJobId === "") {
-					jobPresenceMap.delete(remoteSessionClient);
-					setJobPresenceMap(new Map(jobPresenceMap));
-				} else {
-					setJobPresenceMap(
-						new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
-					);
-				}
-			});
-	}, []);
-	
+		);
+		useEffect(() => {
+			return presenceManager
+				.getStates()
+				.props.jobSelelction.events.on("updated", (update) => {
+					if (jobPresenceMap) {
+						const remoteSessionClient = update.client;
+						const remoteSelectedJobId = update.value.jobSelected;
+						// if empty string, then no job is selected, remove it from the map
+						if (remoteSelectedJobId === "") {
+							jobPresenceMap.delete(remoteSessionClient);
+							setJobPresenceMap(new Map(jobPresenceMap));
+						} else {
+							setJobPresenceMap(
+								new Map(
+									jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId),
+								),
+							);
+						}
+					}
+				});
+		}, []);
+		presenceUserInfoList = props.jobs.map((job) => {
+			return presenceManager.getUserInfo(getKeysByValue(jobPresenceMap, job.jobId));
+		});
+	}
 	// {END MOD_2}
 
 	const setSelectedJob = (job: Job | undefined) => {
 		props.setSelectedJob(job);
 
 		// {START MOD_2}
-		
-		props.presenceManager.getStates().props.jobSelelction.local = {
-			jobSelected: job ? job.jobId : "",
-		};
-		props.presenceManager.getStates().props.candidateSelection.local = {
-			candidateSelected: "",
-		};
-		
+		if (presenceManager) {
+			presenceManager.getStates().props.jobSelelction.local = {
+				jobSelected: job ? job.jobId : "",
+			};
+			presenceManager.getStates().props.candidateSelection.local = {
+				candidateSelected: "",
+			};
+		}
 		// {END MOD_2}
 	};
 
@@ -81,9 +90,7 @@ export function JobsListView(props: {
 							props.jobs.deleteJob(job);
 						}}
 						// {START MOD_2}
-						
-						presenceUserInfoList={props.presenceManager.getUserInfo(getKeysByValue(jobPresenceMap, job.jobId))}
-						
+						presenceUserInfoList={presenceUserInfoList[index]}
 						// {END MOD_2}
 					/>
 				))}
@@ -110,9 +117,9 @@ export function JobView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_1}
-	
+
 	useTreeNode(props.job);
-	
+
 	// {END MOD_1}
 
 	return (
@@ -127,13 +134,13 @@ export function JobView(props: {
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
 					{
 						// {START MOD_2}
-						
+
 						userAvatarGroupView({
 							members: props.presenceUserInfoList,
 							size: 24,
 							layout: "stack",
 						})
-						
+
 						// {END MOD_2}
 					}
 				</div>

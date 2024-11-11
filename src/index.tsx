@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { loadFluidData, containerSchema } from "./infra/fluid.js";
 import { getClientProps } from "./infra/clientProps.js";
@@ -63,6 +63,8 @@ function showErrorMessage(message?: string, ...optionalParams: string[]) {
 	);
 }
 
+export const PresenceContext = createContext<PresenceManager | null>(null);
+
 async function signedInStart(msalInstance: PublicClientApplication, account: AccountInfo) {
 	// Set the active account
 	msalInstance.setActiveAccount(account);
@@ -77,7 +79,6 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 
 	createFluidApp(root, msalInstance, account);
 }
-
 
 async function createFluidApp(
 	root: Root,
@@ -183,7 +184,11 @@ async function createFluidApp(
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be
 	// interactive immediately.
-	root.render(<HRApp data={appData} undoRedo={undoRedo} presenceManager={presenceManager} />);
+	root.render(
+		<PresenceContext.Provider value={presenceManager}>
+			<HRApp data={appData} undoRedo={undoRedo} />
+		</PresenceContext.Provider>,
+	);
 
 	// If the app is in a `createNew` state - no containerId, and the container is detached, we attach the container.
 	// This uploads the container to the service and connects to the collaboration session.

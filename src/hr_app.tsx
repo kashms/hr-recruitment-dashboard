@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
  * Licensed under the MIT License.
  */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TreeView } from "fluid-framework";
 import { Candidate, HRData, Job, type OnSiteSchedule } from "@lab/appSchema.js";
 import { userAvatarGroupView } from "./ux/userAvatarGroupView.js";
@@ -14,23 +14,15 @@ import { AiChatView } from "./mod3/aiChatView.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
-import { PresenceManager } from "./utils/presenceManager.js";
 import { ISessionClient } from "@fluid-experimental/presence";
+import { PresenceContext } from "./index.js";
 
 export function HRApp(props: {
 	//data: HRData;
 	// {START MOD_1}
-
 	data: TreeView<typeof HRData>;
 	undoRedo: undoRedo | null;
-
 	// {END MOD_1}
-
-	// {START MOD_2}
-
-	presenceManager: PresenceManager;
-
-	// {END MOD_2}
 }): JSX.Element {
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
@@ -75,21 +67,23 @@ export function HRApp(props: {
 		<h1 className="text-xl font-bold text-white flex-grow">HR Recruitment Dashboard</h1>,
 	);
 
-	// {START MOD_3}	
+	// {START MOD_3}
 	// Animation to show AI actions in progress
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
-	headerViews.push(<AiChatView
-		treeRoot={props.data}
-		showAnimatedFrame={(show: boolean) => {
-			setShowAnimatedFrame(show);
-		}}
-	/>);
+	headerViews.push(
+		<AiChatView
+			treeRoot={props.data}
+			showAnimatedFrame={(show: boolean) => {
+				setShowAnimatedFrame(show);
+			}}
+		/>,
+	);
 	// {END MOD_3}
 
-	// let appData = props.data;
+	// const appData = props.data;
 	// {START MOD_1}
-	let appData = props.data.root;
+	const appData = props.data.root;
 	// Unsubscribe to undo-redo events when the component unmounts
 	useEffect(() => {
 		return props.undoRedo ? props.undoRedo.dispose : undefined;
@@ -98,13 +92,13 @@ export function HRApp(props: {
 	if (props.undoRedo) {
 		headerViews.push(<ActionToolBar undoRedo={props.undoRedo} />);
 	}
-	
+
 	// {END MOD_1}
 
 	// {START MOD_2}
-	
-	headerViews.push(<AppPresenceGroup presenceManager={props.presenceManager} />);
-	
+
+	headerViews.push(<AppPresenceGroup />);
+
 	// {END MOD_2}
 
 	return (
@@ -123,14 +117,12 @@ export function HRApp(props: {
 								jobs={appData.jobsList}
 								setSelectedJob={handleJobSelected}
 								selectedJob={selectedJob}
-								presenceManager={props.presenceManager}
 							/>
 							{selectedJob && (
 								<CandidatesListView
 									job={selectedJob}
 									selectedCandidate={selectedCandidate}
 									setSelectedCandidate={handleCandidateSelected}
-									presenceManager={props.presenceManager}
 								/>
 							)}
 							{selectedCandidate && onsiteScheduleSelectedCandidate && (
@@ -175,25 +167,30 @@ export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 	);
 }
 
-export function AppPresenceGroup(props: { presenceManager: PresenceManager }): JSX.Element {
+export function AppPresenceGroup(): JSX.Element {
+	const presenceManager = useContext(PresenceContext);
+	if (presenceManager === null) {
+		return <div></div>;
+	}
+
 	const [attendeesList, setAttendeesList] = useState<ISessionClient[]>([
-		...props.presenceManager.getPresence().getAttendees(),
+		...presenceManager.getPresence().getAttendees(),
 	]);
 
 	const [invalidations, setInvalidations] = useState(0);
 	useEffect(() => {
-		props.presenceManager.getPresence().events.on("attendeeJoined", (attendee) => {
+		presenceManager.getPresence().events.on("attendeeJoined", (attendee) => {
 			setAttendeesList([...attendeesList, attendee]);
 		});
-		props.presenceManager.getPresence().events.on("attendeeDisconnected", (attendee) => {
+		presenceManager.getPresence().events.on("attendeeDisconnected", (attendee) => {
 			setAttendeesList(attendeesList.filter((a) => a.sessionId !== attendee.sessionId));
 		});
-		props.presenceManager.setUserInfoUpdateListener(() => {
+		presenceManager.setUserInfoUpdateListener(() => {
 			setInvalidations(invalidations + Math.random());
 		});
 	}, []);
 
-	const userInfoList = props.presenceManager.getUserInfo(attendeesList);
+	const userInfoList = presenceManager.getUserInfo(attendeesList);
 
 	if (userInfoList) {
 		return userAvatarGroupView({
