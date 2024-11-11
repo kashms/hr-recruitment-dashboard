@@ -59,16 +59,36 @@ export class GraphHelper {
 				.version("beta")
 				.get();
 
+			console.log("getFileStorageContainerId response: ", response.value);
 			const fileStorageContainers: FileStorageContainer[] = response.value;
 
 			if (fileStorageContainers.length == 0) {
-				throw new Error("TEST: no fileStorageContainers");
+				throw new Error("No file storage containers found");
 			}
 
 			return fileStorageContainers[0].id;
 		} catch (error) {
 			console.error("Error while fetching file storage container ID: ", error);
-			throw error; // re-throw the error if you want it to propagate
+			console.log("Retrying once");
+			try {
+				const response1 = await this.graphClient
+					.api("/storage/fileStorage/containers")
+					.version("beta")
+					.post({
+						containerTypeId: containerTypeId,
+						displayName: "Fluid Container",
+						description: "Fluid Container Description",
+					});
+
+					const __fileStorageContainers: FileStorageContainer[] = response1.value;
+					if (__fileStorageContainers.length == 0) {
+						throw new Error("No file storage containers found");
+					}
+					return __fileStorageContainers[0].id;
+			} catch (error) {
+				console.error("Error while fetching file storage container ID: ", error);
+				throw error;
+			}
 		}
 	}
 
