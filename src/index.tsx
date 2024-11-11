@@ -57,9 +57,13 @@ async function signedInStart(msalInstance: PublicClientApplication, account: Acc
 	document.body.appendChild(app);
 	const root = createRoot(app);
 
+	// {START MOD_0}
 	// root.render(<HRApp data={createTestAppData()} />);
+	// {END MOD_0}
 
+	// {START MOD_1}
 	createFluidApp(root, msalInstance, account);
+	// {END MOD_1}
 }
 
 export const PresenceContext = createContext<PresenceManager | undefined>(undefined);
@@ -169,11 +173,14 @@ async function createFluidApp(
 		services.audience,
 	);
 
-	let appView = (
+	let appView = <div></div>;
+	// {START MOD_1}
+	appView = (
 		<UndoRedoContext.Provider value={undoRedoContext}>
 			<HRApp data={appData} />
 		</UndoRedoContext.Provider>
 	);
+	// {END MOD_1}
 
 	// {START MOD_2}
 	appView = (
