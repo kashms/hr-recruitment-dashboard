@@ -92,7 +92,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 		headerViews.push(<ActionToolBar undoRedo={undoRedo} />);
 	}
 
-	// {START MOD_2}
+	// {VIEW MOD_2}
 	headerViews.push(<AppPresenceGroup />);
 	// {END MOD_2}
 

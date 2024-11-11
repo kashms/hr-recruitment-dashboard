@@ -16,12 +16,10 @@ export function JobsListView(props: {
 	selectedJob?: Job;
 }): JSX.Element {
 	// {START MOD_1}
-
 	useTreeNode(props.jobs);
-
 	// {END MOD_1}
 
-	// {START MOD_2}
+	// {VIEW MOD_2}
 	const presenceManager = useContext(PresenceContext);
 	let presenceUserInfoList: UserInfo[][] = [];
 	if (presenceManager) {
@@ -62,7 +60,7 @@ export function JobsListView(props: {
 	const setSelectedJob = (job: Job | undefined) => {
 		props.setSelectedJob(job);
 
-		// {START MOD_2}
+		// {VIEW MOD_2}
 		if (presenceManager) {
 			presenceManager.getStates().props.jobSelelction.local = {
 				jobSelected: job ? job.jobId : "",
@@ -89,7 +87,7 @@ export function JobsListView(props: {
 						deleteJob={(job: Job) => {
 							props.jobs.deleteJob(job);
 						}}
-						// {START MOD_2}
+						// {VIEW MOD_2}
 						presenceUserInfoList={presenceUserInfoList[index]}
 						// {END MOD_2}
 					/>
@@ -117,9 +115,7 @@ export function JobView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_1}
-
 	useTreeNode(props.job);
-
 	// {END MOD_1}
 
 	return (
@@ -133,14 +129,12 @@ export function JobView(props: {
 			<div className="flex items-center justify-between gap-2">
 				<div className="flex flex-grow text-lg font-extrabold bg-transparent text-black">
 					{
-						// {START MOD_2}
-
+						// {VIEW MOD_2}
 						userAvatarGroupView({
 							members: props.presenceUserInfoList,
 							size: 24,
 							layout: "stack",
 						})
-
 						// {END MOD_2}
 					}
 				</div>

@@ -5,9 +5,7 @@ import { useTree } from "../utils/treeReactHooks.js";
 
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
 	// {START MOD_1}
-	
 	useTree(props.avail);
-	
 	// {END MOD_1}
 
 	return (

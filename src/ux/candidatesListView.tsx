@@ -17,13 +17,11 @@ export function CandidatesListView(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
 	// {START MOD_1}
-
 	useTreeNode(props.job.candidates);
 	useTreeNode(props.job.onSiteSchedule);
-
 	// {END MOD_1}
 
-	// {START MOD_2}
+	// {VIEW MOD_2}
 	const presenceManager = useContext(PresenceContext);
 	let presenceUserInfoList: UserInfo[][] = [];
 
@@ -65,13 +63,12 @@ export function CandidatesListView(props: {
 			);
 		});
 	}
-
 	// {END MOD_2}
 
 	const setSelectedCandidate = (candidate: Candidate | undefined) => {
 		props.setSelectedCandidate(candidate);
 
-		// {START MOD_2}
+		// {VIEW MOD_2}
 		if (presenceManager) {
 			presenceManager.getStates().props.candidateSelection.local = {
 				candidateSelected: candidate ? candidate.candidateId : "",
@@ -93,7 +90,7 @@ export function CandidatesListView(props: {
 						<CandidateView
 							key={index}
 							candidate={candidate}
-							// {START MOD_2}
+							// {VIEW MOD_2}
 							presenceUserInfoList={presenceUserInfoList[index]}
 							// {END MOD_2}
 							job={props.job}
@@ -126,9 +123,7 @@ export function CandidateView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_1}
-
 	useTreeNode(props.candidate);
-
 	// {END MOD_1}
 
 	return (
@@ -160,14 +155,12 @@ export function CandidateView(props: {
 				)}
 			</div>
 			{
-				// {START MOD_2}
-
+				// {VIEW MOD_2}
 				userAvatarGroupView({
 					members: props.presenceUserInfoList,
 					size: 24,
 					layout: "stack",
 				})
-
 				// {END MOD_2}
 			}
 

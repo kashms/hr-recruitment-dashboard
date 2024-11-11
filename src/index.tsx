@@ -175,11 +175,11 @@ async function createFluidApp(
 
 	let appView = <div></div>;
 	// {START MOD_1}
-	appView = (
-		<UndoRedoContext.Provider value={undoRedoContext}>
-			<HRApp data={appData} />
-		</UndoRedoContext.Provider>
-	);
+	// appView = (
+	// 	<UndoRedoContext.Provider value={undoRedoContext}>
+	// 		<HRApp data={appData} />
+	// 	</UndoRedoContext.Provider>
+	// );
 	// {END MOD_1}
 
 	// {START MOD_2}
