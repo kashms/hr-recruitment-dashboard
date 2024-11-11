@@ -20,16 +20,16 @@ import { ISessionClient } from "@fluid-experimental/presence";
 export function HRApp(props: {
 	//data: HRData;
 	// {START MOD_1}
-	
+
 	data: TreeView<typeof HRData>;
 	undoRedo: undoRedo | null;
-	
+
 	// {END MOD_1}
 
 	// {START MOD_2}
-	
+
 	presenceManager: PresenceManager;
-	
+
 	// {END MOD_2}
 }): JSX.Element {
 	const [selectedJob, setSelectedJob] = useState<Job>();
@@ -70,8 +70,22 @@ export function HRApp(props: {
 		onsiteScheduleSelectedCandidate?.addInterviewer(interviewerId);
 	};
 
+	const headerViews = [];
+	headerViews.push(
+		<h1 className="text-xl font-bold text-white flex-grow">HR Recruitment Dashboard</h1>,
+	);
+
+	// {START MOD_3}	
 	// Animation to show AI actions in progress
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
+
+	headerViews.push(<AiChatView
+		treeRoot={props.data}
+		showAnimatedFrame={(show: boolean) => {
+			setShowAnimatedFrame(show);
+		}}
+	/>);
+	// {END MOD_3}
 
 	// let appData = props.data;
 	// {START MOD_1}
@@ -81,20 +95,17 @@ export function HRApp(props: {
 		return props.undoRedo ? props.undoRedo.dispose : undefined;
 	}, []);
 
-	const headerViews = [];
-	headerViews.push(<AiChatView
-		treeRoot={props.data}
-		showAnimatedFrame={(show: boolean) => {
-			setShowAnimatedFrame(show);
-		}}
-	/>);
-	headerViews.push(<AppPresenceGroup presenceManager={props.presenceManager} />);
-
 	if (props.undoRedo) {
 		headerViews.push(<ActionToolBar undoRedo={props.undoRedo} />);
 	}
-
+	
 	// {END MOD_1}
+
+	// {START MOD_2}
+	
+	headerViews.push(<AppPresenceGroup presenceManager={props.presenceManager} />);
+	
+	// {END MOD_2}
 
 	return (
 		<div
@@ -105,9 +116,6 @@ export function HRApp(props: {
 				<FluentProvider theme={webLightTheme}>
 					<div className="flex flex-col h-fit w-full overflow-hidden overscroll-none gap-1">
 						<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
-							<h1 className="text-xl font-bold text-white flex-grow">
-								HR Recruitment Dashboard
-							</h1>
 							{headerViews}
 						</div>
 						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
