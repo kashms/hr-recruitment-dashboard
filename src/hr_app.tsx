@@ -91,7 +91,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 	}
 
 	// {START MOD_2}
-	// headerViews.push(<AppPresenceGroup />);
+	headerViews.push(<AppPresenceGroup />);
 	// {END MOD_2}
 
 	return (
