@@ -20,9 +20,9 @@ Container Type ID.
 Once you have done that, create a `.env` file in the folder with the following content:
 
 ```plaintext
-SPE_CLIENT_ID='your client id'
-SPE_CONTAINER_TYPE_ID='your container type id'
-SPE_ENTRA_TENANT_ID='your entra tenant id'
+OwningAppId='your client id'
+ContainerTypeId='your container type id'
+OwningTenantId='your entra tenant id'
 ```
 
 With that in place, you can run this sample (`npm run dev`).

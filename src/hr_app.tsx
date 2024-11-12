@@ -16,15 +16,14 @@ import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
 import { UndoRedoContext, PresenceContext } from "./index.js";
 
-// {START MOD_1}
-// export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
-// 	const appData = props.data.root;
-// {END MOD_1}
-
 // {START MOD_0}
 export function HRApp(props: { data: HRData }): JSX.Element {
 	const appData = props.data;
 	// {END MOD_0}
+	// {START MOD_1}
+	// export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
+	// 	const appData = props.data.root;
+	// {END MOD_1}
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
@@ -94,7 +93,7 @@ export function HRApp(props: { data: HRData }): JSX.Element {
 	}
 
 	// {VIEW MOD_2}
-	// headerViews.push(<AppPresenceGroup />);
+	headerViews.push(<AppPresenceGroup />);
 	// {END MOD_2}
 
 	return (
