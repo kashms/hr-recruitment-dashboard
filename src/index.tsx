@@ -11,13 +11,17 @@ import { authHelper } from "./infra/authHelper.js";
 import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import { OdspClient } from "@fluidframework/odsp-client/beta";
 import { PublicClientApplication, AccountInfo } from "@azure/msal-browser";
-import { AttachState } from "fluid-framework";
+import { AttachState, IFluidContainer } from "fluid-framework";
 import { HRApp } from "./hr_app.js";
 import { createUndoRedoStacks } from "./utils/undo.js";
 import { acquirePresenceViaDataObject } from "@fluid-experimental/presence";
 import { PresenceManager } from "./utils/presenceManager.js";
+import {
+	TinyliciousClient,
+	TinyliciousContainerServices,
+} from "@fluidframework/tinylicious-client";
 
-async function start() {
+async function speStart() {
 	const msalInstance = await authHelper();
 
 	// Handle the login redirect flows
@@ -206,4 +210,61 @@ async function createFluidApp(
 	}
 }
 
-start().catch((error) => console.error(error));
+async function tinyliciousStart() {
+	const tinyliciousClient = new TinyliciousClient({});
+
+	let containerId = "";
+	if (typeof window !== "undefined") {
+		containerId = new URL(window.location.href).searchParams.get("fluidContainerId") || "";
+	}
+
+	let container: IFluidContainer<typeof containerSchema>;
+	let services: TinyliciousContainerServices;
+
+	if (containerId === "") {
+		// containerId not found, need to create a new container
+		({ container, services } = await tinyliciousClient.createContainer(containerSchema, "2"));
+	} else {
+		// containerId found, need to load the container
+		({ container, services } = await tinyliciousClient.getContainer(
+			containerId,
+			containerSchema,
+			"2",
+		));
+	}
+
+	const error = document.createElement("div");
+	error.id = "app";
+	document.body.appendChild(error);
+	const root = createRoot(error);
+
+	const appData = container.initialObjects.appData.viewWith(treeConfiguration);
+	if (appData.compatibility.canInitialize) {
+		appData.initialize(createTestAppData());
+	}
+	// Create undo/redo stacks for the app
+	const undoRedo = createUndoRedoStacks(appData.events);
+
+	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
+	const presenceManager: PresenceManager = new PresenceManager(appPresence, services.audience);
+
+	root.render(<HRApp data={appData} undoRedo={undoRedo} presenceManager={presenceManager} />);
+
+	if (container.attachState === AttachState.Detached) {
+		containerId = await container.attach();
+
+		const url = new URL(window.location.href);
+		const searchParams = url.searchParams;
+		searchParams.set("fluidContainerId", containerId);
+		const newUrl = `${url.pathname}?${searchParams.toString()}`;
+		window.history.replaceState({}, "", newUrl);
+	}
+}
+
+const targetServer = process.env.FLUID_CLIENT;
+
+if (targetServer === "tinylicious") {
+	tinyliciousStart().catch((error) => console.error(error));
+} else if (targetServer === "spe") {
+	speStart().catch((error) => console.error(error));
+}

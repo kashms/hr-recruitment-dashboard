@@ -15,7 +15,6 @@ import { Button, FluentProvider, webLightTheme } from "@fluentui/react-component
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
 import { PresenceManager } from "./utils/presenceManager.js";
-import { ISessionClient } from "@fluid-experimental/presence";
 
 export function HRApp(props: {
 	data: TreeView<typeof HRData>;
@@ -148,24 +147,38 @@ export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 }
 
 export function AppPresenceGroup(props: { presenceManager: PresenceManager }): JSX.Element {
-	const [attendeesList, setAttendeesList] = useState<ISessionClient[]>([
-		...props.presenceManager.getPresence().getAttendees(),
-	]);
-
 	const [invalidations, setInvalidations] = useState(0);
+
 	useEffect(() => {
-		props.presenceManager.getPresence().events.on("attendeeJoined", (attendee) => {
-			setAttendeesList([...attendeesList, attendee]);
+		const unsubJoin = props.presenceManager.getPresence().events.on("attendeeJoined", () => {
+			setInvalidations(invalidations + Math.random());
 		});
-		props.presenceManager.getPresence().events.on("attendeeDisconnected", (attendee) => {
-			setAttendeesList(attendeesList.filter((a) => a.sessionId !== attendee.sessionId));
-		});
+		const unsubDisconnect = props.presenceManager
+			.getPresence()
+			.events.on("attendeeDisconnected", () => {
+				setInvalidations(invalidations + Math.random());
+			});
 		props.presenceManager.setUserInfoUpdateListener(() => {
 			setInvalidations(invalidations + Math.random());
 		});
+
+		return () => {
+			unsubJoin();
+			unsubDisconnect();
+			props.presenceManager.setUserInfoUpdateListener(() => {});
+		};
 	}, []);
 
-	const userInfoList = props.presenceManager.getUserInfo(attendeesList);
+	// [...props.presenceManager.getPresence().getAttendees()].forEach((attendee) => {
+	// 	console.log("attendee: ", attendee.sessionId + " - " + attendee.getConnectionStatus());
+	// });
+
+	const connectedAttendees = [...props.presenceManager.getPresence().getAttendees()].filter(
+		(attendee) => attendee.getConnectionStatus() === "Connected",
+	);
+	// console.log("connectedAttendees: ", connectedAttendees.length);
+
+	const userInfoList = props.presenceManager.getUserInfo(connectedAttendees);
 
 	if (userInfoList) {
 		return userAvatarGroupView({

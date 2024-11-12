@@ -1,5 +1,6 @@
 import { ClientSessionId, IPresence, ISessionClient, Latest, PresenceStates } from "@fluid-experimental/presence";
 import { OdspMember } from "@fluidframework/odsp-client/beta";
+import { TinyliciousMember } from "@fluidframework/tinylicious-client";
 import { IMember, IServiceAudience } from "fluid-framework";
 
 export class PresenceManager {
@@ -27,22 +28,36 @@ export class PresenceManager {
             this.userInfoCallback(this.userInfoMap);
         });
 
+        this.setMyUserInfo();
         this.audience.on("membersChanged", () => {
-            const myselfMember = this.audience.getMyself();
-            if (myselfMember) {
-                const odspMember = myselfMember as IMember as OdspMember;
+            this.setMyUserInfo();
+        });
+    }
 
-                // Broadcast current user's info to all clients
+    private setMyUserInfo() {
+        const myselfMember = this.audience.getMyself();
+
+        // Broadcast current user's info to all clients
+        if (myselfMember) {
+            if (myselfMember as IMember as OdspMember !== undefined) {
+                const odspMember = myselfMember as IMember as OdspMember;
                 this.appSelectionPresenceState.props.userInfo.local = {
                     userId: odspMember.id,
                     userName: odspMember.name,
                     userEmail: odspMember.email,
                 };
-
-                this.userInfoMap.set(this.presence.getMyself(), this.appSelectionPresenceState.props.userInfo.local);
-                this.userInfoCallback(this.userInfoMap);
+            } else if (myselfMember as IMember as TinyliciousMember !== undefined) {
+                const tinyliciousMember = myselfMember as IMember as TinyliciousMember;
+                this.appSelectionPresenceState.props.userInfo.local = {
+                    userId: tinyliciousMember.id,
+                    userName: tinyliciousMember.name,
+                    userEmail: "",
+                };
             }
-        });
+
+            this.userInfoMap.set(this.presence.getMyself(), this.appSelectionPresenceState.props.userInfo.local);
+            this.userInfoCallback(this.userInfoMap);
+        }
     }
 
     getStates() {
