@@ -73,7 +73,7 @@ async function crateFluidContainer(root: Root) {
 	// 	appPresence,
 	// 	services.audience,
 	// );
-	// let appView = (
+	// appView = (
 	// 	<UndoRedoContext.Provider value={undoRedoContext}>
 	// 		<HRApp data={appData} />
 	// 	</UndoRedoContext.Provider>
