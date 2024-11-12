@@ -14,17 +14,16 @@ import { AiChatView } from "./mod3/aiChatView.js";
 import { Button, FluentProvider, webLightTheme } from "@fluentui/react-components";
 import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
-import { ISessionClient } from "@fluid-experimental/presence";
 import { UndoRedoContext, PresenceContext } from "./index.js";
 
 // {START MOD_1}
 // export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 // 	const appData = props.data.root;
-	// {END MOD_1}
+// {END MOD_1}
 
-	// {START MOD_0}
-	export function HRApp(props: { data: HRData }): JSX.Element {
-		const appData = props.data;
+// {START MOD_0}
+export function HRApp(props: { data: HRData }): JSX.Element {
+	const appData = props.data;
 	// {END MOD_0}
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
@@ -66,7 +65,9 @@ import { UndoRedoContext, PresenceContext } from "./index.js";
 
 	const headerViews = [];
 	headerViews.push(
-		<h1 className="text-xl font-bold text-white flex-grow">HR Recruitment Dashboard</h1>,
+		<h1 key="header" className="text-xl font-bold text-white flex-grow">
+			HR Recruitment Dashboard
+		</h1>,
 	);
 
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
@@ -93,7 +94,7 @@ import { UndoRedoContext, PresenceContext } from "./index.js";
 	}
 
 	// {VIEW MOD_2}
-	headerViews.push(<AppPresenceGroup />);
+	// headerViews.push(<AppPresenceGroup />);
 	// {END MOD_2}
 
 	return (
@@ -168,24 +169,38 @@ export function AppPresenceGroup(): JSX.Element {
 		return <div></div>;
 	}
 
-	const [attendeesList, setAttendeesList] = useState<ISessionClient[]>([
-		...presenceManager.getPresence().getAttendees(),
-	]);
-
 	const [invalidations, setInvalidations] = useState(0);
+
 	useEffect(() => {
-		presenceManager.getPresence().events.on("attendeeJoined", (attendee) => {
-			setAttendeesList([...attendeesList, attendee]);
+		const unsubJoin = presenceManager.getPresence().events.on("attendeeJoined", () => {
+			setInvalidations(invalidations + Math.random());
 		});
-		presenceManager.getPresence().events.on("attendeeDisconnected", (attendee) => {
-			setAttendeesList(attendeesList.filter((a) => a.sessionId !== attendee.sessionId));
-		});
+		const unsubDisconnect = presenceManager
+			.getPresence()
+			.events.on("attendeeDisconnected", () => {
+				setInvalidations(invalidations + Math.random());
+			});
 		presenceManager.setUserInfoUpdateListener(() => {
 			setInvalidations(invalidations + Math.random());
 		});
+
+		return () => {
+			unsubJoin();
+			unsubDisconnect();
+			presenceManager.setUserInfoUpdateListener(() => {});
+		};
 	}, []);
 
-	const userInfoList = presenceManager.getUserInfo(attendeesList);
+	// [...props.presenceManager.getPresence().getAttendees()].forEach((attendee) => {
+	// 	console.log("attendee: ", attendee.sessionId + " - " + attendee.getConnectionStatus());
+	// });
+
+	const connectedAttendees = [...presenceManager.getPresence().getAttendees()].filter(
+		(attendee) => attendee.getConnectionStatus() === "Connected",
+	);
+	// console.log("connectedAttendees: ", connectedAttendees.length);
+
+	const userInfoList = presenceManager.getUserInfo(connectedAttendees);
 
 	if (userInfoList) {
 		return userAvatarGroupView({

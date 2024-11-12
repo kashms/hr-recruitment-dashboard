@@ -22,11 +22,16 @@ export function userAvatarGroupView(props: {
 		items: props.members,
 	});
 
+	const getMemberName = (member: UserInfo) => {
+		const emailPart = member.userEmail ? ` - ${member.userEmail}` : "";
+		return `${member.userName}${emailPart}`;
+	};
+
 	return (
 		<AvatarGroup size={props.size} layout={props.layout} className="pr-2">
 			{inlineItems.map((member) => (
 				<Tooltip
-					content={`${member.userName} - ${member.userEmail}`}
+					content={getMemberName(member)}
 					key={member.userId + Math.random()}
 					relationship="description"
 				>
@@ -34,7 +39,7 @@ export function userAvatarGroupView(props: {
 						active="active"
 						activeAppearance="ring-shadow"
 						color="colorful"
-						name={`${member.userName} - ${member.userEmail}`}
+						name={getMemberName(member)}
 						key={member.userId + Math.random()}
 					/>
 				</Tooltip>
@@ -43,7 +48,7 @@ export function userAvatarGroupView(props: {
 				<AvatarGroupPopover>
 					{overflowItems.map((member) => (
 						<AvatarGroupItem
-							name={`${member.userName} - ${member.userEmail}`}
+							name={getMemberName(member)}
 							key={member.userId + Math.random()}
 							active="active"
 							color="colorful"
