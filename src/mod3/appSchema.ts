@@ -69,7 +69,7 @@ export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
 			}
 
 			if (interviewer.availability.includes(this.day) === false) {
-				throw new Error(`You cannot assign the interviewer with id "${interviewerId}" and name "${interviewer.name}" to this OnSiteSchedule because it is scheduled to take place on a ${this.day} and the interviewer does NOT have availbility for that day.`)
+				throw new Error(`You cannot assign the interviewer with id "${interviewerId}" and name "${interviewer.name}" to this OnSiteSchedule because it is scheduled to take place on a ${this.day} and the interviewer does NOT have availability for that day.`)
 			}
 		})
 	}
