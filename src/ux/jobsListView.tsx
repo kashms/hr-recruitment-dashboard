@@ -16,33 +16,33 @@ export function JobsListView(props: {
 	selectedJob?: Job;
 }): JSX.Element {
 	// {START MOD_0}
-	const [jobs, setJobs] = useState(props.jobs);
-	const getJobs = () => {
-		return jobs;
-	};
-	const deleteJob = (job: Job) => {
-		const newJobs = new JobsArray(...jobs);
-		newJobs.deleteJob(job);
-		setJobs(newJobs);
-	};
-	const addJob = (job: Job) => {
-		const newJobs = new JobsArray(...jobs);
-		newJobs.addJob(job);
-		setJobs(newJobs);
-	};
+	// const [jobs, setJobs] = useState(props.jobs);
+	// const getJobs = () => {
+	// 	return jobs;
+	// };
+	// const deleteJob = (job: Job) => {
+	// 	const newJobs = new JobsArray(...jobs);
+	// 	newJobs.deleteJob(job);
+	// 	setJobs(newJobs);
+	// };
+	// const addJob = (job: Job) => {
+	// 	const newJobs = new JobsArray(...jobs);
+	// 	newJobs.addJob(job);
+	// 	setJobs(newJobs);
+	// };
 	// {END MOD_0}
 
 	// {START MOD_1}
-	// useTreeNode(props.jobs);
-	// const getJobs = () => {
-	//     return props.jobs;
-	// }
-	// const deleteJob = (job: Job) => {
-	//     props.jobs.deleteJob(job);
-	// }
-	// const addJob = (job: Job) => {
-	//     props.jobs.addJob(job);
-	// }
+	useTreeNode(props.jobs);
+	const getJobs = () => {
+	    return props.jobs;
+	}
+	const deleteJob = (job: Job) => {
+	    props.jobs.deleteJob(job);
+	}
+	const addJob = (job: Job) => {
+	    props.jobs.addJob(job);
+	}
 	// {END MOD_1}
 
 	// {VIEW MOD_2}
@@ -137,30 +137,30 @@ export function JobView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_0}
-	const [job, setJob] = useState(props.job);
-	const getjob = () => {
-		return job;
-	};
-	const setJobTitle = (newTitle: string) => {
-		setJob({ ...job, jobTitle: newTitle });
-	};
-	const setJobDescription = (newDescription: string) => {
-		setJob({ ...job, jobDescription: newDescription });
-	};
+	// const [job, setJob] = useState(props.job);
+	// const getjob = () => {
+	// 	return job;
+	// };
+	// const setJobTitle = (newTitle: string) => {
+	// 	setJob({ ...job, jobTitle: newTitle });
+	// };
+	// const setJobDescription = (newDescription: string) => {
+	// 	setJob({ ...job, jobDescription: newDescription });
+	// };
 	// {END MOD_0}
 
 	// {START MOD_1}
-	// useTreeNode(props.job);
-	// const getjob = () => {
-	//     return props.job;
-	// };
-	// const setJobTitle = (newTitle: string) => {
-	//     props.job.jobTitle = newTitle;
-	// };
-	// const setJobDescription = (newDescription: string) => {
-	//     props.job.jobDescription = newDescription;
-	// };
-	// {END MOD_1}n
+	useTreeNode(props.job);
+	const getjob = () => {
+	    return props.job;
+	};
+	const setJobTitle = (newTitle: string) => {
+	    props.job.jobTitle = newTitle;
+	};
+	const setJobDescription = (newDescription: string) => {
+	    props.job.jobDescription = newDescription;
+	};
+	// {END MOD_1}
 
 	return (
 		<div

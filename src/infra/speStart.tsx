@@ -183,19 +183,19 @@ async function createFluidApp(
 	);
 
 	// {START MOD_4}
-	// appView = (
-	// 	<UndoRedoContext.Provider value={undoRedoContext}>
-	// 		<HRApp data={appData} />
-	// 	</UndoRedoContext.Provider>
-	// );
+	appView = (
+		<UndoRedoContext.Provider value={undoRedoContext}>
+			<HRApp data={appData} />
+		</UndoRedoContext.Provider>
+	);
 
-	// appView = (
-	// 	<PresenceContext.Provider value={presenceManagerContext}>
-	// 		<UndoRedoContext.Provider value={undoRedoContext}>
-	// 			<HRApp data={appData} />
-	// 		</UndoRedoContext.Provider>
-	// 	</PresenceContext.Provider>
-	// );
+	appView = (
+		<PresenceContext.Provider value={presenceManagerContext}>
+			<UndoRedoContext.Provider value={undoRedoContext}>
+				<HRApp data={appData} />
+			</UndoRedoContext.Provider>
+		</PresenceContext.Provider>
+	);
 	// {END MOD_4}
 
 	// Render the app - note we attach new containers after render so

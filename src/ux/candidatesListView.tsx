@@ -17,29 +17,29 @@ export function CandidatesListView(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
 	// {START MOD_0}
-	const [job, setJob] = useState(props.job);
-	if (job.jobId !== props.job.jobId) {
-		setJob(props.job);
-	}
-	const getJob = () => {
-		return job;
-	};
-	const addCandidate = (candidate: Candidate) => {
-		const newJob = { ...job };
-		newJob.candidates.push(candidate);
-		setJob(newJob);
-	};
+	// const [job, setJob] = useState(props.job);
+	// if (job.jobId !== props.job.jobId) {
+	// 	setJob(props.job);
+	// }
+	// const getJob = () => {
+	// 	return job;
+	// };
+	// const addCandidate = (candidate: Candidate) => {
+	// 	const newJob = { ...job };
+	// 	newJob.candidates.push(candidate);
+	// 	setJob(newJob);
+	// };
 	// {END MOD_0}
 
 	// {START MOD_1}
-	// useTreeNode(props.job.candidates);
-	// useTreeNode(props.job.onSiteSchedule);
-	// const getJob = () => {
-	//     return props.job;
-	// };
-	// const addCandidate = (candidate: Candidate) => {
-	//     props.job.addCandidate(candidate);
-	// };
+	useTreeNode(props.job.candidates);
+	useTreeNode(props.job.onSiteSchedule);
+	const getJob = () => {
+	    return props.job;
+	};
+	const addCandidate = (candidate: Candidate) => {
+	    props.job.addCandidate(candidate);
+	};
 	// {END MOD_1}
 
 	// {VIEW MOD_2}
@@ -141,29 +141,29 @@ export function CandidateView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	// {START MOD_0}
-	const [candidate, setCandidate] = useState(props.candidate);
-	const getCandidate = () => {
-		return candidate;
-	};
-	const setCandidateName = (name: string) => {
-		setCandidate({ ...candidate, name });
-	};
-	const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
-		setCandidate({ ...candidate, yearsOfExperience });
-	};
+	// const [candidate, setCandidate] = useState(props.candidate);
+	// const getCandidate = () => {
+	// 	return candidate;
+	// };
+	// const setCandidateName = (name: string) => {
+	// 	setCandidate({ ...candidate, name });
+	// };
+	// const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
+	// 	setCandidate({ ...candidate, yearsOfExperience });
+	// };
 	// {START MOD_1}
 
 	// {START MOD_1}
-	// useTreeNode(props.candidate);
-	// const getCandidate = () => {
-	//     return props.candidate;
-	// };
-	// const setCandidateName = (name: string) => {
-	//     props.candidate.name = name;
-	// };
-	// const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
-	//     props.candidate.yearsOfExperience = yearsOfExperience;
-	// };
+	useTreeNode(props.candidate);
+	const getCandidate = () => {
+	    return props.candidate;
+	};
+	const setCandidateName = (name: string) => {
+	    props.candidate.name = name;
+	};
+	const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
+	    props.candidate.yearsOfExperience = yearsOfExperience;
+	};
 	// {END MOD_1}
 
 	return (

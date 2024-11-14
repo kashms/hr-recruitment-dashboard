@@ -13,32 +13,32 @@ export function OnSitePlanView(props: {
 	handleToggleInterviewerList: () => void;
 }): JSX.Element {
 	// {START MOD_0}
-	const [onSiteSchedule, setOnSiteSchedule] = React.useState(props.onSiteSchedule);
-	const getOnSiteSchedule = () => {
-		return onSiteSchedule;
-	};
-	const setOnSiteDay = (day: string) => {
-		setOnSiteSchedule({ ...onSiteSchedule, day });
-	};
-	const handleRemoveInterviewer = (interviewerId: string) => {
-		getOnSiteSchedule().removeInterviewer(interviewerId);
-		setOnSiteSchedule({ ...onSiteSchedule });
-	};
-	// {END MOD_0}
-
-	// {START MOD_1}
-	// useTree(props.onSiteSchedule);
-	// useTree(props.candidate);
-	// useTree(props.interviewerPool);
+	// const [onSiteSchedule, setOnSiteSchedule] = React.useState(props.onSiteSchedule);
 	// const getOnSiteSchedule = () => {
-	// 	return props.onSiteSchedule;
+	// 	return onSiteSchedule;
 	// };
 	// const setOnSiteDay = (day: string) => {
-	// 	props.onSiteSchedule.day = day;
+	// 	setOnSiteSchedule({ ...onSiteSchedule, day });
 	// };
 	// const handleRemoveInterviewer = (interviewerId: string) => {
 	// 	getOnSiteSchedule().removeInterviewer(interviewerId);
+	// 	setOnSiteSchedule({ ...onSiteSchedule });
 	// };
+	// {END MOD_0}
+
+	// {START MOD_1}
+	useTree(props.onSiteSchedule);
+	useTree(props.candidate);
+	useTree(props.interviewerPool);
+	const getOnSiteSchedule = () => {
+		return props.onSiteSchedule;
+	};
+	const setOnSiteDay = (day: string) => {
+		props.onSiteSchedule.day = day;
+	};
+	const handleRemoveInterviewer = (interviewerId: string) => {
+		getOnSiteSchedule().removeInterviewer(interviewerId);
+	};
 	// {END MOD_1}
 
 	const onSiteInterviewers = getOnSiteSchedule()

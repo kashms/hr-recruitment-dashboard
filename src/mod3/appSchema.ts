@@ -9,6 +9,7 @@ import { TreeViewConfiguration, SchemaFactory } from "fluid-framework";
 const sf = new SchemaFactory("ef0b8eff-2876-4801-9b6a-973f09aab904");
 
 export class Availability extends sf.array("Availability", sf.string) {
+
 	public readonly setDayAvailability = (day: string, available: boolean) => {
 		if (available && !this.includes(day)) {
 			this.insertAtStart(day);

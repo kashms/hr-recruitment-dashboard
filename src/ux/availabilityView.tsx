@@ -5,25 +5,25 @@ import { useTree } from "../utils/treeReactHooks.js";
 
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
 	// {START MOD_0}
-	const [avail, setAvail] = useState(props.avail);
-	const getAvail = (): Availability => {
-		return avail;
-	};
-	const setDayAvailability = (day: string, checked: boolean) => {
-		avail.setDayAvailability(day, checked);
-		const newAvail = new Availability(...avail);
-		setAvail(newAvail);
-	};
+	// const [avail, setAvail] = useState(props.avail);
+	// const getAvail = (): Availability => {
+	// 	return avail;
+	// };
+	// const setDayAvailability = (day: string, checked: boolean) => {
+	// 	avail.setDayAvailability(day, checked);
+	// 	const newAvail = new Availability(...avail);
+	// 	setAvail(newAvail);
+	// };
 	// {END MOD_0}
 
 	// {START MOD_1}
-	// useTree(props.avail);
-	// const getAvail = () => {
-	//     return props.avail;
-	// };
-	// const setDayAvailability = (day: string, checked: boolean) => {
-	//     props.avail.setDayAvailability(day, checked);
-	// };
+	useTree(props.avail);
+	const getAvail = () => {
+	    return props.avail;
+	};
+	const setDayAvailability = (day: string, checked: boolean) => {
+	    props.avail.setDayAvailability(day, checked);
+	};
 	// {END MOD_1}
 
 	return (

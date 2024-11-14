@@ -26,11 +26,11 @@ async function tinyliciousStart() {
 	const root = createRoot(app);
 
 	// {START MOD_0}
-	root.render(<HRApp data={createTestAppData()} />);
+	// root.render(<HRApp data={createTestAppData()} />);
 	// {END MOD_0}
 
 	// {START MOD_1}
-	// createFluidContainer(root);
+	createFluidContainer(root);
 	// {END MOD_1}
 }
 
@@ -60,34 +60,34 @@ async function createFluidContainer(root: Root) {
 	let appView = <div></div>;
 
 	// {START MOD_1}
-	// // Initialize the SharedTree Data Structure
-	// const appData = container.initialObjects.appData.viewWith(treeConfiguration);
-	// if (appData.compatibility.canInitialize) {
-	// 	appData.initialize(createTestAppData());
-	// }
-	// // Create undo/redo stacks for the app
-	// const undoRedoContext = createUndoRedoStacks(appData.events);
+	// Initialize the SharedTree Data Structure
+	const appData = container.initialObjects.appData.viewWith(treeConfiguration);
+	if (appData.compatibility.canInitialize) {
+		appData.initialize(createTestAppData());
+	}
+	// Create undo/redo stacks for the app
+	const undoRedoContext = createUndoRedoStacks(appData.events);
 
-	// const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
-	// const presenceManagerContext: PresenceManager = new PresenceManager(
-	// 	appPresence,
-	// 	services.audience,
-	// );
-	// appView = (
-	// 	<UndoRedoContext.Provider value={undoRedoContext}>
-	// 		<HRApp data={appData} />
-	// 	</UndoRedoContext.Provider>
-	// );
+	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
+	const presenceManagerContext: PresenceManager = new PresenceManager(
+		appPresence,
+		services.audience,
+	);
+	appView = (
+		<UndoRedoContext.Provider value={undoRedoContext}>
+			<HRApp data={appData} />
+		</UndoRedoContext.Provider>
+	);
 	// {END MOD_1}
 
 	// {START MOD_2}
-	// appView = (
-	// 	<PresenceContext.Provider value={presenceManagerContext}>
-	// 		<UndoRedoContext.Provider value={undoRedoContext}>
-	// 			<HRApp data={appData} />
-	// 		</UndoRedoContext.Provider>
-	// 	</PresenceContext.Provider>
-	// );
+	appView = (
+		<PresenceContext.Provider value={presenceManagerContext}>
+			<UndoRedoContext.Provider value={undoRedoContext}>
+				<HRApp data={appData} />
+			</UndoRedoContext.Provider>
+		</PresenceContext.Provider>
+	);
 	// {END MOD_2}
 
 	root.render(appView);
