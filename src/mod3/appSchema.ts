@@ -18,29 +18,33 @@ export class Availability extends sf.array("Availability", sf.string) {
 				this.removeAt(index);
 			}
 		}
-	}
+	};
 }
 
 export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
 	day: sf.required(sf.string, {
 		metadata: {
-			description: "The day of the week that the candidate is scheduled for an onsite interview. This field is required. Candidate and interviewers should be available on the day of the onsite interview.",
-		}
+			description:
+				"The day of the week that the candidate is scheduled for an onsite interview. This field is required. Candidate and interviewers should be available on the day of the onsite interview.",
+		},
 	}),
 	interviewerIds: sf.required(sf.array(sf.string), {
 		metadata: {
-			description: "The interviewerId of interviewers part of the onsite. This field is required. The default is an empty array. There have to be 3 interviewers for each onsite interview. The ids in this array should map to interviewerId field in Interviewer object",
-		}
+			description:
+				"The interviewerId of interviewers part of the onsite. This field is required. The default is an empty array. There have to be 3 interviewers for each onsite interview. The ids in this array should map to interviewerId field in Interviewer object",
+		},
 	}),
 	candidateId: sf.required(sf.string, {
 		metadata: {
-			description: "The candidateId of the candidate that is scheduled for an onsite interview. This field is required. The candidateId should map to the id field in the Candidate object",
-		}
+			description:
+				"The candidateId of the candidate that is scheduled for an onsite interview. This field is required. The candidateId should map to the id field in the Candidate object",
+		},
 	}),
 	isUnread: sf.required(sf.boolean, {
 		metadata: {
-			description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
-		}
+			description:
+				"The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
+		},
 	}),
 }) {
 	public readonly addInterviewer = (interviewerId: string) => {
@@ -48,55 +52,59 @@ export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
 			return;
 		}
 		this.interviewerIds.insertAtEnd(interviewerId);
-	}
+	};
 
 	public readonly removeInterviewer = (interviewerId: string) => {
 		const index = this.interviewerIds.indexOf(interviewerId);
 		if (index !== -1) {
 			this.interviewerIds.removeAt(index);
 		}
-	}
+	};
 }
 
 export class Interviewer extends sf.object("Interviewer", {
 	role: sf.string,
 	interviewerId: sf.required(sf.string, {
 		metadata: {
-			description: "The unique identifier of the interviewer. This field is required. This field is used to cross identify and reference the interviewer in the OnSiteSchedule",
-		}
+			description:
+				"The unique identifier of the interviewer. This field is required. This field is used to cross identify and reference the interviewer in the OnSiteSchedule",
+		},
 	}),
 	name: sf.required(sf.string, {
 		metadata: {
 			description: "The name of the interviewer. This field is required.",
-		}
+		},
 	}),
 	availability: sf.required(Availability, {
 		metadata: {
 			description: "The availability of the interviewer. This field is required.",
 		},
 	}),
-}) { }
+}) {}
 
 export class Candidate extends sf.object("Candidate", {
 	name: sf.string,
 	candidateId: sf.required(sf.string, {
 		metadata: {
-			description: "The unique identifier of the candidate. This field is required. This field is used to cross identify and reference the candidate in the OnSiteSchedule.",
-		}
+			description:
+				"The unique identifier of the candidate. This field is required. This field is used to cross identify and reference the candidate in the OnSiteSchedule.",
+		},
 	}),
 	yearsOfExperience: sf.number,
 	availability: sf.required(Availability, {
 		metadata: {
-			description: "The availability of the candidate. This field is required. The default is an empty array." +
+			description:
+				"The availability of the candidate. This field is required. The default is an empty array." +
 				"For this field, the only allowed values are the strings Monday,Tuesday,Wednesday,Thursday,Friday",
 		},
 	}),
 	isUnread: sf.required(sf.boolean, {
 		metadata: {
-			description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
-		}
+			description:
+				"The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
+		},
 	}),
-}) { }
+}) {}
 
 export class Job extends sf.object("Job", {
 	jobId: sf.string,
@@ -127,8 +135,9 @@ export class Job extends sf.object("Job", {
 	}),
 	isUnread: sf.required(sf.boolean, {
 		metadata: {
-			description: "The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
-		}
+			description:
+				"The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
+		},
 	}),
 }) {
 	public readonly addNewOnSiteForCandidate = (candiadteId: string) => {
@@ -143,21 +152,21 @@ export class Job extends sf.object("Job", {
 
 	public readonly hasOnSiteForCandidate = (candidateId: string) => {
 		return !!this.getOnSiteForCandidate(candidateId);
-	}
+	};
 
 	public readonly getOnSiteForCandidate = (candidateId: string) => {
 		return this.onSiteSchedule.find((onSite) => onSite.candidateId === candidateId);
-	}
+	};
 
 	public readonly addCandidate = (candidate: Candidate) => {
 		this.candidates.insertAtEnd(candidate);
-	}
+	};
 }
 
 export class JobsArray extends sf.array("JobsArray", Job) {
 	public readonly addJob = (job: Job) => {
 		this.insertAtEnd(job);
-	}
+	};
 
 	public readonly deleteJob = (job: Job) => {
 		const index = this.indexOf(job);
@@ -167,7 +176,7 @@ export class JobsArray extends sf.array("JobsArray", Job) {
 	};
 }
 
-export class InterviewerPool extends sf.array("InterviewerPool", Interviewer) { }
+export class InterviewerPool extends sf.array("InterviewerPool", Interviewer) {}
 
 export class HRData extends sf.object("HRData", {
 	jobsList: JobsArray,
@@ -178,8 +187,6 @@ export class HRData extends sf.object("HRData", {
 				Interviewers should not be removed from this array.`,
 		},
 	}),
-}) { }
+}) {}
 
-export const treeConfiguration = new TreeViewConfiguration(
-	{ schema: HRData },
-);
+export const treeConfiguration = new TreeViewConfiguration({ schema: HRData });

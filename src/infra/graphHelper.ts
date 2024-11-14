@@ -72,12 +72,12 @@ export class GraphHelper {
 							displayName: "Fluid Container",
 							description: "Fluid Container Description",
 						});
-	
-						const __fileStorageContainers: FileStorageContainer[] = response1.value;
-						if (__fileStorageContainers.length == 0) {
-							throw new Error("No file storage containers found");
-						}
-						return __fileStorageContainers[0].id;
+
+					const __fileStorageContainers: FileStorageContainer[] = response1.value;
+					if (__fileStorageContainers.length == 0) {
+						throw new Error("No file storage containers found");
+					}
+					return __fileStorageContainers[0].id;
 				} catch (error) {
 					console.error("Error while fetching file storage container ID: ", error);
 					throw error;

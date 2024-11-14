@@ -1,10 +1,10 @@
 import {
-    CommitKind,
-    CommitMetadata,
-    Listenable,
-    Revertible,
-    RevertibleFactory,
-    TreeViewEvents,
+	CommitKind,
+	CommitMetadata,
+	Listenable,
+	Revertible,
+	RevertibleFactory,
+	TreeViewEvents,
 } from "fluid-framework";
 
 /**
@@ -13,63 +13,63 @@ import {
  * The dispose function should be called when the stacks are no longer needed.
  */
 export function createUndoRedoStacks(events: Listenable<TreeViewEvents>): undoRedo {
-    // Create arrays to store revertible objects
-    const undoStack: Revertible[] = [];
-    const redoStack: Revertible[] = [];
+	// Create arrays to store revertible objects
+	const undoStack: Revertible[] = [];
+	const redoStack: Revertible[] = [];
 
-    // Manage the stacks when a new commit is made
-    function onNewCommit(commit: CommitMetadata, getRevertible?: RevertibleFactory): void {
-        if (getRevertible === undefined) {
-            return;
-        }
-        const revertible = getRevertible();
-        if (commit.kind === CommitKind.Undo) {
-            redoStack.push(revertible);
-        } else {
-            if (commit.kind === CommitKind.Default) {
-                // clear redo stack
-                for (const redo of redoStack) {
-                    redo.dispose();
-                }
-                redoStack.length = 0;
-            }
-            undoStack.push(revertible);
-        }
-    }
+	// Manage the stacks when a new commit is made
+	function onNewCommit(commit: CommitMetadata, getRevertible?: RevertibleFactory): void {
+		if (getRevertible === undefined) {
+			return;
+		}
+		const revertible = getRevertible();
+		if (commit.kind === CommitKind.Undo) {
+			redoStack.push(revertible);
+		} else {
+			if (commit.kind === CommitKind.Default) {
+				// clear redo stack
+				for (const redo of redoStack) {
+					redo.dispose();
+				}
+				redoStack.length = 0;
+			}
+			undoStack.push(revertible);
+		}
+	}
 
-    // Subscribe to the commitApplied event
-    const unsubscribeFromCommitApplied = events.on("commitApplied", onNewCommit);
+	// Subscribe to the commitApplied event
+	const unsubscribeFromCommitApplied = events.on("commitApplied", onNewCommit);
 
-    // Dispose function to clean up the stacks
-    const dispose = () => {
-        unsubscribeFromCommitApplied();
-        for (const revertible of undoStack) {
-            revertible.dispose();
-        }
-        for (const revertible of redoStack) {
-            revertible.dispose();
-        }
-        redoStack.length = 0;
-        undoStack.length = 0;
-    };
+	// Dispose function to clean up the stacks
+	const dispose = () => {
+		unsubscribeFromCommitApplied();
+		for (const revertible of undoStack) {
+			revertible.dispose();
+		}
+		for (const revertible of redoStack) {
+			revertible.dispose();
+		}
+		redoStack.length = 0;
+		undoStack.length = 0;
+	};
 
-    // Function to revert from a stack
-    function revertFromStack(stack: Revertible[]): void {
-        const revertible = stack.pop();
-        if (revertible !== undefined) {
-            revertible.revert();
-        }
-    }
+	// Function to revert from a stack
+	function revertFromStack(stack: Revertible[]): void {
+		const revertible = stack.pop();
+		if (revertible !== undefined) {
+			revertible.revert();
+		}
+	}
 
-    function undo(): void {
-        revertFromStack(undoStack);
-    }
+	function undo(): void {
+		revertFromStack(undoStack);
+	}
 
-    function redo(): void {
-        revertFromStack(redoStack);
-    }
+	function redo(): void {
+		revertFromStack(redoStack);
+	}
 
-    return { undo, redo, dispose };
+	return { undo, redo, dispose };
 }
 
 export type undoRedo = { undo: () => void; redo: () => void; dispose: () => void };

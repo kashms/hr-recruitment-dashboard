@@ -18,7 +18,7 @@ export class Availability extends sf.array("Availability", sf.string) {
 				this.removeAt(index);
 			}
 		}
-	}
+	};
 }
 
 export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
@@ -32,14 +32,14 @@ export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
 			return;
 		}
 		this.interviewerIds.insertAtEnd(interviewerId);
-	}
+	};
 
 	public readonly removeInterviewer = (interviewerId: string) => {
 		const index = this.interviewerIds.indexOf(interviewerId);
 		if (index !== -1) {
 			this.interviewerIds.removeAt(index);
 		}
-	}
+	};
 }
 
 export class Interviewer extends sf.object("Interviewer", {
@@ -47,7 +47,7 @@ export class Interviewer extends sf.object("Interviewer", {
 	interviewerId: sf.required(sf.string),
 	name: sf.required(sf.string),
 	availability: sf.required(Availability),
-}) { }
+}) {}
 
 export class Candidate extends sf.object("Candidate", {
 	name: sf.string,
@@ -55,7 +55,7 @@ export class Candidate extends sf.object("Candidate", {
 	yearsOfExperience: sf.number,
 	availability: sf.required(Availability),
 	isUnread: sf.required(sf.boolean),
-}) { }
+}) {}
 
 export class Job extends sf.object("Job", {
 	jobId: sf.string,
@@ -66,7 +66,6 @@ export class Job extends sf.object("Job", {
 	onSiteSchedule: sf.required(sf.array(OnSiteSchedule)),
 	isUnread: sf.required(sf.boolean),
 }) {
-
 	public readonly addNewOnSiteForCandidate = (candiadteId: string) => {
 		const newOnSite = new OnSiteSchedule({
 			day: "Monday",
@@ -79,21 +78,21 @@ export class Job extends sf.object("Job", {
 
 	public readonly hasOnSiteForCandidate = (candidateId: string) => {
 		return !!this.getOnSiteForCandidate(candidateId);
-	}
+	};
 
 	public readonly getOnSiteForCandidate = (candidateId: string) => {
 		return this.onSiteSchedule.find((onSite) => onSite.candidateId === candidateId);
-	}
+	};
 
 	public readonly addCandidate = (candidate: Candidate) => {
 		this.candidates.insertAtEnd(candidate);
-	}
+	};
 }
 
 export class JobsArray extends sf.array("JobsArray", Job) {
 	public readonly addJob = (job: Job) => {
 		this.insertAtEnd(job);
-	}
+	};
 
 	public readonly deleteJob = (job: Job) => {
 		const index = this.indexOf(job);
@@ -103,13 +102,11 @@ export class JobsArray extends sf.array("JobsArray", Job) {
 	};
 }
 
-export class InterviewerPool extends sf.array("InterviewerPool", Interviewer) { }
+export class InterviewerPool extends sf.array("InterviewerPool", Interviewer) {}
 
 export class HRData extends sf.object("HRData", {
 	jobsList: JobsArray,
 	interviewerPool: sf.required(InterviewerPool),
-}) { }
+}) {}
 
-export const treeConfiguration = new TreeViewConfiguration(
-	{ schema: HRData },
-);
+export const treeConfiguration = new TreeViewConfiguration({ schema: HRData });

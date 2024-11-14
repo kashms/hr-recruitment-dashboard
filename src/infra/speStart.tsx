@@ -181,7 +181,7 @@ async function createFluidApp(
 		appPresence,
 		services.audience,
 	);
-	
+
 	// {START MOD_4}
 	// appView = (
 	// 	<UndoRedoContext.Provider value={undoRedoContext}>
