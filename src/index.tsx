@@ -30,11 +30,11 @@ async function tinyliciousStart() {
 	// {END MOD_0}
 
 	// {START MOD_1}
-	// crateFluidContainer(root);
+	// createFluidContainer(root);
 	// {END MOD_1}
 }
 
-async function crateFluidContainer(root: Root) {
+async function createFluidContainer(root: Root) {
 	const tinyliciousClient = new TinyliciousClient({});
 
 	let containerId = "";
