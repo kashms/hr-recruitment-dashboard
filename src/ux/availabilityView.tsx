@@ -10,8 +10,8 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 		return avail;
 	};
 	const setDayAvailability = (day: string, checked: boolean) => {
-		const newAvail = { ...avail };
-		newAvail.setDayAvailability(day, checked);
+		avail.setDayAvailability(day, checked);
+		const newAvail = new Availability(...avail);
 		setAvail(newAvail);
 	};
 	// {END MOD_0}
@@ -29,15 +29,22 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 	return (
 		<div className="flex flex-col gap-1 justify-center content-center m-1">
 			<div className="flex flex-row gap-1">
-				{DAYS_OF_WEEK.map((day, index) => (
-					<DayView
-						key={day}
-						dayName={DAYS_OF_WEEK_SHORT[index]}
-						isAvailable={getAvail().includes(day)}
-						readOnly={props.readOnly}
-						onChange={(checked: boolean) => setDayAvailability(day, checked)}
-					/>
-				))}
+				{DAYS_OF_WEEK.map((day, index) => {
+					const availability = getAvail();
+					try {
+						return (
+							<DayView
+								key={day}
+								dayName={DAYS_OF_WEEK_SHORT[index]}
+								isAvailable={availability.includes(day)}
+								readOnly={props.readOnly}
+								onChange={(checked: boolean) => setDayAvailability(day, checked)}
+							/>
+						);
+					} catch (error) {
+						console.error(error);
+					}
+				})}
 			</div>
 		</div>
 	);
