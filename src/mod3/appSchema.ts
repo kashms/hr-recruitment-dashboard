@@ -60,6 +60,19 @@ export class OnSiteSchedule extends sf.object("OnSiteSchedule", {
 			this.interviewerIds.removeAt(index);
 		}
 	};
+
+	public validateInterviewers(interviewerPool: InterviewerPool): void {
+		this.interviewerIds.forEach(interviewerId => {
+			const interviewer = interviewerPool.find(person => person.interviewerId === interviewerId);
+			if (interviewer === undefined) {
+				throw new Error(`You cannot assign the interviewerId ${interviewerId} to this OnSiteSchedule because there are no existing interviewers within the InterviewerPool with that id.`);
+			}
+
+			if (interviewer.availability.includes(this.day) === false) {
+				throw new Error(`You cannot assign the interviewer with id "${interviewerId}" and name "${interviewer.name}" to this OnSiteSchedule because it is scheduled to take place on a ${this.day} and the interviewer does NOT have availability for that day.`)
+			}
+		})
+	}
 }
 
 export class Interviewer extends sf.object("Interviewer", {
@@ -80,7 +93,7 @@ export class Interviewer extends sf.object("Interviewer", {
 			description: "The availability of the interviewer. This field is required.",
 		},
 	}),
-}) {}
+}) { }
 
 export class Candidate extends sf.object("Candidate", {
 	name: sf.string,
@@ -104,7 +117,7 @@ export class Candidate extends sf.object("Candidate", {
 				"The boolean value that determines if the LLM or AI help was used. This field is required. The default is false. This field should be set to true when llm or ai makes any edits to any objects of this type",
 		},
 	}),
-}) {}
+}) { }
 
 export class Job extends sf.object("Job", {
 	jobId: sf.string,
@@ -176,7 +189,7 @@ export class JobsArray extends sf.array("JobsArray", Job) {
 	};
 }
 
-export class InterviewerPool extends sf.array("InterviewerPool", Interviewer) {}
+export class InterviewerPool extends sf.array("InterviewerPool", Interviewer) { }
 
 export class HRData extends sf.object("HRData", {
 	jobsList: JobsArray,
@@ -187,6 +200,6 @@ export class HRData extends sf.object("HRData", {
 				Interviewers should not be removed from this array.`,
 		},
 	}),
-}) {}
+}) { }
 
 export const treeConfiguration = new TreeViewConfiguration({ schema: HRData });
