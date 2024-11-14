@@ -1,6 +1,6 @@
 import { Candidate, Interviewer, InterviewerPool, OnSiteSchedule } from "@lab/appSchema.js";
 import { Button } from "@fluentui/react-components";
-import React from "react";
+import React, { useState } from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { DismissFilled, ListFilled } from "@fluentui/react-icons";
 import { DAYS_OF_WEEK } from "../utils/util.js";
@@ -13,16 +13,16 @@ export function OnSitePlanView(props: {
 	handleToggleInterviewerList: () => void;
 }): JSX.Element {
 	// {START MOD_0}
-	// const [onSiteSchedule, setOnSiteSchedule] = React.useState(props.onSiteSchedule);
+	// const [onSiteSchedule, setOnSiteSchedule] = useState(props.onSiteSchedule);
 	// const getOnSiteSchedule = () => {
 	// 	return onSiteSchedule;
 	// };
+	// const removeInterviewer = (interviewerId: string) => {
+	// 	onSiteSchedule.removeInterviewer(interviewerId);
+	// 	setOnSiteSchedule({ ...onSiteSchedule });
+	// };
 	// const setOnSiteDay = (day: string) => {
 	// 	setOnSiteSchedule({ ...onSiteSchedule, day });
-	// };
-	// const handleRemoveInterviewer = (interviewerId: string) => {
-	// 	getOnSiteSchedule().removeInterviewer(interviewerId);
-	// 	setOnSiteSchedule({ ...onSiteSchedule });
 	// };
 	// {END MOD_0}
 
@@ -33,11 +33,11 @@ export function OnSitePlanView(props: {
 	const getOnSiteSchedule = () => {
 		return props.onSiteSchedule;
 	};
+	const removeInterviewer = (interviewerId: string) => {
+		props.onSiteSchedule.removeInterviewer(interviewerId);
+	}
 	const setOnSiteDay = (day: string) => {
 		props.onSiteSchedule.day = day;
-	};
-	const handleRemoveInterviewer = (interviewerId: string) => {
-		getOnSiteSchedule().removeInterviewer(interviewerId);
 	};
 	// {END MOD_1}
 
@@ -96,7 +96,7 @@ export function OnSitePlanView(props: {
 						<InterviewerReadView
 							key={interviewer.interviewerId}
 							interviewer={interviewer}
-							removeHandler={handleRemoveInterviewer}
+							removeHandler={removeInterviewer}
 						/>
 					))}
 				</div>
