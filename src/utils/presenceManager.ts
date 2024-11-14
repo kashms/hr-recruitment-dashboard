@@ -5,25 +5,29 @@ import {
 	Latest,
 	PresenceStates,
 } from "@fluid-experimental/presence";
-import { OdspMember } from "@fluidframework/odsp-client/beta";
-import { TinyliciousMember } from "@fluidframework/tinylicious-client";
-import { IMember, IServiceAudience } from "fluid-framework";
+import { OdspMember, type IOdspAudience } from "@fluidframework/odsp-client/beta";
+import { TinyliciousMember, type ITinyliciousAudience } from "@fluidframework/tinylicious-client";
+
+function isOdspMember(member: OdspMember | TinyliciousMember): member is OdspMember {
+	return "email" in member;
+}
 
 export class PresenceManager {
-	private presence: IPresence;
-	private audience: IServiceAudience<IMember>;
-	private appSelectionPresenceState: PresenceStates<typeof appSelectionSchema>;
-	private userInfoMap: Map<ISessionClient, UserInfo> = new Map();
+	private readonly appSelectionPresenceState: PresenceStates<typeof appSelectionSchema>;
+	private readonly userInfoMap: Map<ISessionClient, UserInfo> = new Map();
 	private userInfoCallback: (userInfoMap: Map<ISessionClient, UserInfo>) => void = () => {};
 
-	constructor(presence: IPresence, audience: IServiceAudience<IMember>) {
+	constructor(
+		private readonly presence: IPresence,
+		private readonly audience: IOdspAudience | ITinyliciousAudience,
+	) {
 		this.presence = presence;
 		this.audience = audience;
 
-		const appSelectionWorkspace = "appSelection:workspace";
+		const appSelectionWorkspaceAddress = "appSelection:workspace";
 		this.appSelectionPresenceState = presence.getStates(
-			appSelectionWorkspace, // Worksapce address
-			appSelectionSchema, // Worksapce schema
+			appSelectionWorkspaceAddress, // Workspace address
+			appSelectionSchema, // Workspace schema
 		);
 
 		this.appSelectionPresenceState.props.userInfo.events.on("updated", (update) => {
@@ -45,21 +49,11 @@ export class PresenceManager {
 
 		// Broadcast current user's info to all clients
 		if (myselfMember) {
-			if ((myselfMember as IMember as OdspMember) !== undefined) {
-				const odspMember = myselfMember as IMember as OdspMember;
-				this.appSelectionPresenceState.props.userInfo.local = {
-					userId: odspMember.id,
-					userName: odspMember.name,
-					userEmail: odspMember.email,
-				};
-			} else if ((myselfMember as IMember as TinyliciousMember) !== undefined) {
-				const tinyliciousMember = myselfMember as IMember as TinyliciousMember;
-				this.appSelectionPresenceState.props.userInfo.local = {
-					userId: tinyliciousMember.id,
-					userName: tinyliciousMember.name,
-					userEmail: "",
-				};
-			}
+			this.appSelectionPresenceState.props.userInfo.local = {
+				userId: myselfMember.id,
+				userName: myselfMember.name,
+				userEmail: isOdspMember(myselfMember) ? myselfMember.email : "",
+			};
 
 			this.userInfoMap.set(
 				this.presence.getMyself(),
@@ -70,7 +64,7 @@ export class PresenceManager {
 	}
 
 	getStates() {
-		return this.appSelectionPresenceState;
+		return this.appSelectionPresenceState.props;
 	}
 
 	getPresence() {
@@ -108,7 +102,7 @@ export class PresenceManager {
 
 // Schema for the Presence Manager
 export const appSelectionSchema = {
-	jobSelelction: Latest({ jobSelected: "" }),
+	jobSelection: Latest({ jobSelected: "" }),
 	candidateSelection: Latest({ candidateSelected: "" }),
 	userInfo: Latest({ userId: "", userName: "", userEmail: "" } satisfies UserInfo),
 };

@@ -30,32 +30,30 @@ export function CandidatesListView(props: {
 			Map<ISessionClient, string>
 		>(
 			new Map(
-				[...presenceManager.getStates().props.candidateSelection.clientValues()].map(
+				[...presenceManager.getStates().candidateSelection.clientValues()].map(
 					(cv) => [cv.client, cv.value.candidateSelected] as [ISessionClient, string],
 				),
 			),
 		);
 		useEffect(() => {
-			return presenceManager
-				.getStates()
-				.props.candidateSelection.events.on("updated", (update) => {
-					const remoteSessionClient = update.client;
-					const remoteSelectedCandidateId = update.value.candidateSelected;
+			return presenceManager.getStates().candidateSelection.events.on("updated", (update) => {
+				const remoteSessionClient = update.client;
+				const remoteSelectedCandidateId = update.value.candidateSelected;
 
-					if (remoteSelectedCandidateId === "") {
-						candidatePresenceMap.delete(remoteSessionClient);
-						setCandidatePresenceMap(new Map(candidatePresenceMap));
-					} else {
-						setCandidatePresenceMap(
-							new Map(
-								candidatePresenceMap.set(
-									remoteSessionClient,
-									remoteSelectedCandidateId,
-								),
+				if (remoteSelectedCandidateId === "") {
+					candidatePresenceMap.delete(remoteSessionClient);
+					setCandidatePresenceMap(new Map(candidatePresenceMap));
+				} else {
+					setCandidatePresenceMap(
+						new Map(
+							candidatePresenceMap.set(
+								remoteSessionClient,
+								remoteSelectedCandidateId,
 							),
-						);
-					}
-				});
+						),
+					);
+				}
+			});
 		}, []);
 		presenceUserInfoList = props.job.candidates.map((candidate) => {
 			return presenceManager.getUserInfo(
@@ -70,7 +68,7 @@ export function CandidatesListView(props: {
 
 		// {VIEW MOD_2}
 		if (presenceManager) {
-			presenceManager.getStates().props.candidateSelection.local = {
+			presenceManager.getStates().candidateSelection.local = {
 				candidateSelected: candidate ? candidate.candidateId : "",
 			};
 		}

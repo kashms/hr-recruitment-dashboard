@@ -25,7 +25,7 @@ export function JobsListView(props: {
 	if (presenceManager) {
 		const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(
 			new Map(
-				[...presenceManager.getStates().props.jobSelelction.clientValues()].map(
+				[...presenceManager.getStates().jobSelection.clientValues()].map(
 					(cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string],
 				),
 			),
@@ -33,7 +33,7 @@ export function JobsListView(props: {
 		useEffect(() => {
 			return presenceManager
 				.getStates()
-				.props.jobSelelction.events.on("updated", (update) => {
+				.jobSelection.events.on("updated", (update) => {
 					if (jobPresenceMap) {
 						const remoteSessionClient = update.client;
 						const remoteSelectedJobId = update.value.jobSelected;
@@ -62,10 +62,10 @@ export function JobsListView(props: {
 
 		// {VIEW MOD_2}
 		if (presenceManager) {
-			presenceManager.getStates().props.jobSelelction.local = {
+			presenceManager.getStates().jobSelection.local = {
 				jobSelected: job ? job.jobId : "",
 			};
-			presenceManager.getStates().props.candidateSelection.local = {
+			presenceManager.getStates().candidateSelection.local = {
 				candidateSelected: "",
 			};
 		}
@@ -116,7 +116,7 @@ export function JobView(props: {
 }): JSX.Element {
 	// {START MOD_1}
 	// useTreeNode(props.job);
-	// {END MOD_1}
+	// {END MOD_1}n
 
 	return (
 		<div
