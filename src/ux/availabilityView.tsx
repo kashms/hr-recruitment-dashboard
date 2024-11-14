@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Availability } from "@lab/appSchema.js";
 import { DAYS_OF_WEEK, DAYS_OF_WEEK_SHORT } from "../utils/util.js";
 import { useTree } from "../utils/treeReactHooks.js";
 
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
+	// {START MOD_0}
+	const [avail, setAvail] = useState(props.avail);
+	const getAvail = (): Availability => {
+		return avail;
+	};
+	const setDayAvailability = (day: string, checked: boolean) => {
+		const newAvail = { ...avail };
+		newAvail.setDayAvailability(day, checked);
+		setAvail(newAvail);
+	};
+	// {END MOD_0}
+
 	// {START MOD_1}
 	// useTree(props.avail);
+	// const getAvail = () => {
+	//     return props.avail;
+	// };
+	// const setDayAvailability = (day: string, checked: boolean) => {
+	//     props.avail.setDayAvailability(day, checked);
+	// };
 	// {END MOD_1}
 
 	return (
@@ -15,11 +33,9 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 					<DayView
 						key={day}
 						dayName={DAYS_OF_WEEK_SHORT[index]}
-						isAvailable={props.avail.includes(day)}
+						isAvailable={getAvail().includes(day)}
 						readOnly={props.readOnly}
-						onChange={(checked: boolean) =>
-							props.avail.setDayAvailability(day, checked)
-						}
+						onChange={(checked: boolean) => setDayAvailability(day, checked)}
 					/>
 				))}
 			</div>

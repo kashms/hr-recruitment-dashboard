@@ -15,8 +15,34 @@ export function JobsListView(props: {
 	setSelectedJob: (job: Job | undefined) => void;
 	selectedJob?: Job;
 }): JSX.Element {
+	// {START MOD_0}
+	const [jobs, setJobs] = useState(props.jobs);
+	const getJobs = () => {
+		return jobs;
+	};
+	const deleteJob = (job: Job) => {
+		const newJobs = new JobsArray(...jobs);
+		newJobs.deleteJob(job);
+		setJobs(newJobs);
+	};
+	const addJob = (job: Job) => {
+		const newJobs = new JobsArray(...jobs);
+		newJobs.addJob(job);
+		setJobs(newJobs);
+	};
+	// {END MOD_0}
+
 	// {START MOD_1}
 	// useTreeNode(props.jobs);
+	// const getJobs = () => {
+	//     return props.jobs;
+	// }
+	// const deleteJob = (job: Job) => {
+	//     props.jobs.deleteJob(job);
+	// }
+	// const addJob = (job: Job) => {
+	//     props.jobs.addJob(job);
+	// }
 	// {END MOD_1}
 
 	// {VIEW MOD_2}
@@ -31,27 +57,23 @@ export function JobsListView(props: {
 			),
 		);
 		useEffect(() => {
-			return presenceManager
-				.getStates()
-				.jobSelection.events.on("updated", (update) => {
-					if (jobPresenceMap) {
-						const remoteSessionClient = update.client;
-						const remoteSelectedJobId = update.value.jobSelected;
-						// if empty string, then no job is selected, remove it from the map
-						if (remoteSelectedJobId === "") {
-							jobPresenceMap.delete(remoteSessionClient);
-							setJobPresenceMap(new Map(jobPresenceMap));
-						} else {
-							setJobPresenceMap(
-								new Map(
-									jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId),
-								),
-							);
-						}
+			return presenceManager.getStates().jobSelection.events.on("updated", (update) => {
+				if (jobPresenceMap) {
+					const remoteSessionClient = update.client;
+					const remoteSelectedJobId = update.value.jobSelected;
+					// if empty string, then no job is selected, remove it from the map
+					if (remoteSelectedJobId === "") {
+						jobPresenceMap.delete(remoteSessionClient);
+						setJobPresenceMap(new Map(jobPresenceMap));
+					} else {
+						setJobPresenceMap(
+							new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
+						);
 					}
-				});
+				}
+			});
 		}, []);
-		presenceUserInfoList = props.jobs.map((job) => {
+		presenceUserInfoList = getJobs().map((job) => {
 			return presenceManager.getUserInfo(getKeysByValue(jobPresenceMap, job.jobId));
 		});
 	}
@@ -78,14 +100,14 @@ export function JobsListView(props: {
 				Jobs
 			</div>
 			<div className="flex-grow mx-2">
-				{props.jobs.map((job, index) => (
+				{getJobs().map((job, index) => (
 					<JobView
 						key={index}
 						job={job}
 						isSelected={props.selectedJob === job}
 						setSelectedJob={setSelectedJob}
 						deleteJob={(job: Job) => {
-							props.jobs.deleteJob(job);
+							deleteJob(job);
 						}}
 						// {VIEW MOD_2}
 						presenceUserInfoList={presenceUserInfoList[index]}
@@ -97,7 +119,7 @@ export function JobsListView(props: {
 				<button
 					className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
 					onClick={() => {
-						props.jobs.addJob(createTestJob(false));
+						addJob(createTestJob(false));
 					}}
 				>
 					+ Add New Job
@@ -114,8 +136,30 @@ export function JobView(props: {
 	deleteJob: (job: Job) => void;
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
+	// {START MOD_0}
+	const [job, setJob] = useState(props.job);
+	const getjob = () => {
+		return job;
+	};
+	const setJobTitle = (newTitle: string) => {
+		setJob({ ...job, jobTitle: newTitle });
+	};
+	const setJobDescription = (newDescription: string) => {
+		setJob({ ...job, jobDescription: newDescription });
+	};
+	// {END MOD_0}
+
 	// {START MOD_1}
 	// useTreeNode(props.job);
+	// const getjob = () => {
+	//     return props.job;
+	// };
+	// const setJobTitle = (newTitle: string) => {
+	//     props.job.jobTitle = newTitle;
+	// };
+	// const setJobDescription = (newDescription: string) => {
+	//     props.job.jobDescription = newDescription;
+	// };
 	// {END MOD_1}n
 
 	return (
@@ -164,8 +208,8 @@ export function JobView(props: {
 						</label>
 						<input
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							value={props.job.jobTitle}
-							onChange={(event) => (props.job.jobTitle = event.target.value)}
+							value={getjob().jobTitle}
+							onChange={(event) => setJobTitle(event.target.value)}
 						/>
 					</div>
 
@@ -175,8 +219,8 @@ export function JobView(props: {
 						</label>
 						<textarea
 							className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-							value={props.job.jobDescription}
-							onChange={(event) => (props.job.jobDescription = event.target.value)}
+							value={getjob().jobDescription}
+							onChange={(event) => setJobDescription(event.target.value)}
 						/>
 					</div>
 				</div>

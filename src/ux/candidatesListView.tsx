@@ -16,9 +16,27 @@ export function CandidatesListView(props: {
 	selectedCandidate: Candidate | undefined;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
+	// {START MOD_0}
+	const [job, setJob] = useState(props.job);
+	const getJob = () => {
+		return job;
+	};
+	const addCandidate = (candidate: Candidate) => {
+		const newJob = { ...job };
+		newJob.candidates.push(candidate);
+		setJob(newJob);
+	};
+	// {END MOD_0}
+
 	// {START MOD_1}
 	// useTreeNode(props.job.candidates);
 	// useTreeNode(props.job.onSiteSchedule);
+	// const getJob = () => {
+	//     return props.job;
+	// };
+	// const addCandidate = (candidate: Candidate) => {
+	//     props.job.addCandidate(candidate);
+	// };
 	// {END MOD_1}
 
 	// {VIEW MOD_2}
@@ -55,7 +73,7 @@ export function CandidatesListView(props: {
 				}
 			});
 		}, []);
-		presenceUserInfoList = props.job.candidates.map((candidate) => {
+		presenceUserInfoList = getJob().candidates.map((candidate) => {
 			return presenceManager.getUserInfo(
 				getKeysByValue(candidatePresenceMap, candidate.candidateId),
 			);
@@ -81,17 +99,17 @@ export function CandidatesListView(props: {
 				Candidates
 			</div>
 			<div className="flex-grow mx-2">
-				{props.job.candidates.length === 0 ? (
+				{getJob().candidates.length === 0 ? (
 					<div className="my-8 text-center">😞 No candidates yet!</div>
 				) : (
-					props.job.candidates.map((candidate, index) => (
+					getJob().candidates.map((candidate, index) => (
 						<CandidateView
 							key={index}
 							candidate={candidate}
 							// {VIEW MOD_2}
 							presenceUserInfoList={presenceUserInfoList[index]}
 							// {END MOD_2}
-							job={props.job}
+							job={getJob()}
 							selectedCandidate={props.selectedCandidate}
 							setSelectedCandidate={setSelectedCandidate}
 						/>
@@ -102,8 +120,7 @@ export function CandidatesListView(props: {
 				<button
 					className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
 					onClick={() => {
-						const newCandidate = createTestCandidate();
-						props.job.addCandidate(newCandidate);
+						addCandidate(createTestCandidate());
 					}}
 				>
 					+ Add New Candidate
@@ -120,31 +137,53 @@ export function CandidateView(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
+	// {START MOD_0}
+	const [candidate, setCandidate] = useState(props.candidate);
+	const getCandidate = () => {
+		return candidate;
+	};
+	const setCandidateName = (name: string) => {
+		setCandidate({ ...candidate, name });
+	};
+	const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
+		setCandidate({ ...candidate, yearsOfExperience });
+	};
+	// {START MOD_1}
+
 	// {START MOD_1}
 	// useTreeNode(props.candidate);
+	// const getCandidate = () => {
+	//     return props.candidate;
+	// };
+	// const setCandidateName = (name: string) => {
+	//     props.candidate.name = name;
+	// };
+	// const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
+	//     props.candidate.yearsOfExperience = yearsOfExperience;
+	// };
 	// {END MOD_1}
 
 	return (
 		<div
 			className={`flex flex-col gap-1 justify-center content-center m-1 p-2 cursor-pointer
-                ${props.selectedCandidate?.candidateId == props.candidate.candidateId ? "bg-violet-50 border border-violet-300" : "bg-slate-50 hover:bg-slate-100"}
+                ${props.selectedCandidate?.candidateId == getCandidate().candidateId ? "bg-violet-50 border border-violet-300" : "bg-slate-50 hover:bg-slate-100"}
            `}
 			onClick={() => {
-				props.setSelectedCandidate(props.candidate);
+				props.setSelectedCandidate(getCandidate());
 			}}
 		>
 			<div className="flex justify-end gap-2">
-				{(props.candidate.isUnread ||
-					props.job.getOnSiteForCandidate(props.candidate.candidateId)?.isUnread) && (
+				{(getCandidate().isUnread ||
+					props.job.getOnSiteForCandidate(getCandidate().candidateId)?.isUnread) && (
 					<div className="flex items-center p-2">
 						<span className="w-2 h-2 bg-red-500 rounded-full"></span>
 					</div>
 				)}
-				{!props.job.hasOnSiteForCandidate(props.candidate.candidateId) && (
+				{!props.job.hasOnSiteForCandidate(getCandidate().candidateId) && (
 					<Button
 						appearance="primary"
 						onClick={() =>
-							props.job.addNewOnSiteForCandidate(props.candidate.candidateId)
+							props.job.addNewOnSiteForCandidate(getCandidate().candidateId)
 						}
 						className="inline-block"
 					>
@@ -166,8 +205,8 @@ export function CandidateView(props: {
 				<label className="block mb-1 text-sm font-medium text-gray-900">Name:</label>
 				<input
 					className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					value={props.candidate.name}
-					onChange={(event) => (props.candidate.name = event.target.value)}
+					value={getCandidate().name}
+					onChange={(event) => setCandidateName(event.target.value)}
 				/>
 			</div>
 			<div className="mb-3">
@@ -176,13 +215,13 @@ export function CandidateView(props: {
 				</label>
 				<input
 					className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					value={props.candidate.yearsOfExperience}
+					value={getCandidate().yearsOfExperience}
 					onChange={(event) =>
-						(props.candidate.yearsOfExperience = Number(event.target.value))
+						setCandidateYearsOfExperience(parseInt(event.target.value))
 					}
 				/>
 			</div>
-			<AvailabilityView avail={props.candidate.availability} />
+			<AvailabilityView avail={getCandidate().availability} />
 		</div>
 	);
 }

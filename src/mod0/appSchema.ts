@@ -4,10 +4,6 @@
  */
 
 export class Availability extends Array<string> {
-	constructor(days: string[]) {
-		super(...days);
-	}
-
 	// setDayAvailability method
 	public readonly setDayAvailability = (day: string, available: boolean) => {
 		if (available && !this.includes(day)) {
