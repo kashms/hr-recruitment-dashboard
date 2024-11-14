@@ -15,7 +15,7 @@ export function JobsListView(props: {
 	setSelectedJob: (job: Job | undefined) => void;
 	selectedJob?: Job;
 }): JSX.Element {
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	const [jobs, setJobs] = useState(props.jobs);
 	const getJobs = () => {
 		return jobs;
@@ -30,9 +30,9 @@ export function JobsListView(props: {
 		newJobs.addJob(job);
 		setJobs(newJobs);
 	};
-	// {END MOD_0}
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	// useTreeNode(props.jobs);
 	// const getJobs = () => {
 	//     return props.jobs;
@@ -43,7 +43,7 @@ export function JobsListView(props: {
 	// const addJob = (job: Job) => {
 	//     props.jobs.addJob(job);
 	// }
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	// {VIEW MOD_2}
 	const presenceManager = useContext(PresenceContext);
@@ -136,8 +136,8 @@ export function JobView(props: {
 	deleteJob: (job: Job) => void;
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
-	// {START MOD_0}
-	const [job, setJob] = useState(props.job);
+//############################ START MODULE 0 changes here ##############################
+const [job, setJob] = useState(props.job);
 	const getjob = () => {
 		return job;
 	};
@@ -147,9 +147,9 @@ export function JobView(props: {
 	const setJobDescription = (newDescription: string) => {
 		setJob({ ...job, jobDescription: newDescription });
 	};
-	// {END MOD_0}
+//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+//############################ START MODULE 1 changes here ##############################
 	// useTreeNode(props.job);
 	// const getjob = () => {
 	//     return props.job;
@@ -160,7 +160,7 @@ export function JobView(props: {
 	// const setJobDescription = (newDescription: string) => {
 	//     props.job.jobDescription = newDescription;
 	// };
-	// {END MOD_1}n
+//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
 		<div

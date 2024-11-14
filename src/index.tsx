@@ -25,13 +25,13 @@ async function tinyliciousStart() {
 	document.body.appendChild(app);
 	const root = createRoot(app);
 
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	root.render(<HRApp data={createTestAppData()} />);
-	// {END MOD_0}
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	// createFluidContainer(root);
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 }
 
 async function createFluidContainer(root: Root) {
@@ -59,7 +59,7 @@ async function createFluidContainer(root: Root) {
 
 	let appView = <div></div>;
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	// // Initialize the SharedTree Data Structure
 	// const appData = container.initialObjects.appData.viewWith(treeConfiguration);
 	// if (appData.compatibility.canInitialize) {
@@ -78,9 +78,9 @@ async function createFluidContainer(root: Root) {
 	// 		<HRApp data={appData} />
 	// 	</UndoRedoContext.Provider>
 	// );
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
-	// {START MOD_2}
+	//############################ START MODULE 2 changes here ##############################
 	// appView = (
 	// 	<PresenceContext.Provider value={presenceManagerContext}>
 	// 		<UndoRedoContext.Provider value={undoRedoContext}>
@@ -88,7 +88,7 @@ async function createFluidContainer(root: Root) {
 	// 		</UndoRedoContext.Provider>
 	// 	</PresenceContext.Provider>
 	// );
-	// {END MOD_2}
+	//////////////////////////////// END MODULE 2 changes here //////////////////////////////
 
 	root.render(appView);
 

@@ -12,7 +12,7 @@ export function OnSitePlanView(props: {
 	interviewerPool: InterviewerPool;
 	handleToggleInterviewerList: () => void;
 }): JSX.Element {
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	const [onSiteSchedule, setOnSiteSchedule] = useState(props.onSiteSchedule);
 	const getOnSiteSchedule = () => {
 		return onSiteSchedule;
@@ -25,9 +25,9 @@ export function OnSitePlanView(props: {
 		onSiteSchedule.day = day;
 		setOnSiteSchedule({ ...onSiteSchedule });
 	};
-	// {END MOD_0}
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	// useTree(props.onSiteSchedule);
 	// useTree(props.candidate);
 	// useTree(props.interviewerPool);
@@ -40,7 +40,7 @@ export function OnSitePlanView(props: {
 	// const setOnSiteDay = (day: string) => {
 	// 	props.onSiteSchedule.day = day;
 	// };
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	const onSiteInterviewers = getOnSiteSchedule()
 		.interviewerIds.map((intId) =>

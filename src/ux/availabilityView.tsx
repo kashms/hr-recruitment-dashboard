@@ -4,7 +4,7 @@ import { DAYS_OF_WEEK, DAYS_OF_WEEK_SHORT } from "../utils/util.js";
 import { useTree } from "../utils/treeReactHooks.js";
 
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	const [avail, setAvail] = useState(props.avail);
 	const getAvail = (): Availability => {
 		return avail;
@@ -14,9 +14,9 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 		const newAvail = new Availability(...avail);
 		setAvail(newAvail);
 	};
-	// {END MOD_0}
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	// useTree(props.avail);
 	// const getAvail = () => {
 	//     return props.avail;
@@ -24,7 +24,7 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 	// const setDayAvailability = (day: string, checked: boolean) => {
 	//     props.avail.setDayAvailability(day, checked);
 	// };
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
 		<div className="flex flex-col gap-1 justify-center content-center m-1">
