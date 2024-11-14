@@ -18,6 +18,9 @@ export function CandidatesListView(props: {
 }): JSX.Element {
 	// {START MOD_0}
 	const [job, setJob] = useState(props.job);
+	if (job.jobId !== props.job.jobId) {
+		setJob(props.job);
+	}
 	const getJob = () => {
 		return job;
 	};
