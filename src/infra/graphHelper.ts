@@ -63,32 +63,31 @@ export class GraphHelper {
 			const fileStorageContainers: FileStorageContainer[] = response.value;
 
 			if (fileStorageContainers.length == 0) {
-				throw new Error("No file storage containers found");
+				try {
+					const response1 = await this.graphClient
+						.api("/storage/fileStorage/containers")
+						.version("beta")
+						.post({
+							containerTypeId: containerTypeId,
+							displayName: "Fluid Container",
+							description: "Fluid Container Description",
+						});
+	
+						const __fileStorageContainers: FileStorageContainer[] = response1.value;
+						if (__fileStorageContainers.length == 0) {
+							throw new Error("No file storage containers found");
+						}
+						return __fileStorageContainers[0].id;
+				} catch (error) {
+					console.error("Error while fetching file storage container ID: ", error);
+					throw error;
+				}
 			}
 
 			return fileStorageContainers[0].id;
 		} catch (error) {
 			console.error("Error while fetching file storage container ID: ", error);
-			console.log("Retrying once");
-			try {
-				const response1 = await this.graphClient
-					.api("/storage/fileStorage/containers")
-					.version("beta")
-					.post({
-						containerTypeId: containerTypeId,
-						displayName: "Fluid Container",
-						description: "Fluid Container Description",
-					});
-
-					const __fileStorageContainers: FileStorageContainer[] = response1.value;
-					if (__fileStorageContainers.length == 0) {
-						throw new Error("No file storage containers found");
-					}
-					return __fileStorageContainers[0].id;
-			} catch (error) {
-				console.error("Error while fetching file storage container ID: ", error);
-				throw error;
-			}
+			throw error;
 		}
 	}
 
