@@ -17,7 +17,7 @@ export function JobsListView(props: {
 }): JSX.Element {
 	const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(
 		new Map(
-			[...props.presenceManager.getStates().props.jobSelelction.clientValues()].map(
+			[...props.presenceManager.getStates().jobSelection.clientValues()].map(
 				(cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string],
 			),
 		),
@@ -26,22 +26,20 @@ export function JobsListView(props: {
 	useTreeNode(props.jobs);
 
 	useEffect(() => {
-		return props.presenceManager
-			.getStates()
-			.props.jobSelelction.events.on("updated", (update) => {
-				const remoteSessionClient = update.client;
-				const remoteSelectedJobId = update.value.jobSelected;
+		return props.presenceManager.getStates().jobSelection.events.on("updated", (update) => {
+			const remoteSessionClient = update.client;
+			const remoteSelectedJobId = update.value.jobSelected;
 
-				// if empty string, then no job is selected, remove it from the map
-				if (remoteSelectedJobId === "") {
-					jobPresenceMap.delete(remoteSessionClient);
-					setJobPresenceMap(new Map(jobPresenceMap));
-				} else {
-					setJobPresenceMap(
-						new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
-					);
-				}
-			});
+			// if empty string, then no job is selected, remove it from the map
+			if (remoteSelectedJobId === "") {
+				jobPresenceMap.delete(remoteSessionClient);
+				setJobPresenceMap(new Map(jobPresenceMap));
+			} else {
+				setJobPresenceMap(
+					new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
+				);
+			}
+		});
 	}, []);
 
 	return (
@@ -57,10 +55,10 @@ export function JobsListView(props: {
 						isSelected={props.selectedJob === job}
 						setSelectedJob={(job: Job | undefined) => {
 							props.setSelectedJob(job);
-							props.presenceManager.getStates().props.jobSelelction.local = {
+							props.presenceManager.getStates().jobSelection.local = {
 								jobSelected: job ? job.jobId : "",
 							};
-							props.presenceManager.getStates().props.candidateSelection.local = {
+							props.presenceManager.getStates().candidateSelection.local = {
 								candidateSelected: "",
 							};
 						}}

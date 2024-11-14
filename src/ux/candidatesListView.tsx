@@ -18,7 +18,7 @@ export function CandidatesListView(props: {
 }): JSX.Element {
 	const [candidatePresenceMap, setCandidatePresenceMap] = useState<Map<ISessionClient, string>>(
 		new Map(
-			[...props.presenceManager.getStates().props.candidateSelection.clientValues()].map(
+			[...props.presenceManager.getStates().candidateSelection.clientValues()].map(
 				(cv) => [cv.client, cv.value.candidateSelected] as [ISessionClient, string],
 			),
 		),
@@ -30,7 +30,7 @@ export function CandidatesListView(props: {
 	useEffect(() => {
 		return props.presenceManager
 			.getStates()
-			.props.candidateSelection.events.on("updated", (update) => {
+			.candidateSelection.events.on("updated", (update) => {
 				const remoteSessionClient = update.client;
 				const remoteSelectedCandidateId = update.value.candidateSelected;
 
@@ -107,7 +107,7 @@ export function CandidateView(props: {
 			onClick={() => {
 				props.setSelectedCandidate(props.candidate);
 
-				props.presenceManager.getStates().props.candidateSelection.local = {
+				props.presenceManager.getStates().candidateSelection.local = {
 					candidateSelected: props.candidate.candidateId,
 				};
 			}}
