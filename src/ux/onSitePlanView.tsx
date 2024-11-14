@@ -1,6 +1,6 @@
 import { Candidate, Interviewer, InterviewerPool, OnSiteSchedule } from "@lab/appSchema.js";
 import { Button } from "@fluentui/react-components";
-import React from "react";
+import React, { useState } from "react";
 import { AvailabilityView } from "./availabilityView.js";
 import { DismissFilled, ListFilled } from "@fluentui/react-icons";
 import { DAYS_OF_WEEK } from "../utils/util.js";
@@ -12,14 +12,38 @@ export function OnSitePlanView(props: {
 	interviewerPool: InterviewerPool;
 	handleToggleInterviewerList: () => void;
 }): JSX.Element {
+	// {START MOD_0}
+	const [onSiteSchedule, setOnSiteSchedule] = useState(props.onSiteSchedule);
+	const getOnSiteSchedule = () => {
+		return onSiteSchedule;
+	};
+	const removeInterviewer = (interviewerId: string) => {
+		onSiteSchedule.removeInterviewer(interviewerId);
+		setOnSiteSchedule({ ...onSiteSchedule });
+	};
+	const setOnSiteDay = (day: string) => {
+		onSiteSchedule.day = day;
+		setOnSiteSchedule({ ...onSiteSchedule });
+	};
+	// {END MOD_0}
+
 	// {START MOD_1}
 	// useTree(props.onSiteSchedule);
 	// useTree(props.candidate);
 	// useTree(props.interviewerPool);
+	// const getOnSiteSchedule = () => {
+	// 	return props.onSiteSchedule;
+	// };
+	// const removeInterviewer = (interviewerId: string) => {
+	// 	props.onSiteSchedule.removeInterviewer(interviewerId);
+	// }
+	// const setOnSiteDay = (day: string) => {
+	// 	props.onSiteSchedule.day = day;
+	// };
 	// {END MOD_1}
 
-	const onSiteInterviewers = props.onSiteSchedule.interviewerIds
-		.map((intId) =>
+	const onSiteInterviewers = getOnSiteSchedule()
+		.interviewerIds.map((intId) =>
 			props.interviewerPool.find((interviewer) => interviewer.interviewerId === intId),
 		)
 		.filter((interviewer): interviewer is Interviewer => interviewer !== undefined);
@@ -27,13 +51,13 @@ export function OnSitePlanView(props: {
 	const checkValidity = () => {
 		if (
 			onSiteInterviewers.length !== 3 ||
-			!props.candidate.availability.includes(props.onSiteSchedule.day)
+			!props.candidate.availability.includes(getOnSiteSchedule().day)
 		) {
 			return false;
 		}
 
 		for (const interviewer of onSiteInterviewers) {
-			if (!interviewer.availability.includes(props.onSiteSchedule.day)) {
+			if (!interviewer.availability.includes(getOnSiteSchedule().day)) {
 				return false;
 			}
 		}
@@ -41,10 +65,6 @@ export function OnSitePlanView(props: {
 		return true;
 	};
 	const isValid = checkValidity();
-
-	const handleRemoveInterviewer = (interviewerId: string) => {
-		props.onSiteSchedule.removeInterviewer(interviewerId);
-	};
 
 	return (
 		<div
@@ -57,8 +77,8 @@ export function OnSitePlanView(props: {
 				<div className="flex items-center space-x-2 mx-2">
 					<select
 						className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2"
-						value={props.onSiteSchedule.day}
-						onChange={(event) => (props.onSiteSchedule.day = event.target.value)}
+						value={getOnSiteSchedule().day}
+						onChange={(event) => setOnSiteDay(event.target.value)}
 					>
 						{DAYS_OF_WEEK.map((day) => (
 							<option key={day} value={day}>
@@ -77,7 +97,7 @@ export function OnSitePlanView(props: {
 						<InterviewerReadView
 							key={interviewer.interviewerId}
 							interviewer={interviewer}
-							removeHandler={handleRemoveInterviewer}
+							removeHandler={removeInterviewer}
 						/>
 					))}
 				</div>
