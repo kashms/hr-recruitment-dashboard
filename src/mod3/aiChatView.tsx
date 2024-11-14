@@ -1,8 +1,9 @@
 import React from "react";
-import { asTreeViewAlpha, TreeView } from "@fluidframework/tree/alpha";
+import { asTreeViewAlpha } from "@fluidframework/tree/alpha";
+import { Tree, TreeNode, TreeView } from "@fluidframework/tree"
 import { aiCollab, AiCollabOptions } from "@fluid-experimental/ai-collab";
 import { AzureOpenAI } from "openai";
-import { HRData } from "./appSchema.js";
+import { HRData, OnSiteSchedule } from "./appSchema.js";
 
 export interface AiChatViewProps {
 	treeRoot: TreeView<typeof HRData>;
@@ -65,7 +66,13 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 				maxModelCalls: 10,
 			},
 			dumpDebugLog: true,
-		};
+			validator: (treeNode: TreeNode) => {
+				const schemaIdentifier = Tree.schema(treeNode).identifier;
+				if (schemaIdentifier === OnSiteSchedule.identifier) {
+					(treeNode as OnSiteSchedule).validateInterviewers(newBranchFork.root.interviewerPool);
+				}
+			}
+		}
 		console.log("sending request to llm");
 		console.log(aiCollabOptions);
 
