@@ -10,9 +10,11 @@
 		"moduleResolution": "Node16",
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
+		// @fluentui packages generate so many errors without this
+		"skipLibCheck": true,
 		"baseUrl": "src/",
-		"paths" : {
+		"paths": {
 			"@lab/*": ["mod3/*"], // Change this line to change import paths!
-		}
+		},
 	},
 }
