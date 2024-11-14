@@ -93,8 +93,7 @@ export function createTestJob(addCandidates: boolean) {
 		jobId: Math.floor(Math.random() * 1001).toString(),
 		jobState: "Open",
 		jobTitle: "Software Engineer",
-		jobDescription: `Overview
-		We are seeking a Software Engineer to join our Microsoft Teams team, specializing in Enterprise Voice features. As an individual contributor, 
+		jobDescription: `We are seeking a Software Engineer to join our Microsoft Teams team, specializing in Enterprise Voice features. As an individual contributor, 
 		you will lead the development, optimization, and maintenance of high-quality web applications, ensuring seamless integration with voice over 
 		internet protocol (VoIP) and telephony systems. Collaborate with cross-functional teams to drive innovative solutions, enhance performance, and ensure reliability.
 		Microsoft’s mission is to empower every person and every organization on the planet to achieve more. As employees we come together with a growth mindset, 
