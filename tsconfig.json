@@ -14,7 +14,7 @@
 		"skipLibCheck": true,
 		"baseUrl": "src/",
 		"paths" : {
-			"@lab/*": ["mod1/*"], // Change this line to change import paths!
+			"@lab/*": ["mod0/*"], // Change this line to change import paths!
 		}
 	},
 }
