@@ -192,14 +192,9 @@ export function AppPresenceGroup(): JSX.Element {
 		};
 	}, []);
 
-	// [...props.presenceManager.getPresence().getAttendees()].forEach((attendee) => {
-	// 	console.log("attendee: ", attendee.sessionId + " - " + attendee.getConnectionStatus());
-	// });
-
 	const connectedAttendees = [...presenceManager.getPresence().getAttendees()].filter(
 		(attendee) => attendee.getConnectionStatus() === "Connected",
 	);
-	// console.log("connectedAttendees: ", connectedAttendees.length);
 
 	const userInfoList = presenceManager.getUserInfo(connectedAttendees);
 
