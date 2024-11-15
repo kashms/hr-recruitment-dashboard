@@ -15,7 +15,7 @@ export function JobsListView(props: {
 	setSelectedJob: (job: Job | undefined) => void;
 	selectedJob?: Job;
 }): JSX.Element {
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	// const [jobs, setJobs] = useState(props.jobs);
 	// const getJobs = () => {
 	// 	return jobs;
@@ -30,20 +30,20 @@ export function JobsListView(props: {
 	// 	newJobs.addJob(job);
 	// 	setJobs(newJobs);
 	// };
-	// {END MOD_0}
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	useTreeNode(props.jobs);
 	const getJobs = () => {
-	    return props.jobs;
-	}
+		return props.jobs;
+	};
 	const deleteJob = (job: Job) => {
-	    props.jobs.deleteJob(job);
-	}
+		props.jobs.deleteJob(job);
+	};
 	const addJob = (job: Job) => {
-	    props.jobs.addJob(job);
-	}
-	// {END MOD_1}
+		props.jobs.addJob(job);
+	};
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	// {VIEW MOD_2}
 	const presenceManager = useContext(PresenceContext);
@@ -136,31 +136,31 @@ export function JobView(props: {
 	deleteJob: (job: Job) => void;
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	// const [job, setJob] = useState(props.job);
-	// const getjob = () => {
-	// 	return job;
-	// };
-	// const setJobTitle = (newTitle: string) => {
-	// 	setJob({ ...job, jobTitle: newTitle });
-	// };
-	// const setJobDescription = (newDescription: string) => {
-	// 	setJob({ ...job, jobDescription: newDescription });
-	// };
-	// {END MOD_0}
+	// 	const getjob = () => {
+	// 		return job;
+	// 	};
+	// 	const setJobTitle = (newTitle: string) => {
+	// 		setJob({ ...job, jobTitle: newTitle });
+	// 	};
+	// 	const setJobDescription = (newDescription: string) => {
+	// 		setJob({ ...job, jobDescription: newDescription });
+	// 	};
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	useTreeNode(props.job);
 	const getjob = () => {
-	    return props.job;
+		return props.job;
 	};
 	const setJobTitle = (newTitle: string) => {
-	    props.job.jobTitle = newTitle;
+		props.job.jobTitle = newTitle;
 	};
 	const setJobDescription = (newDescription: string) => {
-	    props.job.jobDescription = newDescription;
+		props.job.jobDescription = newDescription;
 	};
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
 		<div

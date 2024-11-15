@@ -50,9 +50,9 @@ export function InterviewerView(props: {
 	interviewer: Interviewer;
 	handleAddInterviewer: (interviewerId: string) => void;
 }): JSX.Element {
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	useTreeNode(props.interviewer);
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
 		<div className="flex flex-col gap-1 content-center my-2 border border-gray-300 p-2 rounded">

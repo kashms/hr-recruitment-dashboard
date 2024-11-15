@@ -16,14 +16,16 @@ import { undoRedo } from "./utils/undo.js";
 import { ArrowRedoFilled, ArrowUndoFilled } from "@fluentui/react-icons";
 import { UndoRedoContext, PresenceContext } from "./index.js";
 
-// {START MOD_0}
+//############################ START MODULE 0 changes here ##############################
 // export function HRApp(props: { data: HRData }): JSX.Element {
 // 	const appData = props.data;
-	// {END MOD_0}
-	// {START MOD_1}
-	export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
-		const appData = props.data.root;
-	// {END MOD_1}
+//////////////////////////////// END MODULE 0 changes here //////////////////////////////
+
+//############################ START MODULE 1 changes here ##############################
+export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
+	const appData = props.data.root;
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
+
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
 	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
@@ -71,7 +73,7 @@ import { UndoRedoContext, PresenceContext } from "./index.js";
 
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
-	// {START MOD_3}
+	//############################ START MODULE 3 changes here ##############################
 	headerViews.push(
 		<AiChatView
 			treeRoot={props.data}
@@ -80,7 +82,7 @@ import { UndoRedoContext, PresenceContext } from "./index.js";
 			}}
 		/>,
 	);
-	// {END MOD_3}
+	//////////////////////////////// END MODULE 3 changes here //////////////////////////////
 
 	const undoRedo = useContext(UndoRedoContext);
 	if (undoRedo) {

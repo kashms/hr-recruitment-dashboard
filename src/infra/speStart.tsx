@@ -182,7 +182,7 @@ async function createFluidApp(
 		services.audience,
 	);
 
-	// {START MOD_4}
+	//############################ START MODULE 4 changes here ##############################
 	appView = (
 		<UndoRedoContext.Provider value={undoRedoContext}>
 			<HRApp data={appData} />
@@ -196,7 +196,7 @@ async function createFluidApp(
 			</UndoRedoContext.Provider>
 		</PresenceContext.Provider>
 	);
-	// {END MOD_4}
+	//////////////////////////////// END MODULE 4 changes here //////////////////////////////
 
 	// Render the app - note we attach new containers after render so
 	// the app renders instantly on create new flow. The app will be

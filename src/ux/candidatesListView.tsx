@@ -16,7 +16,7 @@ export function CandidatesListView(props: {
 	selectedCandidate: Candidate | undefined;
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 }): JSX.Element {
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	// const [job, setJob] = useState(props.job);
 	// if (job.jobId !== props.job.jobId) {
 	// 	setJob(props.job);
@@ -29,18 +29,18 @@ export function CandidatesListView(props: {
 	// 	newJob.candidates.push(candidate);
 	// 	setJob(newJob);
 	// };
-	// {END MOD_0}
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	useTreeNode(props.job.candidates);
 	useTreeNode(props.job.onSiteSchedule);
 	const getJob = () => {
-	    return props.job;
+		return props.job;
 	};
 	const addCandidate = (candidate: Candidate) => {
-	    props.job.addCandidate(candidate);
+		props.job.addCandidate(candidate);
 	};
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	// {VIEW MOD_2}
 	const presenceManager = useContext(PresenceContext);
@@ -140,7 +140,7 @@ export function CandidateView(props: {
 	setSelectedCandidate: (candidate: Candidate | undefined) => void;
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
-	// {START MOD_0}
+	//############################ START MODULE 0 changes here ##############################
 	// const [candidate, setCandidate] = useState(props.candidate);
 	// const getCandidate = () => {
 	// 	return candidate;
@@ -151,20 +151,20 @@ export function CandidateView(props: {
 	// const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
 	// 	setCandidate({ ...candidate, yearsOfExperience });
 	// };
-	// {START MOD_1}
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-	// {START MOD_1}
+	//############################ START MODULE 1 changes here ##############################
 	useTreeNode(props.candidate);
 	const getCandidate = () => {
-	    return props.candidate;
+		return props.candidate;
 	};
 	const setCandidateName = (name: string) => {
-	    props.candidate.name = name;
+		props.candidate.name = name;
 	};
 	const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
-	    props.candidate.yearsOfExperience = yearsOfExperience;
+		props.candidate.yearsOfExperience = yearsOfExperience;
 	};
-	// {END MOD_1}
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
 		<div
