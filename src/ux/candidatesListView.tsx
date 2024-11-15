@@ -163,7 +163,8 @@ export function CandidateView(props: {
 	//     props.candidate.name = name;
 	// };
 	// const setCandidateYearsOfExperience = (yearsOfExperience: string) => {
-	//     props.candidate.yearsOfExperience = yearsOfExperience === "" ? 0 : Number(yearsOfExperience);
+	// 	props.candidate.yearsOfExperience =
+	// 		yearsOfExperience === "" ? 0 : Number(yearsOfExperience);
 	// };
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
