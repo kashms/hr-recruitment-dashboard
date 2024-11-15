@@ -20,9 +20,11 @@ import {
 } from "@fluidframework/tinylicious-client";
 import { speStart } from "./infra/speStart.js";
 
+// Create contexts for PresenceManager and undoRedo, these will be shared with underlying components
 export const PresenceContext = createContext<PresenceManager | undefined>(undefined);
 export const UndoRedoContext = createContext<undoRedo | undefined>(undefined);
 
+// Using the TinyliciousClient to start the app and rendering the HRApp component locally
 async function tinyliciousStart() {
 	// Create the root element for React
 	const app = document.createElement("div");
@@ -31,6 +33,7 @@ async function tinyliciousStart() {
 	const root = createRoot(app);
 
 	//############################ START MODULE 0 changes here ##############################
+	// Render the HRApp component with test data
 	root.render(<HRApp data={createTestAppData()} />);
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
@@ -42,6 +45,7 @@ async function tinyliciousStart() {
 async function renderFluidView(root: Root) {
 	const tinyliciousClient = new TinyliciousClient();
 
+	// Get the container ID from the URL parameters
 	let containerId = new URLSearchParams(window.location.search).get("fluidContainerId") || "";
 
 	let container: IFluidContainer<typeof containerSchema>;
@@ -94,6 +98,7 @@ async function renderFluidView(root: Root) {
 
 	root.render(appView);
 
+	// Once the container is attached, update the URL with the container ID
 	if (container.attachState === AttachState.Detached) {
 		containerId = await container.attach();
 
@@ -107,6 +112,7 @@ async function renderFluidView(root: Root) {
 
 const targetServer = process.env.FLUID_CLIENT;
 
+// Start the app based on the target server
 if (targetServer === "tinylicious") {
 	tinyliciousStart().catch((error) => console.error(error));
 } else if (targetServer === "spe") {

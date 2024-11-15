@@ -8,12 +8,15 @@ import { Availability } from "@lab/appSchema.js";
 import { DAYS_OF_WEEK, DAYS_OF_WEEK_SHORT } from "../utils/util.js";
 import { useTree } from "../utils/treeReactHooks.js";
 
+// Component to display the availability status of a Candidate or Interviewer
 export function AvailabilityView(props: { avail: Availability; readOnly?: boolean }): JSX.Element {
 	//############################ START MODULE 0 changes here ##############################
+	// State to manage the availability
 	const [avail, setAvail] = useState(props.avail);
 	const getAvail = (): Availability => {
 		return avail;
 	};
+	// Function to set the availability for a specific day
 	const setDayAvailability = (day: string, checked: boolean) => {
 		avail.setDayAvailability(day, checked);
 		const newAvail = new Availability(avail);
@@ -24,10 +27,12 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 	//############################ START MODULE 1 changes here ##############################
 	// useTree(props.avail);
 	// const getAvail = () => {
-	//     return props.avail;
+	// 	return props.avail;
 	// };
 	// const setDayAvailability = (day: string, checked: boolean) => {
-	//     props.avail.setDayAvailability(day, checked);
+	// 	// Set the availability for a specific day directly on the props.avail Fluid Object
+	// 	// This will also set the availability for remote clients
+	// 	props.avail.setDayAvailability(day, checked);
 	// };
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
@@ -55,21 +60,23 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 	);
 }
 
+// DayView component to display the availability status of a specific day
 export function DayView(props: {
-	dayName: string;
-	isAvailable: boolean;
-	readOnly?: boolean;
-	onChange: (checked: boolean) => void;
+	dayName: string; // Name of the day (e.g., "Monday")
+	isAvailable: boolean; // Availability status for the day
+	readOnly?: boolean; // Optional prop to make the view read-only
+	onChange: (checked: boolean) => void; // Callback function to handle changes in availability
 }): JSX.Element {
 	return (
 		<div
 			className={`flex flex-col items-center justify-center p-1 rounded w-14 
 				${props.isAvailable ? "bg-green-300" : "bg-red-300"}
-				${props.readOnly ? "" : "cursor-pointer"}`}
+				${props.readOnly ? "" : "cursor-pointer"}`} // Add cursor pointer if not read-only
 			onClick={(event) => {
 				if (!props.readOnly) {
-					event.stopPropagation();
-					props.onChange(!props.isAvailable);
+					// Only handle click if not read-only
+					event.stopPropagation(); // Prevent event from bubbling up
+					props.onChange(!props.isAvailable); // Toggle availability status
 				}
 			}}
 		>

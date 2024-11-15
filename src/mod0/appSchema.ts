@@ -3,6 +3,7 @@
  * Licensed under the MIT License.
  */
 
+// The Availability class extends the Array class to manage a list of available days for Candidates and Interviewers.
 export class Availability extends Array<string> {
 	constructor();
 	constructor(days: number);
@@ -19,11 +20,13 @@ export class Availability extends Array<string> {
 		}
 	}
 
-	// setDayAvailability method
+	// Method to set the availability of a specific day.
 	public readonly setDayAvailability = (day: string, available: boolean) => {
 		if (available && !this.includes(day)) {
+			// If the day is available and not already in the array, add it to the beginning.
 			this.unshift(day);
 		} else {
+			// If the day is not available, remove it from the array.
 			const index = this.indexOf(day);
 			if (index !== -1) {
 				this.splice(index, 1);
@@ -32,6 +35,7 @@ export class Availability extends Array<string> {
 	};
 }
 
+// The OnSiteSchedule class represents a schedule for an on-site interview.
 export class OnSiteSchedule {
 	day: string;
 	interviewerIds: string[];
@@ -55,16 +59,19 @@ export class OnSiteSchedule {
 		this.isUnread = isUnread;
 	}
 
+    // Method to add an interviewer to the schedule.
 	public readonly addInterviewer = (interviewerId: string) => {
 		this.interviewerIds.push(interviewerId);
 	};
 
+	// Method to remove an interviewer from the schedule.
 	public readonly removeInterviewer = (interviewerId: string) => {
 		const index = this.interviewerIds.indexOf(interviewerId);
 		this.interviewerIds.splice(index, 1);
 	};
 }
 
+// The Interviewer class represents an interviewer with their details and availability.
 export class Interviewer {
 	role: string;
 	interviewerId: string;
@@ -89,6 +96,7 @@ export class Interviewer {
 	}
 }
 
+// The Candidate class represents a candidate with their details and availability.
 export class Candidate {
 	name: string;
 	candidateId: string;
@@ -117,6 +125,7 @@ export class Candidate {
 	}
 }
 
+// The Job class represents a job with its details, candidates, and on-site schedules.
 export class Job {
 	jobId: string;
 	jobTitle: string;
@@ -148,6 +157,7 @@ export class Job {
 		this.isUnread = isUnread;
 	}
 
+	// Method to add a new on-site schedule for a candidate.
 	public readonly addNewOnSiteForCandidate = (candiadteId: string) => {
 		const newOnSite = new OnSiteSchedule({
 			day: "Monday",
@@ -158,19 +168,23 @@ export class Job {
 		this.onSiteSchedule.push(newOnSite);
 	};
 
+	// Method to check if there is an on-site schedule for a candidate.
 	public readonly hasOnSiteForCandidate = (candidateId: string) => {
 		return !!this.getOnSiteForCandidate(candidateId);
 	};
 
+	// Method to get the on-site schedule for a candidate.
 	public readonly getOnSiteForCandidate = (candidateId: string) => {
 		return this.onSiteSchedule.find((onSite) => onSite.candidateId === candidateId);
 	};
 
+	// Method to add a candidate to the job.
 	public readonly addCandidate = (candidate: Candidate) => {
 		this.candidates.push(candidate);
 	};
 }
 
+// The JobsArray class extends the Array class to manage a list of Job objects.
 export class JobsArray extends Array<Job> {
 	public addJob(job: Job) {
 		this.push(job);
@@ -182,8 +196,10 @@ export class JobsArray extends Array<Job> {
 	}
 }
 
+// The InterviewerPool class extends the Array class to manage a list of Interviewer objects.
 export class InterviewerPool extends Array<Interviewer> {}
 
+// The HRData class represents the overall HR data including jobs and interviewers.
 export class HRData {
 	jobsList: JobsArray;
 	interviewerPool: InterviewerPool;
