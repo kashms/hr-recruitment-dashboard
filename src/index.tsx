@@ -35,7 +35,7 @@ async function tinyliciousStart() {
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
 	//############################ START MODULE 1 changes here ##############################
-	renderFluidView(root);
+	// renderFluidView(root);
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 }
 

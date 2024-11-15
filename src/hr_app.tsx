@@ -67,7 +67,7 @@ export function HRApp(props: { data: HRData }): JSX.Element {
 
 	const headerViews = [];
 	headerViews.push(
-		<h1 key="header" className="text-xl font-bold text-white flex-grow">
+		<h1 key="header_title" className="text-xl font-bold text-white flex-grow">
 			HR Recruitment Dashboard
 		</h1>,
 	);
@@ -77,6 +77,7 @@ export function HRApp(props: { data: HRData }): JSX.Element {
 	//############################ START MODULE 3 changes here ##############################
 	// headerViews.push(
 	// 	<AiChatView
+	// 		key="ai_chat_view"
 	// 		treeRoot={props.data}
 	// 		showAnimatedFrame={(show: boolean) => {
 	// 			setShowAnimatedFrame(show);
@@ -92,11 +93,11 @@ export function HRApp(props: { data: HRData }): JSX.Element {
 			return undoRedo ? undoRedo.dispose : undefined;
 		}, []);
 
-		headerViews.push(<ActionToolBar undoRedo={undoRedo} />);
+		headerViews.push(<ActionToolBar key="undo_redo_actions" undoRedo={undoRedo} />);
 	}
 
 	// {VIEW MOD_2}
-	headerViews.push(<AppPresenceGroup />);
+	headerViews.push(<AppPresenceGroup key="presence_view" />);
 	// {END MOD_2}
 
 	return (
