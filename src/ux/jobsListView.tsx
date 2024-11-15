@@ -170,7 +170,8 @@ export function JobView(props: {
 	return (
 		<div
 			className={`flex flex-col p-2 justify-center content-center mb-2 mt-2 cursor-pointer 
-                ${props.isSelected ? "bg-cyan-50 border border-cyan-300" : "bg-slate-50 hover:bg-slate-100"}`}
+                ${props.isSelected ? "bg-cyan-50 border border-cyan-300" : "bg-slate-50 hover:bg-slate-100"}
+				${props.job.isUnread ? "border-4 border-double border-red-600" : ""}`}
 			onClick={() => {
 				props.setSelectedJob(props.job);
 			}}
