@@ -102,16 +102,16 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 
 	return (
 		<div
-			className={`h-screen frame 
+			className={`h-screen frame
 			${showAnimatedFrame ? "animated-frame" : ""}`}
 		>
 			<div className="inner">
 				<FluentProvider theme={webLightTheme}>
-					<div className="flex flex-col h-fit w-full overflow-hidden overscroll-none gap-1">
+					<div className="flex flex-col h-fit w-full overflow-y-hidden overscroll-y-none gap-1">
 						<div className="flex flex-row w-full bg-gray-800 p-4 gap-8 items-center">
 							{headerViews}
 						</div>
-						<div className="flex flex-row flex-wrap w-full h-[calc(100vh-90px)]">
+						<div className="flex flex-row flex-nowrap w-full overflow-x-auto h-[calc(100vh-90px)]">
 							<JobsListView
 								jobs={appData.jobsList}
 								setSelectedJob={handleJobSelected}
