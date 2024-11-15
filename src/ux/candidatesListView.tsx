@@ -141,28 +141,28 @@ export function CandidateView(props: {
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
 	//############################ START MODULE 0 changes here ##############################
-	// const [candidate, setCandidate] = useState(props.candidate);
-	// const getCandidate = () => {
-	// 	return candidate;
+	// const [job, setJob] = useState(props.job);
+	// if (job.jobId !== props.job.jobId) {
+	// 	setJob(props.job);
+	// }
+	// const getJob = () => {
+	// 	return job;
 	// };
-	// const setCandidateName = (name: string) => {
-	// 	setCandidate({ ...candidate, name });
-	// };
-	// const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
-	// 	setCandidate({ ...candidate, yearsOfExperience });
+	// const addCandidate = (candidate: Candidate) => {
+	// 	const newJob = { ...job };
+	// 	newJob.candidates.push(candidate);
+	// 	setJob(newJob);
 	// };
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
 	//############################ START MODULE 1 changes here ##############################
-	useTreeNode(props.candidate);
-	const getCandidate = () => {
-		return props.candidate;
+	useTreeNode(props.job.candidates);
+	useTreeNode(props.job.onSiteSchedule);
+	const getJob = () => {
+		return props.job;
 	};
-	const setCandidateName = (name: string) => {
-		props.candidate.name = name;
-	};
-	const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
-		props.candidate.yearsOfExperience = yearsOfExperience;
+	const addCandidate = (candidate: Candidate) => {
+		props.job.addCandidate(candidate);
 	};
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
