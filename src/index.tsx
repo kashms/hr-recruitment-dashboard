@@ -7,7 +7,7 @@ import "./output.css";
 import { AttachState, IFluidContainer } from "fluid-framework";
 import { HRApp } from "./hr_app.js";
 import { createUndoRedoStacks, undoRedo } from "./utils/undo.js";
-import { acquirePresenceViaDataObject } from "@fluid-experimental/presence";
+import { acquirePresenceViaDataObject } from "@fluidframework/presence/alpha";
 import { PresenceManager } from "./utils/presenceManager.js";
 import {
 	TinyliciousClient,

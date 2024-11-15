@@ -11,7 +11,7 @@ import { getClientProps } from "./clientProps.js";
 import { createUndoRedoStacks } from "../utils/undo.js";
 import { createTestAppData } from "../utils/testData.js";
 import { treeConfiguration } from "../mod3/appSchema.js";
-import { acquirePresenceViaDataObject } from "@fluid-experimental/presence";
+import { acquirePresenceViaDataObject } from "@fluidframework/presence/alpha";
 import { PresenceContext, UndoRedoContext } from "../index.js";
 import { HRApp } from "../hr_app.js";
 import { PresenceManager } from "../utils/presenceManager.js";

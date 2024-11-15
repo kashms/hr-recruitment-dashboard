@@ -4,7 +4,7 @@ import {
 	ISessionClient,
 	Latest,
 	PresenceStates,
-} from "@fluid-experimental/presence";
+} from "@fluidframework/presence/alpha";
 import { OdspMember, type IOdspAudience } from "@fluidframework/odsp-client/beta";
 import { TinyliciousMember, type ITinyliciousAudience } from "@fluidframework/tinylicious-client";
 
