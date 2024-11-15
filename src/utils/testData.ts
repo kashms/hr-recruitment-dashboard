@@ -13,43 +13,43 @@ export function createTestAppData() {
 			interviewerId: "10",
 			name: "Alice Johnson",
 			role: "Technical Lead",
-			availability: new Availability("Monday", "Tuesday", "Wednesday"),
+			availability: new Availability(["Monday", "Tuesday", "Wednesday"]),
 		}),
 		new Interviewer({
 			interviewerId: "20",
 			name: "Bob Smith",
 			role: "HR Manager",
-			availability: new Availability("Monday", "Tuesday", "Wednesday"),
+			availability: new Availability(["Monday", "Tuesday", "Wednesday"]),
 		}),
 		new Interviewer({
 			interviewerId: "30",
 			name: "Charlie Brown",
 			role: "Senior Developer",
-			availability: new Availability("Thursday", "Friday"),
+			availability: new Availability(["Thursday", "Friday"]),
 		}),
 		new Interviewer({
 			interviewerId: "40",
 			name: "Diana Prince",
 			role: "Project Manager",
-			availability: new Availability("Thursday", "Friday"),
+			availability: new Availability(["Thursday", "Friday"]),
 		}),
 		new Interviewer({
 			interviewerId: "50",
 			name: "Ethan Hunt",
 			role: "QA Engineer",
-			availability: new Availability("Thursday", "Friday"),
+			availability: new Availability(["Thursday", "Friday"]),
 		}),
 		new Interviewer({
 			interviewerId: "60",
 			name: "Fiona Gallagher",
 			role: "DevOps Engineer",
-			availability: new Availability("Friday"),
+			availability: new Availability(["Friday"]),
 		}),
 		new Interviewer({
 			interviewerId: "70",
 			name: "George Martin",
 			role: "Product Owner",
-			availability: new Availability("Monday", "Tuesday", "Thursday", "Friday"),
+			availability: new Availability(["Monday", "Tuesday", "Thursday", "Friday"]),
 		}),
 	];
 
@@ -158,6 +158,6 @@ function getNextName() {
 }
 
 function createFullyAvailable() {
-	const avail = new Availability("Monday", "Tuesday", "Wednesday", "Thursday", "Friday");
+	const avail = new Availability(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
 	return avail;
 }

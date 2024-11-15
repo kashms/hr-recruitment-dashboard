@@ -4,7 +4,7 @@
  */
 
 export class Availability extends Array<string> {
-	constructor(...days: string[]) {
+	constructor(days: string[]) {
 		super(...days);
 	}
 

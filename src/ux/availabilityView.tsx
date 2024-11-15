@@ -11,7 +11,7 @@ export function AvailabilityView(props: { avail: Availability; readOnly?: boolea
 	};
 	const setDayAvailability = (day: string, checked: boolean) => {
 		avail.setDayAvailability(day, checked);
-		const newAvail = new Availability(...avail);
+		const newAvail = new Availability(avail);
 		setAvail(newAvail);
 	};
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
