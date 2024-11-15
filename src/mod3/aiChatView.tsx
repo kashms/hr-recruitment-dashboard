@@ -125,6 +125,11 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 			<input
 				id="ai-job-creation-input"
 				className="bg-gray-50 p-2.5 flex-grow border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-blue-500 block"
+				onKeyDown={(e) => {
+					if (e.key === "Enter") {
+						executeAIChat();
+					}
+				}}
 			/>
 			<button
 				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit"
