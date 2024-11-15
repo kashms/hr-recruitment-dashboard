@@ -153,7 +153,7 @@ export function CandidateView(props: {
 	};
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-//############################ START MODULE 1 changes here ##############################
+	//############################ START MODULE 1 changes here ##############################
 	// useTreeNode(props.candidate);
 	// const getCandidate = () => {
 	//     return props.candidate;
@@ -164,7 +164,7 @@ export function CandidateView(props: {
 	// const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
 	//     props.candidate.yearsOfExperience = yearsOfExperience;
 	// };
-//////////////////////////////// END MODULE 1 changes here //////////////////////////////
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
 		<div

@@ -47,7 +47,7 @@ module.exports = {
 		},
 		extensions: [".ts", ".tsx", ".js", ".cjs", ".mjs"],
 		alias: {
-			"@lab": path.resolve(__dirname, "src/mod0"),  // Change this line to change import paths!
+			"@lab": path.resolve(__dirname, "src/mod1"),  // Change this line to change import paths!
 		   }
 	},
 	output: {

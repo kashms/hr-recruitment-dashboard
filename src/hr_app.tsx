@@ -73,7 +73,7 @@ export function HRApp(props: { data: HRData }): JSX.Element {
 
 	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
 
-//############################ START MODULE 3 changes here ##############################
+	//############################ START MODULE 3 changes here ##############################
 	// headerViews.push(
 	// 	<AiChatView
 	// 		treeRoot={props.data}
@@ -82,7 +82,7 @@ export function HRApp(props: { data: HRData }): JSX.Element {
 	// 		}}
 	// 	/>,
 	// );
-//////////////////////////////// END MODULE 3 changes here //////////////////////////////
+	//////////////////////////////// END MODULE 3 changes here //////////////////////////////
 
 	const undoRedo = useContext(UndoRedoContext);
 	if (undoRedo) {

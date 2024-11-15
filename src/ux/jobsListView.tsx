@@ -136,8 +136,8 @@ export function JobView(props: {
 	deleteJob: (job: Job) => void;
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {
-//############################ START MODULE 0 changes here ##############################
-const [job, setJob] = useState(props.job);
+	//############################ START MODULE 0 changes here ##############################
+	const [job, setJob] = useState(props.job);
 	const getjob = () => {
 		return job;
 	};
@@ -147,9 +147,9 @@ const [job, setJob] = useState(props.job);
 	const setJobDescription = (newDescription: string) => {
 		setJob({ ...job, jobDescription: newDescription });
 	};
-//////////////////////////////// END MODULE 0 changes here //////////////////////////////
+	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
-//############################ START MODULE 1 changes here ##############################
+	//############################ START MODULE 1 changes here ##############################
 	// useTreeNode(props.job);
 	// const getjob = () => {
 	//     return props.job;
@@ -160,7 +160,7 @@ const [job, setJob] = useState(props.job);
 	// const setJobDescription = (newDescription: string) => {
 	//     props.job.jobDescription = newDescription;
 	// };
-//////////////////////////////// END MODULE 1 changes here //////////////////////////////
+	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
 		<div

@@ -4,20 +4,20 @@
  */
 
 export class Availability extends Array<string> {
-    constructor();
-    constructor(days: number);
-    constructor(days: string[]);
-    constructor(...days: string[]);
-    constructor(days?: number | string[] | string, ...rest: string[]) {
+	constructor();
+	constructor(days: number);
+	constructor(days: string[]);
+	constructor(...days: string[]);
+	constructor(days?: number | string[] | string, ...rest: string[]) {
 		super();
-		if (typeof days === 'number') {
+		if (typeof days === "number") {
 			this.length = days;
 		} else if (Array.isArray(days)) {
 			this.push(...days);
 		} else {
-			this.push(...([days, ...rest].filter((day): day is string => typeof day === 'string')));
+			this.push(...[days, ...rest].filter((day): day is string => typeof day === "string"));
 		}
-    }
+	}
 
 	// setDayAvailability method
 	public readonly setDayAvailability = (day: string, available: boolean) => {
