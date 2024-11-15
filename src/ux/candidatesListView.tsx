@@ -177,7 +177,12 @@ export function CandidateView(props: {
 		<div
 			className={`flex flex-col gap-1 justify-center content-center m-1 p-2 cursor-pointer
                 ${props.selectedCandidate?.candidateId == getCandidate().candidateId ? "bg-violet-50 border border-violet-300" : "bg-slate-50 hover:bg-slate-100"}
-				${props.job.isUnread || getCandidate().isUnread ? "border-4 border-double border-red-600" : ""}
+				${
+					getCandidate().isUnread ||
+					props.job.getOnSiteForCandidate(getCandidate().candidateId)?.isUnread
+						? "border-4 border-double border-red-600"
+						: ""
+				}
            `}
 			onClick={() => {
 				props.setSelectedCandidate(getCandidate());
