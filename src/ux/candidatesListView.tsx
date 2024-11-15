@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import { useContext, useEffect, useState } from "react";
 import { Candidate, Job } from "@lab/appSchema.js";
 import { createTestCandidate } from "../utils/testData.js";

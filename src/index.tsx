@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import React, { createContext } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { containerSchema } from "./infra/fluid.js";
@@ -30,17 +35,14 @@ async function tinyliciousStart() {
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
 	//############################ START MODULE 1 changes here ##############################
-	// createFluidContainer(root);
+	renderFluidView(root);
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 }
 
-async function createFluidContainer(root: Root) {
-	const tinyliciousClient = new TinyliciousClient({});
+async function renderFluidView(root: Root) {
+	const tinyliciousClient = new TinyliciousClient();
 
-	let containerId = "";
-	if (typeof window !== "undefined") {
-		containerId = new URL(window.location.href).searchParams.get("fluidContainerId") || "";
-	}
+	let containerId = new URLSearchParams(window.location.search).get("fluidContainerId") || "";
 
 	let container: IFluidContainer<typeof containerSchema>;
 	let services: TinyliciousContainerServices;

@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import { ExperimentalPresenceManager } from "@fluidframework/presence/alpha";
 import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import { OdspClient, OdspContainerServices } from "@fluidframework/odsp-client/beta";

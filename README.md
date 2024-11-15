@@ -1,36 +1,23 @@
 # HR Recruitment Dashboard
 
-This app demonstrates how to create an HR Recruitment Dashboard using Fluid Framework features like SharedTree, Presence library and AI Collab library.
+This app demonstrates how to create an HR Recruitment Dashboard using Fluid Framework features like SharedTree, Presence and AI Collab libraries.
 This app uses the Azure OpenAI service as the LLM service to create and modify Fluid data.
 
 ## Setting up the Fluid Framework
 
-This app is designed to use SharePoint Embedded (SPE). The core application code is the same as samples that use Azure Fluid Relay (AFR); however,
-this sample uses odsp-client to connect to Fluid Framework as opposed to azure-client. The differences are primarilly isolated to the
-infra folder, although the initialization flow for this app is different in that it includes auth while the AFR samples are anonymous.
+This app is designed to use Tinylicious and SharePoint Embedded (SPE).
 
-To use SPE you need to create an M365 developer account and configure SharePoint Embedded.
-The easiest way to get started is to install the SharePoint Embedded Visual Studio Code extension.
-From there you can create a new M365 developer tenant (which includes creating an Entra tenant), create a new client app
-(with the required Microsoft Entra client ID), create new File Storage Container Types, and create new File Storage Containers.
+This app is meant to used for the Microsoft Ignite Code lab and thus, built in a modular way taking developers through various stages of app development.
 
-This sample app requires that you have a Microsoft Entra tenant, a Microsoft Entra client Id for the app, have created
-a File Storage Container Type, and that the tenant you plan to use has a File Storage Container with that File Storage
-Container Type ID.
-Once you have done that, create a `.env` file in the folder with the following content:
-
-```plaintext
-OwningAppId='your client id'
-ContainerTypeId='your container type id'
-OwningTenantId='your entra tenant id'
-```
-
-With that in place, you can run this sample (`npm run dev`).
-Log in with the admin credentials for the tenant.
+Module 0 - Non-collaborative local app
+Module 1 - Make the app collaborative using Fluid Framework (using the local Tinylicious server)
+Module 2 - Add Presence features to the app (allowing you to see other users working in real-time)
+Module 3 - Add AI features to the app
+Module 4 - Deploy the app to the SharePoint Embedded store
 
 ## Schema Definition
 
-The SharedTree schema is defined in the schema.ts source file. This schema is passed into the SharedTree when it is initialized in index.tsx. For more details, see the schema.ts comments.
+The SharedTree schema is defined in the mod1/appSchema.ts source file. This schema is passed into the SharedTree when it is initialized in index.tsx. For more details, see the mod1/appSchema.ts comments. mod0/appSchema.ts contains the schema for the non-collaborative app.
 
 ## Working with Data
 
