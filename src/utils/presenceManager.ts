@@ -13,14 +13,18 @@ import {
 import { OdspMember, type IOdspAudience } from "@fluidframework/odsp-client/beta";
 import { TinyliciousMember, type ITinyliciousAudience } from "@fluidframework/tinylicious-client";
 
+// Type guard to check if a member is an OdspMember
 function isOdspMember(member: OdspMember | TinyliciousMember): member is OdspMember {
 	return "email" in member;
 }
 
 export class PresenceManager {
+	// A PresenceState object to manage the presence of users within the app
 	private readonly appSelectionPresenceState: PresenceStates<typeof appSelectionSchema>;
+	// A map of SessionClient to UserInfo, where users can share their info with other users
 	private readonly userInfoMap: Map<ISessionClient, UserInfo> = new Map();
-	private userInfoCallback: (userInfoMap: Map<ISessionClient, UserInfo>) => void = () => {};
+	// A callback methid to get updates when remote UserInfo changes
+	private userInfoCallback: (userInfoMap: Map<ISessionClient, UserInfo>) => void = () => { };
 
 	constructor(
 		private readonly presence: IPresence,
@@ -29,30 +33,39 @@ export class PresenceManager {
 		this.presence = presence;
 		this.audience = audience;
 
+		// Address for the presence state, this is used to organize the presence states and avoid conflicts
 		const appSelectionWorkspaceAddress = "appSelection:workspace";
+
+		// Initialize presence state for the app selection workspace
 		this.appSelectionPresenceState = presence.getStates(
 			appSelectionWorkspaceAddress, // Workspace address
 			appSelectionSchema, // Workspace schema
 		);
 
+		// Listen for updates to the userInfo property in the presence state
 		this.appSelectionPresenceState.props.userInfo.events.on("updated", (update) => {
+			// The remote client that updated the userInfo property
 			const remoteSessionClient = update.client;
+			// The new value of the userInfo property
 			const remoteUserInfo = update.value;
 
+			// Update the userInfoMap with the new value
 			this.userInfoMap.set(remoteSessionClient, remoteUserInfo);
+			// Notify the app about the updated userInfoMap
 			this.userInfoCallback(this.userInfoMap);
 		});
 
+		// Set the local user's info
 		this.setMyUserInfo();
 		this.audience.on("membersChanged", () => {
 			this.setMyUserInfo();
 		});
 	}
 
+	// Set the local user's info and set it on the Presence State to share with other clients
 	private setMyUserInfo() {
 		const myselfMember = this.audience.getMyself();
 
-		// Broadcast current user's info to all clients
 		if (myselfMember) {
 			this.appSelectionPresenceState.props.userInfo.local = {
 				userId: myselfMember.id,
@@ -68,22 +81,22 @@ export class PresenceManager {
 		}
 	}
 
+	// Returns the presence state of the app selection workspace
 	getStates() {
 		return this.appSelectionPresenceState.props;
 	}
 
+	// Returns the presence object
 	getPresence() {
 		return this.presence;
 	}
 
-	getuserInfoMap() {
-		return this.userInfoMap;
-	}
-
+	// Allows the app to listen for updates to the userInfoMap
 	setUserInfoUpdateListener(callback: (userInfoMap: Map<ISessionClient, UserInfo>) => void) {
 		this.userInfoCallback = callback;
 	}
 
+	// Returns the UserInfo of given session clients
 	getUserInfo(sessionList: ISessionClient<ClientSessionId>[]) {
 		const userInfoList: UserInfo[] = [];
 
@@ -107,8 +120,11 @@ export class PresenceManager {
 
 // Schema for the Presence Manager
 export const appSelectionSchema = {
+	// Holds a list of jobs selected by remote users
 	jobSelection: Latest({ jobSelected: "" }),
+	// Holds the candidate selected by remote users
 	candidateSelection: Latest({ candidateSelected: "" }),
+	// Holds the user info of remote users
 	userInfo: Latest({ userId: "", userName: "", userEmail: "" } satisfies UserInfo),
 };
 

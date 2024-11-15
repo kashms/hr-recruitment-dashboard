@@ -6,6 +6,11 @@
 import { Tree, type TreeNode } from "@fluidframework/tree";
 import * as React from "react";
 
+/**
+ * React hook that subscribes to the treeChanged event of the given TreeNode.
+ * This hook will trigger a re-render of the component whenever the tree changes.
+ * @param subtreeRoot - The root of the subtree to watch for changes.
+ */
 export function useTree(subtreeRoot: TreeNode): void {
 	// Use a React effect hook to invalidate this component when the subtreeRoot changes.
 	// We do this by incrementing a counter, which is passed as a dependency to the effect hook.
@@ -20,6 +25,11 @@ export function useTree(subtreeRoot: TreeNode): void {
 	}, [invalidations, subtreeRoot]);
 }
 
+/**
+ * React hook that subscribes to the nodeChanged event of the given TreeNode.
+ * This hook will trigger a re-render of the component whenever the node changes.
+ * @param subtreeRoot - The root of the subtree to watch for changes.
+ */
 export function useTreeNode(subtreeRoot: TreeNode): void {
 	// Use a React effect hook to invalidate this component when the subtreeRoot changes.
 	// We do this by incrementing a counter, which is passed as a dependency to the effect hook.
