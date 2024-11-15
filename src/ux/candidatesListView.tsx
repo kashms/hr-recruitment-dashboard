@@ -6,7 +6,7 @@ import { AvailabilityView } from "./availabilityView.js";
 import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
-import { ISessionClient } from "@fluid-experimental/presence";
+import { ISessionClient } from "@fluidframework/presence/alpha";
 import { UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
 import { PresenceContext } from "../index.js";

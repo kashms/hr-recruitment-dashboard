@@ -1,4 +1,4 @@
-import { ExperimentalPresenceManager } from "@fluid-experimental/presence";
+import { ExperimentalPresenceManager } from "@fluidframework/presence/alpha";
 import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import { OdspClient, OdspContainerServices } from "@fluidframework/odsp-client/beta";
 import { type ContainerSchema, type IFluidContainer, SharedTree } from "fluid-framework";
