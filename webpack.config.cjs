@@ -74,8 +74,7 @@ module.exports = {
 		}),
 	],
 	devServer: {
-		// keep port in sync with VS Code launch.json
-		port: 8080,
+\		port: 8080,
 		// Hot-reloading, the sole reason to use webpack here <3
 		hot: true,
 	},
