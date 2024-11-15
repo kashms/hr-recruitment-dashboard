@@ -15,7 +15,7 @@
 6. Run the app - `npm run dev`
 
 7. Inspect mod0/appSchema.tsx
-8. Open the browser and visit - http://localhost:8081/
+8. Open the browser and visit - http://localhost:8080/
 
 ### Great! you should see the basic non-Fluid non-collaborative app working now!
 

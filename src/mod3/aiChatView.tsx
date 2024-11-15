@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import React from "react";
 import { asTreeViewAlpha } from "@fluidframework/tree/alpha";
 import { Tree, TreeNode, TreeView } from "@fluidframework/tree";

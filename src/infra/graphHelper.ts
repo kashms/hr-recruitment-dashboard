@@ -1,3 +1,8 @@
+/*!
+ * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
 import { PublicClientApplication, InteractionType, AccountInfo } from "@azure/msal-browser";
 import { Client } from "@microsoft/microsoft-graph-client";
 import {
