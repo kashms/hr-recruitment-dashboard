@@ -59,7 +59,6 @@ export class Candidate extends sf.object("Candidate", {
 
 export class Job extends sf.object("Job", {
 	jobId: sf.string,
-	jobState: sf.required(sf.string),
 	jobTitle: sf.required(sf.string),
 	jobDescription: sf.required(sf.string),
 	candidates: sf.required(sf.array(Candidate)),

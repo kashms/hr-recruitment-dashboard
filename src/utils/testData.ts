@@ -91,7 +91,6 @@ export function createTestJob(addCandidates: boolean) {
 
 	const job = new Job({
 		jobId: Math.floor(Math.random() * 1001).toString(),
-		jobState: "Open",
 		jobTitle: "Software Engineer",
 		jobDescription:
 			`We are seeking a Software Engineer to join our Microsoft Teams team, specializing in Enterprise Voice features. As an individual contributor, ` +

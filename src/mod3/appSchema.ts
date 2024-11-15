@@ -127,11 +127,6 @@ export class Candidate extends sf.object("Candidate", {
 
 export class Job extends sf.object("Job", {
 	jobId: sf.string,
-	jobState: sf.required(sf.string, {
-		metadata: {
-			description: `The job state of the job. This field is required. For this field, the only allowed values are the strings "open", "closed", "draft". The default is "draft"`,
-		},
-	}),
 	jobTitle: sf.required(sf.string, {
 		metadata: {
 			description: `The title of the job. This field is required. Titles are short and clear`,
