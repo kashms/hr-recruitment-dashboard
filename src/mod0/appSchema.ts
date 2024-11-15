@@ -119,7 +119,6 @@ export class Candidate {
 
 export class Job {
 	jobId: string;
-	jobState: string;
 	jobTitle: string;
 	jobDescription: string;
 	candidates: Candidate[];
@@ -128,7 +127,6 @@ export class Job {
 
 	constructor({
 		jobId,
-		jobState,
 		jobTitle,
 		jobDescription,
 		candidates,
@@ -136,7 +134,6 @@ export class Job {
 		isUnread,
 	}: {
 		jobId: string;
-		jobState: string;
 		jobTitle: string;
 		jobDescription: string;
 		candidates: Candidate[];
@@ -144,7 +141,6 @@ export class Job {
 		isUnread: boolean;
 	}) {
 		this.jobId = jobId;
-		this.jobState = jobState;
 		this.jobTitle = jobTitle;
 		this.jobDescription = jobDescription;
 		this.candidates = candidates;

@@ -148,21 +148,23 @@ export function CandidateView(props: {
 	// const setCandidateName = (name: string) => {
 	// 	setCandidate({ ...candidate, name });
 	// };
-	// const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
-	// 	setCandidate({ ...candidate, yearsOfExperience });
+	// const setCandidateYearsOfExperience = (yearsOfExperience: string) => {
+	// 	const experience = yearsOfExperience === "" ? 0 : Number(yearsOfExperience);
+	// 	setCandidate({ ...candidate, yearsOfExperience: experience });
 	// };
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
 	//############################ START MODULE 1 changes here ##############################
 	useTreeNode(props.candidate);
 	const getCandidate = () => {
-	    return props.candidate;
+		return props.candidate;
 	};
 	const setCandidateName = (name: string) => {
-	    props.candidate.name = name;
+		props.candidate.name = name;
 	};
-	const setCandidateYearsOfExperience = (yearsOfExperience: number) => {
-	    props.candidate.yearsOfExperience = yearsOfExperience;
+	const setCandidateYearsOfExperience = (yearsOfExperience: string) => {
+		props.candidate.yearsOfExperience =
+			yearsOfExperience === "" ? 0 : Number(yearsOfExperience);
 	};
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
@@ -219,9 +221,7 @@ export function CandidateView(props: {
 				<input
 					className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 					value={getCandidate().yearsOfExperience}
-					onChange={(event) =>
-						setCandidateYearsOfExperience(parseInt(event.target.value))
-					}
+					onChange={(event) => setCandidateYearsOfExperience(event.target.value)}
 				/>
 			</div>
 			<AvailabilityView avail={getCandidate().availability} />

@@ -68,11 +68,6 @@ async function createFluidContainer(root: Root) {
 	// Create undo/redo stacks for the app
 	const undoRedoContext = createUndoRedoStacks(appData.events);
 
-	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
-	const presenceManagerContext: PresenceManager = new PresenceManager(
-		appPresence,
-		services.audience,
-	);
 	appView = (
 		<UndoRedoContext.Provider value={undoRedoContext}>
 			<HRApp data={appData} />
@@ -81,6 +76,11 @@ async function createFluidContainer(root: Root) {
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	//############################ START MODULE 2 changes here ##############################
+	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
+	const presenceManagerContext: PresenceManager = new PresenceManager(
+		appPresence,
+		services.audience,
+	);
 	appView = (
 		<PresenceContext.Provider value={presenceManagerContext}>
 			<UndoRedoContext.Provider value={undoRedoContext}>
