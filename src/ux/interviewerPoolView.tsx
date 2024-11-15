@@ -31,6 +31,7 @@ export function InterviewerPoolView(props: {
 			separator
 			open={props.isOpen}
 			position="end"
+			className="min-w-80"
 		>
 			<DrawerHeader>
 				<DrawerHeaderTitle>
@@ -60,7 +61,7 @@ export function InterviewerView(props: {
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	return (
-		<div className="flex flex-col gap-1 content-center my-2 border border-gray-300 p-2 rounded">
+		<div className="flex flex-col gap-1 content-center my-2 min-w-64 border border-gray-300 p-2 rounded">
 			<div className="flex flex-row gap-1 items-center">
 				<Button
 					appearance="subtle"

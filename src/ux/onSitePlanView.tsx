@@ -73,11 +73,17 @@ export function OnSitePlanView(props: {
 
 	return (
 		<div
-			className={`flex flex-col gap-1 content-center w-96 h-full overflow-y-auto border-r-4`}
+			className={`flex flex-col gap-1 content-center w-96 min-w-96 h-full overflow-y-auto border-r-4`}
 		>
 			<div className="text-lg p-2 mx-0.5 font-bold bg-slate-600 text-white text-center">
 				On Site Day
 			</div>
+			<h3 className="text-center p-2 border">
+				A valid on-site day should: <br />
+				- Have 3 interviewers <br />
+				- Be a day that the candidate is available <br />
+				- Be a day that all interviewers are available <br />
+			</h3>
 			<div className={`flex flex-col p-2 mx-2 ${isValid ? "bg-green-100" : "bg-red-100"}`}>
 				<div className="flex items-center space-x-2 mx-2">
 					<select
@@ -98,13 +104,19 @@ export function OnSitePlanView(props: {
 					/>
 				</div>
 				<div className="flex flex-col gap-1 content-center">
-					{onSiteInterviewers.map((interviewer) => (
-						<InterviewerReadView
-							key={interviewer.interviewerId}
-							interviewer={interviewer}
-							removeHandler={removeInterviewer}
-						/>
-					))}
+					{onSiteInterviewers.length > 0 ? (
+						onSiteInterviewers.map((interviewer) => (
+							<InterviewerReadView
+								key={interviewer.interviewerId}
+								interviewer={interviewer}
+								removeHandler={removeInterviewer}
+							/>
+						))
+					) : (
+						<div className="flex justify-center items-center p-4">
+							No interviewers added yet
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

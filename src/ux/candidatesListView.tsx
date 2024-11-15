@@ -102,7 +102,7 @@ export function CandidatesListView(props: {
 	};
 
 	return (
-		<div className="flex flex-col gap-1 content-center w-96 h-full border-r-4 overflow-auto">
+		<div className="flex flex-col gap-1 content-center w-96 min-w-96 h-full border-r-4 overflow-auto">
 			<div className="text-lg p-2 mx-0.5 font-bold bg-violet-600 text-white text-center">
 				Candidates
 			</div>
