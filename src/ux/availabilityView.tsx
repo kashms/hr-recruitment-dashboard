@@ -99,7 +99,9 @@ export function DayView(props: {
 				backgroundSize: "48px 48px",
 			}}
 		>
-			<label className="block mb-1 text-sm font-medium text-gray-900">{props.dayName}</label>
+			<label className="block mb-1 text-sm font-medium text-gray-900 select-none">
+				{props.dayName}
+			</label>
 		</div>
 	);
 }
