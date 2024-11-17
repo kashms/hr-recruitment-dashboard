@@ -153,11 +153,13 @@ export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 	return (
 		<div className="flex flex-row gap-4">
 			<Button
+				aria-label="Undo"
 				appearance="subtle"
 				icon={<ArrowUndoFilled className="text-white" />}
 				onClick={() => props.undoRedo.undo()}
 			/>
 			<Button
+				aria-label="Redo"
 				appearance="subtle"
 				icon={<ArrowRedoFilled className="text-white" />}
 				onClick={() => props.undoRedo.redo()}

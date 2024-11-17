@@ -64,6 +64,7 @@ export function InterviewerView(props: {
 		<div className="flex flex-col gap-1 content-center my-2 min-w-64 border border-gray-300 p-2 rounded">
 			<div className="flex flex-row gap-1 items-center">
 				<Button
+					aria-label="Add interviewer to Onsite Schedule"
 					appearance="subtle"
 					icon={<AddFilled />}
 					onClick={() => props.handleAddInterviewer(props.interviewer.interviewerId)}
@@ -72,22 +73,22 @@ export function InterviewerView(props: {
 					<div className="mb-1">
 						<label className="block mb-1 text-sm font-medium text-gray-900">
 							Name:
-						</label>
 						<input
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 							value={props.interviewer.name}
 							onChange={(event) => (props.interviewer.name = event.target.value)}
 						/>
+						</label>
 					</div>
 					<div className="mb-1">
 						<label className="block mb-1 text-sm font-medium text-gray-900">
 							Role:
-						</label>
 						<input
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
 							value={props.interviewer.role}
 							onChange={(event) => (props.interviewer.role = event.target.value)}
 						/>
+						</label>
 					</div>
 				</div>
 			</div>

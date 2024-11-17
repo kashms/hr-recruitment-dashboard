@@ -101,7 +101,7 @@ export function JobsListView(props: {
 
 	return (
 		<div className="flex flex-col gap-1 content-center w-96 min-w-96 h-full border-r-4 overflow-auto">
-			<div className="text-lg p-2 mx-0.5 font-bold bg-cyan-600 text-white text-center">
+			<div className="text-lg p-2 mx-0.5 font-bold bg-cyan-700 text-white text-center">
 				Jobs
 			</div>
 			<div className="flex-grow mx-2">
@@ -122,7 +122,8 @@ export function JobsListView(props: {
 			</div>
 			<div className="flex mx-2 mb-2 justify-center">
 				<button
-					className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
+					aria-label="Add new job"
+					className="bg-blue-600 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
 					onClick={() => {
 						addJob(createTestJob(false));
 					}}
@@ -194,6 +195,7 @@ export function JobView(props: {
 					</div>
 				)}
 				<Button
+					aria-label="Delete job"
 					appearance="subtle"
 					icon={<DismissFilled />}
 					onClick={(event) => {
@@ -211,23 +213,23 @@ export function JobView(props: {
 					<div className="mb-1">
 						<label className="block mb-1 text-sm font-medium text-gray-900">
 							Title:
+							<input
+								className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+								value={getjob().jobTitle}
+								onChange={(event) => setJobTitle(event.target.value)}
+							/>
 						</label>
-						<input
-							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-							value={getjob().jobTitle}
-							onChange={(event) => setJobTitle(event.target.value)}
-						/>
 					</div>
 
 					<div className="mb-1">
 						<label className="block mb-1 text-sm font-medium text-gray-900">
 							Description:
+							<textarea
+								className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+								value={getjob().jobDescription}
+								onChange={(event) => setJobDescription(event.target.value)}
+							/>
 						</label>
-						<textarea
-							className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-							value={getjob().jobDescription}
-							onChange={(event) => setJobDescription(event.target.value)}
-						/>
 					</div>
 				</div>
 			</div>

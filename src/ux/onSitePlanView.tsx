@@ -87,6 +87,7 @@ export function OnSitePlanView(props: {
 			<div className={`flex flex-col p-2 mx-2 ${isValid ? "bg-green-100" : "bg-red-100"}`}>
 				<div className="flex items-center space-x-2 mx-2">
 					<select
+						aria-label="Select On Site Day"
 						className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2"
 						value={getOnSiteSchedule().day}
 						onChange={(event) => setOnSiteDay(event.target.value)}
@@ -98,6 +99,7 @@ export function OnSitePlanView(props: {
 						))}
 					</select>
 					<Button
+						aria-label="Toggle Interviewer Pool list"
 						appearance="subtle"
 						icon={<ListFilled />}
 						onClick={() => props.handleToggleInterviewerList()}
@@ -137,6 +139,7 @@ export function InterviewerReadView(props: {
 				</div>
 				<div className="ml-4">
 					<Button
+						aria-label="Remove interviewer"
 						appearance="subtle"
 						icon={<DismissFilled />}
 						onClick={() => props.removeHandler(props.interviewer.interviewerId)}
