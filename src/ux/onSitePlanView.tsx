@@ -4,10 +4,10 @@
  */
 
 import { Candidate, Interviewer, InterviewerPool, OnSiteSchedule } from "@lab/appSchema.js";
-import { Button } from "@fluentui/react-components";
+import { Button, Tooltip } from "@fluentui/react-components";
 import React, { useState } from "react";
 import { AvailabilityView } from "./availabilityView.js";
-import { DismissFilled, ListFilled } from "@fluentui/react-icons";
+import { DismissFilled, InfoRegular, ListFilled } from "@fluentui/react-icons";
 import { DAYS_OF_WEEK } from "../utils/util.js";
 import { useTree } from "../utils/treeReactHooks.js";
 
@@ -70,6 +70,14 @@ export function OnSitePlanView(props: {
 		return true;
 	};
 	const isValid = checkValidity();
+	const tooltipContent = (
+		<>
+			A valid on-site day should: <br />
+			- Have 3 interviewers <br />
+			- Be a day that the candidate is available <br />- Be a day that all interviewers are
+			available
+		</>
+	);
 
 	return (
 		<div
@@ -78,13 +86,21 @@ export function OnSitePlanView(props: {
 			<div className="text-lg p-2 mx-0.5 font-bold bg-slate-600 text-white text-center">
 				On Site Day
 			</div>
-			<h3 className="text-center p-2 border">
-				A valid on-site day should: <br />
-				- Have 3 interviewers <br />
-				- Be a day that the candidate is available <br />
-				- Be a day that all interviewers are available <br />
-			</h3>
 			<div className={`flex flex-col p-2 mx-2 ${isValid ? "bg-green-100" : "bg-red-100"}`}>
+				{isValid ? (
+					<p className="text-center text-green-800 text-xl p-2 font-bold">VALID! </p>
+				) : (
+					<div className="flex items-center justify-center">
+						<p className="text-center text-red-800 text-xl p-2 font-bold">INVALID! </p>
+						<Tooltip content={tooltipContent} relationship="label" {...props}>
+							<Button
+								aria-label="On-site nvalid tooltip"
+								appearance="subtle"
+								icon={<InfoRegular />}
+							/>
+						</Tooltip>
+					</div>
+				)}
 				<div className="flex items-center space-x-2 mx-2">
 					<select
 						aria-label="Select On Site Day"

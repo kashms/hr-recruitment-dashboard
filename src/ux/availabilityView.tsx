@@ -82,13 +82,21 @@ export function DayView(props: {
 			role="button"
 			tabIndex={props.readOnly ? -1 : 0}
 			aria-pressed={props.isAvailable}
-			aria-label={`Set availability for ${props.dayName}`}
+			aria-label={`${props.isAvailable ? "" : "Not "} Available on ${props.dayName}`}
 			onKeyDown={(event) => {
 				if (!props.readOnly && (event.key === "Enter" || event.key === " ")) {
 					// Only handle key press if not read-only and key is Enter or Space
 					event.preventDefault(); // Prevent default action
 					props.onChange(!props.isAvailable); // Toggle availability status
 				}
+			}}
+			style={{
+				backgroundImage: props.isAvailable
+					? "none"
+					: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23FF0000" viewBox="0 0 24 24"><path d="M12 10.586l4.95-4.95 1.414 1.414L13.414 12l4.95 4.95-1.414 1.414L12 13.414l-4.95 4.95-1.414-1.414L10.586 12 5.636 7.05l1.414-1.414L12 10.586z"/></svg>')`,
+				backgroundRepeat: "no-repeat",
+				backgroundPosition: "center",
+				backgroundSize: "48px 48px",
 			}}
 		>
 			<label className="block mb-1 text-sm font-medium text-gray-900">{props.dayName}</label>
