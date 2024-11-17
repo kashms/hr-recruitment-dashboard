@@ -126,7 +126,8 @@ export function CandidatesListView(props: {
 			</div>
 			<div className="flex mx-2 mb-2 justify-center">
 				<button
-					className="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
+					aria-label="Add New Candidate"
+					className="bg-blue-600 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-1/2"
 					onClick={() => {
 						addCandidate(createTestCandidate());
 					}}
@@ -197,6 +198,7 @@ export function CandidateView(props: {
 				)}
 				{!props.job.hasOnSiteForCandidate(getCandidate().candidateId) && (
 					<Button
+						aria-label="Setup On-Site"
 						appearance="primary"
 						onClick={() =>
 							props.job.addNewOnSiteForCandidate(getCandidate().candidateId)
@@ -218,22 +220,24 @@ export function CandidateView(props: {
 			}
 
 			<div className="mb-3">
-				<label className="block mb-1 text-sm font-medium text-gray-900">Name:</label>
-				<input
-					className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					value={getCandidate().name}
-					onChange={(event) => setCandidateName(event.target.value)}
-				/>
+				<label className="block mb-1 text-sm font-medium text-gray-900">
+					Name:
+					<input
+						className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+						value={getCandidate().name}
+						onChange={(event) => setCandidateName(event.target.value)}
+					/>
+				</label>
 			</div>
 			<div className="mb-3">
 				<label className="block mb-1 text-sm font-medium text-gray-900">
 					Years of Experience:
+					<input
+						className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+						value={getCandidate().yearsOfExperience}
+						onChange={(event) => setCandidateYearsOfExperience(event.target.value)}
+					/>
 				</label>
-				<input
-					className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-					value={getCandidate().yearsOfExperience}
-					onChange={(event) => setCandidateYearsOfExperience(event.target.value)}
-				/>
 			</div>
 			<AvailabilityView avail={getCandidate().availability} />
 		</div>

@@ -29,6 +29,7 @@ async function tinyliciousStart() {
 	// Create the root element for React
 	const app = document.createElement("div");
 	app.id = "app";
+	document.documentElement.lang = "en";
 	document.body.appendChild(app);
 	const root = createRoot(app);
 

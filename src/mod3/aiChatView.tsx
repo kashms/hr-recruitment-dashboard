@@ -123,6 +123,7 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 	return (
 		<div className="flex flex-grow flex-row gap-1 content-center">
 			<input
+				aria-label="Input text box for Ask AI for help"
 				id="ai-job-creation-input"
 				className="bg-gray-50 p-2.5 flex-grow border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-blue-500 block"
 				onKeyDown={(e) => {
@@ -132,7 +133,8 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 				}}
 			/>
 			<button
-				className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit"
+				aria-label="Ask AI for help"
+				className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit"
 				onClick={() => executeAIChat()}
 			>
 				Ask AI for help!
