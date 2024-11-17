@@ -10,7 +10,7 @@ import { treeConfiguration } from "@lab/appSchema.js";
 import { createTestAppData } from "./utils/testData.js";
 import "./output.css";
 import { AttachState, IFluidContainer } from "fluid-framework";
-import { HRApp } from "./hr_app.js";
+import { HRApp } from "./hrApp.js";
 import { createUndoRedoStacks, undoRedo } from "./utils/undo.js";
 import { acquirePresenceViaDataObject } from "@fluidframework/presence/alpha";
 import { PresenceManager } from "./utils/presenceManager.js";

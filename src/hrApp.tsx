@@ -67,7 +67,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 
 	const headerViews = [];
 	headerViews.push(
-		<h1 key="header_title" className="text-xl font-bold text-white flex-grow">
+		<h1 key="header_title" className="text-xl font-bold text-white flex-auto w-24">
 			HR Recruitment Dashboard
 		</h1>,
 	);
@@ -151,7 +151,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 // Action tool bar container undo redo buttons
 export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 	return (
-		<div className="flex flex-row gap-4">
+		<div className="flex flex-row flex-none gap-4">
 			<Button
 				aria-label="Undo"
 				appearance="subtle"

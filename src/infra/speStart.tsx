@@ -18,7 +18,7 @@ import { createTestAppData } from "../utils/testData.js";
 import { treeConfiguration } from "../mod3/appSchema.js";
 import { acquirePresenceViaDataObject } from "@fluidframework/presence/alpha";
 import { PresenceContext, UndoRedoContext } from "../index.js";
-import { HRApp } from "../hr_app.js";
+import { HRApp } from "../hrApp.js";
 import { PresenceManager } from "../utils/presenceManager.js";
 import { AttachState } from "fluid-framework";
 

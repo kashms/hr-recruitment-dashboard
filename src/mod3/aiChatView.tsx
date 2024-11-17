@@ -121,7 +121,7 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 	};
 
 	return (
-		<div className="flex flex-grow flex-row gap-1 content-center">
+		<div className="flex-grow flex flex-row gap-1 content-center w-96">
 			<input
 				aria-label="Input text box for Ask AI for help"
 				id="ai-job-creation-input"
