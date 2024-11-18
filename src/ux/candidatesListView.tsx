@@ -15,10 +15,11 @@ import { UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
 import { PresenceContext } from "../index.js";
 
+// This component displays the list of candidates for the given job
 export function CandidatesListView(props: {
-	job: Job;
-	selectedCandidate: Candidate | undefined;
-	setSelectedCandidate: (candidate: Candidate | undefined) => void;
+	job: Job; // The Job this candidate list belongs to
+	selectedCandidate: Candidate | undefined; // Currently Selected Candidate
+	setSelectedCandidate: (candidate: Candidate | undefined) => void; // Function to set the selected candidate
 }): JSX.Element {
 	//############################ START MODULE 0 changes here ##############################
 	const [job, setJob] = useState(props.job);
@@ -39,36 +40,45 @@ export function CandidatesListView(props: {
 	// useTreeNode(props.job.candidates);
 	// useTreeNode(props.job.onSiteSchedule);
 	// const getJob = () => {
-	//     return props.job;
+	// 	return props.job;
 	// };
+
+	// // Function to add a new candidate to the job
 	// const addCandidate = (candidate: Candidate) => {
-	//     props.job.addCandidate(candidate);
+	// 	props.job.addCandidate(candidate);
 	// };
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	// {VIEW MOD_2}
+	// Get the PresenceManager context, if available
 	const presenceManager = useContext(PresenceContext);
-	let presenceUserInfoList: UserInfo[][] = [];
+	let candidatePresenceUserInfoList: UserInfo[][] = [];
 
 	if (presenceManager) {
+		// Initialize the candidate selection map by remote clients if PresenceManager context is present
 		const [candidatePresenceMap, setCandidatePresenceMap] = useState<
 			Map<ISessionClient, string>
 		>(
 			new Map(
+				// Get candidate selection from the PresenceState object
 				[...presenceManager.getStates().candidateSelection.clientValues()].map(
 					(cv) => [cv.client, cv.value.candidateSelected] as [ISessionClient, string],
 				),
 			),
 		);
 		useEffect(() => {
+			// Listen to the "updated" event for changes to candiate selection by remote clients
 			return presenceManager.getStates().candidateSelection.events.on("updated", (update) => {
-				const remoteSessionClient = update.client;
-				const remoteSelectedCandidateId = update.value.candidateSelected;
+				const remoteSessionClient = update.client; // The client that updated the state
+				const remoteSelectedCandidateId = update.value.candidateSelected; // The candidate selected by the remote client
 
+				// if empty string, then no candidate is selected, remove it from the map
 				if (remoteSelectedCandidateId === "") {
+					// Remove the candidate selection if the remote client unselected the candidate
 					candidatePresenceMap.delete(remoteSessionClient);
 					setCandidatePresenceMap(new Map(candidatePresenceMap));
 				} else {
+					// Set the new candidate seletion value for the remove client in our local map
 					setCandidatePresenceMap(
 						new Map(
 							candidatePresenceMap.set(
@@ -80,7 +90,8 @@ export function CandidatesListView(props: {
 				}
 			});
 		}, []);
-		presenceUserInfoList = getJob().candidates.map((candidate) => {
+		// Get the UserInfo for each candidate selected by remote clients
+		candidatePresenceUserInfoList = getJob().candidates.map((candidate) => {
 			return presenceManager.getUserInfo(
 				getKeysByValue(candidatePresenceMap, candidate.candidateId),
 			);
@@ -88,11 +99,13 @@ export function CandidatesListView(props: {
 	}
 	// {END MOD_2}
 
+	// Function to set the selected candidate
 	const setSelectedCandidate = (candidate: Candidate | undefined) => {
 		props.setSelectedCandidate(candidate);
 
 		// {VIEW MOD_2}
 		if (presenceManager) {
+			// Set the candidate selection state for the local client, if presence Manager is available
 			presenceManager.getStates().candidateSelection.local = {
 				candidateSelected: candidate ? candidate.candidateId : "",
 			};
@@ -114,10 +127,10 @@ export function CandidatesListView(props: {
 							key={index}
 							candidate={candidate}
 							// {VIEW MOD_2}
-							presenceUserInfoList={presenceUserInfoList[index]}
+							presenceUserInfoList={candidatePresenceUserInfoList[index]}
 							// {END MOD_2}
 							job={getJob()}
-							selectedCandidate={props.selectedCandidate}
+							isSelected={props.selectedCandidate === candidate}
 							setSelectedCandidate={setSelectedCandidate}
 						/>
 					))
@@ -138,12 +151,13 @@ export function CandidatesListView(props: {
 	);
 }
 
+// This component displays the details of a candidate
 export function CandidateView(props: {
 	candidate: Candidate;
 	job: Job;
-	selectedCandidate?: Candidate;
-	setSelectedCandidate: (candidate: Candidate | undefined) => void;
-	presenceUserInfoList?: UserInfo[];
+	isSelected: boolean; // Flag to indicate if the candidate is selected
+	setSelectedCandidate: (candidate: Candidate | undefined) => void; // Function to set the selected candidate
+	presenceUserInfoList?: UserInfo[]; // List of UserInfo for remote clients that have this candidate selected
 }): JSX.Element {
 	//############################ START MODULE 0 changes here ##############################
 	const [candidate, setCandidate] = useState(props.candidate);
@@ -176,7 +190,7 @@ export function CandidateView(props: {
 	return (
 		<div
 			className={`flex flex-col gap-1 justify-center content-center m-1 p-2 cursor-pointer
-                ${props.selectedCandidate?.candidateId == getCandidate().candidateId ? "bg-violet-50 border border-violet-300" : "bg-slate-50 hover:bg-slate-100"}
+                ${props.isSelected ? "bg-violet-50 border border-violet-300" : "bg-slate-50 hover:bg-slate-100"}
 				${
 					getCandidate().isUnread ||
 					props.job.getOnSiteForCandidate(getCandidate().candidateId)?.isUnread

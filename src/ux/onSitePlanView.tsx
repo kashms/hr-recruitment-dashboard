@@ -11,21 +11,24 @@ import { DismissFilled, InfoRegular, ListFilled } from "@fluentui/react-icons";
 import { DAYS_OF_WEEK } from "../utils/util.js";
 import { useTree } from "../utils/treeReactHooks.js";
 
+// This component is responsible for displaying the on-site plan view for the given candidate
 export function OnSitePlanView(props: {
-	candidate: Candidate;
-	onSiteSchedule: OnSiteSchedule;
-	interviewerPool: InterviewerPool;
-	handleToggleInterviewerList: () => void;
+	candidate: Candidate; // The candidate for which the on-site plan is being displayed
+	onSiteSchedule: OnSiteSchedule; // The on-site schedule for the candidate
+	interviewerPool: InterviewerPool; // The pool of interviewers available for the on-site
+	handleToggleInterviewerList: () => void; // Function to toggle the interviewer list
 }): JSX.Element {
 	//############################ START MODULE 0 changes here ##############################
 	const [onSiteSchedule, setOnSiteSchedule] = useState(props.onSiteSchedule);
 	const getOnSiteSchedule = () => {
 		return onSiteSchedule;
 	};
+	// Function to remove the interview from the on-site interview
 	const removeInterviewer = (interviewerId: string) => {
 		onSiteSchedule.removeInterviewer(interviewerId);
 		setOnSiteSchedule({ ...onSiteSchedule });
 	};
+	// Function to set the day of the on-site interview
 	const setOnSiteDay = (day: string) => {
 		onSiteSchedule.day = day;
 		setOnSiteSchedule({ ...onSiteSchedule });
@@ -39,21 +42,29 @@ export function OnSitePlanView(props: {
 	// const getOnSiteSchedule = () => {
 	// 	return props.onSiteSchedule;
 	// };
+	// // Function to remove the interview from the on-site interview
 	// const removeInterviewer = (interviewerId: string) => {
 	// 	props.onSiteSchedule.removeInterviewer(interviewerId);
-	// }
+	// };
+	// // Function to set the day of the on-site interview
 	// const setOnSiteDay = (day: string) => {
 	// 	props.onSiteSchedule.day = day;
 	// };
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
+	// The list of interviewers for the on-site interview
 	const onSiteInterviewers = getOnSiteSchedule()
 		.interviewerIds.map((intId) =>
 			props.interviewerPool.find((interviewer) => interviewer.interviewerId === intId),
 		)
 		.filter((interviewer): interviewer is Interviewer => interviewer !== undefined);
 
-	const checkValidity = () => {
+	// Function to check the validity of the on-site interview. The three conditions are:
+	// 1. The candidate is available on the day of the on-site
+	// 2. The on-site day has 3 interviewers
+	// 3. All interviewers are available on the on-site day
+	// If any of these conditions are not met, the on-site day is considered invalid
+	const isValid = () => {
 		if (
 			onSiteInterviewers.length !== 3 ||
 			!props.candidate.availability.includes(getOnSiteSchedule().day)
@@ -69,8 +80,7 @@ export function OnSitePlanView(props: {
 
 		return true;
 	};
-	const isValid = checkValidity();
-	const tooltipContent = (
+	const invalidTooltipContent = (
 		<>
 			A valid on-site day should: <br />
 			- Have 3 interviewers <br />
@@ -86,13 +96,13 @@ export function OnSitePlanView(props: {
 			<div className="text-lg p-2 mx-0.5 font-bold bg-slate-600 text-white text-center">
 				On-Site Day
 			</div>
-			<div className={`flex flex-col p-2 mx-2 ${isValid ? "bg-green-100" : "bg-red-100"}`}>
-				{isValid ? (
+			<div className={`flex flex-col p-2 mx-2 ${isValid() ? "bg-green-100" : "bg-red-100"}`}>
+				{isValid() ? (
 					<p className="text-center text-green-800 text-xl p-2 font-bold">VALID! </p>
 				) : (
 					<div className="flex items-center justify-center">
 						<p className="text-center text-red-800 text-xl p-2 font-bold">INVALID! </p>
-						<Tooltip content={tooltipContent} relationship="label" {...props}>
+						<Tooltip content={invalidTooltipContent} relationship="label" {...props}>
 							<Button
 								aria-label="On-site nvalid tooltip"
 								appearance="subtle"
@@ -141,6 +151,7 @@ export function OnSitePlanView(props: {
 	);
 }
 
+// This component is responsible for displaying the interviewer in the read-only mode in the InterviewerPool drawer
 export function InterviewerReadView(props: {
 	interviewer: Interviewer;
 	removeHandler: (interviewerId: string) => void;

@@ -15,6 +15,7 @@ import { UserInfo } from "../utils/presenceManager.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
 import { PresenceContext } from "../index.js";
 
+// This component displays a list of jobs and allows the user to select a job.
 export function JobsListView(props: {
 	jobs: JobsArray;
 	setSelectedJob: (job: Job | undefined) => void;
@@ -51,26 +52,32 @@ export function JobsListView(props: {
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	// {VIEW MOD_2}
+	// Get the PresenceManager context, if available
 	const presenceManager = useContext(PresenceContext);
-	let presenceUserInfoList: UserInfo[][] = [];
+	let jobPresenceUserInfoList: UserInfo[][] = [];
 	if (presenceManager) {
+		// Initialize the job selection map by remote clients if PresenceManager context is present
 		const [jobPresenceMap, setJobPresenceMap] = useState<Map<ISessionClient, string>>(
 			new Map(
+				// Get job selection from the PresenceState object
 				[...presenceManager.getStates().jobSelection.clientValues()].map(
 					(cv) => [cv.client, cv.value.jobSelected] as [ISessionClient, string],
 				),
 			),
 		);
 		useEffect(() => {
+			// Listen to the "updated" event for changes to job selection by remote clients
 			return presenceManager.getStates().jobSelection.events.on("updated", (update) => {
 				if (jobPresenceMap) {
-					const remoteSessionClient = update.client;
-					const remoteSelectedJobId = update.value.jobSelected;
+					const remoteSessionClient = update.client; // The client that updated the state
+					const remoteSelectedJobId = update.value.jobSelected; // The job selected by the remote client
 					// if empty string, then no job is selected, remove it from the map
 					if (remoteSelectedJobId === "") {
+						// Remove the job selection if the remote client unselected the job
 						jobPresenceMap.delete(remoteSessionClient);
 						setJobPresenceMap(new Map(jobPresenceMap));
 					} else {
+						// Set the new job seletion value for the remove client in our local map
 						setJobPresenceMap(
 							new Map(jobPresenceMap.set(remoteSessionClient, remoteSelectedJobId)),
 						);
@@ -78,20 +85,24 @@ export function JobsListView(props: {
 				}
 			});
 		}, []);
-		presenceUserInfoList = getJobs().map((job) => {
+		// Get the UserInfo for each job selected by remote clients
+		jobPresenceUserInfoList = getJobs().map((job) => {
 			return presenceManager.getUserInfo(getKeysByValue(jobPresenceMap, job.jobId));
 		});
 	}
 	// {END MOD_2}
 
+	// Function to set the selected job
 	const setSelectedJob = (job: Job | undefined) => {
 		props.setSelectedJob(job);
 
 		// {VIEW MOD_2}
 		if (presenceManager) {
+			// Set the job selection state for the local client, if presence Manager is available
 			presenceManager.getStates().jobSelection.local = {
 				jobSelected: job ? job.jobId : "",
 			};
+			// Reset the candidate selection when job selection changes
 			presenceManager.getStates().candidateSelection.local = {
 				candidateSelected: "",
 			};
@@ -115,7 +126,7 @@ export function JobsListView(props: {
 							deleteJob(job);
 						}}
 						// {VIEW MOD_2}
-						presenceUserInfoList={presenceUserInfoList[index]}
+						presenceUserInfoList={jobPresenceUserInfoList[index]}
 						// {END MOD_2}
 					/>
 				))}
@@ -135,10 +146,11 @@ export function JobsListView(props: {
 	);
 }
 
+// This component displays the details of a job
 export function JobView(props: {
 	job: Job;
-	isSelected: boolean;
-	setSelectedJob: (job: Job | undefined) => void;
+	isSelected: boolean; // Flag to indicate if the job is selected
+	setSelectedJob: (job: Job | undefined) => void; // Function to set the selected job
 	deleteJob: (job: Job) => void;
 	presenceUserInfoList?: UserInfo[];
 }): JSX.Element {

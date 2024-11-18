@@ -17,11 +17,12 @@ import { AddFilled } from "@fluentui/react-icons";
 import { AvailabilityView } from "./availabilityView.js";
 import { useTreeNode } from "../utils/treeReactHooks.js";
 
+// This component displays the Interviewer Pool and allows the user to add an interviewer to the Onsite Schedule.
 export function InterviewerPoolView(props: {
-	interviewers: InterviewerPool;
-	isOpen: boolean;
-	setIsOpen: (isOpen: boolean) => void;
-	handleAddInterviewer: (interviewerId: string) => void;
+	interviewers: InterviewerPool; // InterviewerPool is an array of Interviewer objects available for adding to the On-site
+	isOpen: boolean; // Boolean to indicate if the drawer is open
+	setIsOpen: (isOpen: boolean) => void; // Function to set the state of the drawer
+	handleAddInterviewer: (interviewerId: string) => void; // Function to add an interviewer to the On-site
 }): JSX.Element {
 	const restoreFocusSourceAttributes = useRestoreFocusSource();
 
@@ -52,9 +53,10 @@ export function InterviewerPoolView(props: {
 	);
 }
 
+// This component displays the details of an Interviewer and allows the user to add the Interviewer to the Onsite Schedule.
 export function InterviewerView(props: {
-	interviewer: Interviewer;
-	handleAddInterviewer: (interviewerId: string) => void;
+	interviewer: Interviewer; // Interviewer object to be displayed
+	handleAddInterviewer: (interviewerId: string) => void; // Function to add an interviewer to the On-site
 }): JSX.Element {
 	//############################ START MODULE 1 changes here ##############################
 	// useTreeNode(props.interviewer);
@@ -67,7 +69,7 @@ export function InterviewerView(props: {
 					aria-label="Add interviewer to Onsite Schedule"
 					appearance="subtle"
 					icon={<AddFilled />}
-					onClick={() => props.handleAddInterviewer(props.interviewer.interviewerId)}
+					onClick={() => props.handleAddInterviewer(props.interviewer.interviewerId)} // Add the Interviewer to the Onsite Schedule
 				/>
 				<div className="flex-grow">
 					<div className="mb-1">

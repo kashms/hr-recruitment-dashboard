@@ -39,14 +39,17 @@ async function tinyliciousStart() {
 	//////////////////////////////// END MODULE 0 changes here //////////////////////////////
 
 	//############################ START MODULE 1 changes here ##############################
-	// renderFluidView(root);
+	// Render the Fluid view using the local Tinylicious server
+	// renderFluidViewWithTinylicious(root);
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 }
 
-async function renderFluidView(root: Root) {
+// Render the Fluid view using the TinyliciousClient
+async function renderFluidViewWithTinylicious(root: Root) {
+	// Create a new TinyliciousClient
 	const tinyliciousClient = new TinyliciousClient();
 
-	// Get the container ID from the URL parameters
+	// Get the container ID from the URL parameters (if available)
 	let containerId = new URLSearchParams(window.location.search).get("fluidContainerId") || "";
 
 	let container: IFluidContainer<typeof containerSchema>;
@@ -58,9 +61,9 @@ async function renderFluidView(root: Root) {
 	} else {
 		// containerId found, need to load the container
 		({ container, services } = await tinyliciousClient.getContainer(
-			containerId,
-			containerSchema,
-			"2",
+			containerId, // ID of the container to load
+			containerSchema, // Container schema used to process the container
+			"2", // Compatibility mode flag for the container. "2" means use the container in FF 2.x mode
 		));
 	}
 
@@ -75,6 +78,7 @@ async function renderFluidView(root: Root) {
 	// // Create undo/redo stacks for the app
 	// const undoRedoContext = createUndoRedoStacks(appData.events);
 
+	// // Render the HRApp component with Fluid data and provide the Undo/Redo context for Module 1
 	// appView = (
 	// 	<UndoRedoContext.Provider value={undoRedoContext}>
 	// 		<HRApp data={appData} />
@@ -83,11 +87,14 @@ async function renderFluidView(root: Root) {
 	//////////////////////////////// END MODULE 1 changes here //////////////////////////////
 
 	//############################ START MODULE 2 changes here ##############################
+	// // Get the Presence data object from the container
 	// const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
+	// // Create a PresenceManager context to manage the presence of users
 	// const presenceManagerContext: PresenceManager = new PresenceManager(
 	// 	appPresence,
 	// 	services.audience,
 	// );
+	// // Render the HRApp component with Fluid data and provide the PresenceManager context for Module 2
 	// appView = (
 	// 	<PresenceContext.Provider value={presenceManagerContext}>
 	// 		<UndoRedoContext.Provider value={undoRedoContext}>
@@ -99,7 +106,7 @@ async function renderFluidView(root: Root) {
 
 	root.render(appView);
 
-	// Once the container is attached, update the URL with the container ID
+	// Once the container is attached, update the URL with the container ID so it can be easily shared with others
 	if (container.attachState === AttachState.Detached) {
 		containerId = await container.attach();
 

@@ -8,7 +8,6 @@ import { createRoot, Root } from "react-dom/client";
 import { SampleOdspTokenProvider } from "./tokenProvider.js";
 import { GraphHelper } from "./graphHelper.js";
 import { authHelper } from "./authHelper.js";
-import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import { OdspClient } from "@fluidframework/odsp-client/beta";
 import { PublicClientApplication, AccountInfo } from "@azure/msal-browser";
 import { loadFluidData, containerSchema } from "./fluid.js";
@@ -22,6 +21,7 @@ import { HRApp } from "../hrApp.js";
 import { PresenceManager } from "../utils/presenceManager.js";
 import { AttachState } from "fluid-framework";
 
+// Function to start the app with SharePointEmbedded
 export async function speStart() {
 	const msalInstance = await authHelper();
 
@@ -143,13 +143,6 @@ async function createFluidApp(
 		return;
 	}
 
-	// Initialize Devtools logger if in development mode
-	let telemetryLogger: ITelemetryBaseLogger | undefined;
-	if (process.env.NODE_ENV === "development") {
-		const { createDevtoolsLogger } = await import("@fluidframework/devtools/beta");
-		telemetryLogger = createDevtoolsLogger();
-	}
-
 	// Create the client properties required to initialize
 	// the Fluid client instance. The Fluid client instance is used to
 	// interact with the Fluid service.
@@ -157,19 +150,13 @@ async function createFluidApp(
 		await graphHelper.getSiteUrl(),
 		fileStorageContainerId,
 		new SampleOdspTokenProvider(msalInstance),
-		telemetryLogger,
 	);
 
 	// Create the Fluid client instance
 	const client = new OdspClient(clientProps);
 
 	// Initialize Fluid Container - this will either make a new container or load an existing one
-	const { container, services } = await loadFluidData(
-		containerId,
-		containerSchema,
-		client,
-		telemetryLogger,
-	);
+	const { container, services } = await loadFluidData(containerId, containerSchema, client);
 
 	let appView = <div></div>;
 
@@ -181,19 +168,15 @@ async function createFluidApp(
 	// Create undo/redo stacks for the app
 	const undoRedoContext = createUndoRedoStacks(appData.events);
 
+	// Get the Presence data object from the container
 	const appPresence = acquirePresenceViaDataObject(container.initialObjects.presence);
+	// Create a PresenceManager context to manage the presence of users
 	const presenceManagerContext: PresenceManager = new PresenceManager(
 		appPresence,
 		services.audience,
 	);
 
 	//############################ START MODULE 4 changes here ##############################
-	// appView = (
-	// 	<UndoRedoContext.Provider value={undoRedoContext}>
-	// 		<HRApp data={appData} />
-	// 	</UndoRedoContext.Provider>
-	// );
-
 	// appView = (
 	// 	<PresenceContext.Provider value={presenceManagerContext}>
 	// 		<UndoRedoContext.Provider value={undoRedoContext}>
