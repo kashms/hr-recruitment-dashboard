@@ -29,14 +29,14 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 
 	const [selectedJob, setSelectedJob] = useState<Job>();
 	const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
-	const [onsiteScheduleSelectedCandidate, setOnsiteScheduleSelectedCandidate] =
-		useState<OnSiteSchedule>();
+	const [onSiteForSelectedCandidate, setOnSiteForSelectedCandidate] = useState<OnSiteSchedule>();
 	const [openDrawer, setOpenDrawer] = useState(false);
 
+	// Function to handle job selection
 	const handleJobSelected = (job: Job | undefined) => {
 		setSelectedJob(job);
 		setSelectedCandidate(undefined);
-		setOnsiteScheduleSelectedCandidate(undefined);
+		setOnSiteForSelectedCandidate(undefined);
 		setOpenDrawer(false);
 
 		if (job?.isUnread) {
@@ -44,6 +44,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 		}
 	};
 
+	// Function to handle candidate selection
 	const handleCandidateSelected = (candidate: Candidate | undefined) => {
 		setSelectedCandidate(candidate);
 		if (candidate) {
@@ -53,10 +54,10 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 					if (candidateSchedule.isUnread) {
 						candidateSchedule.isUnread = false;
 					}
-					setOnsiteScheduleSelectedCandidate(candidateSchedule);
+					setOnSiteForSelectedCandidate(candidateSchedule);
 				}
 			} else {
-				setOnsiteScheduleSelectedCandidate(undefined);
+				setOnSiteForSelectedCandidate(undefined);
 			}
 			setOpenDrawer(false);
 			if (candidate.isUnread) {
@@ -65,20 +66,25 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 		}
 	};
 
+	// Function to handle adding an interviewer to the currently selected candidate's on-site schedule
 	const handleAddInterviewer = (interviewerId: string) => {
-		onsiteScheduleSelectedCandidate?.addInterviewer(interviewerId);
+		onSiteForSelectedCandidate?.addInterviewer(interviewerId);
 	};
 
+	// Animated frame for displaying AI processing, used by Module 3
+	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
+
+	// List of the views for the header, we will progressively add more views through the modules
 	const headerViews = [];
+	// Add the title view to the header
 	headerViews.push(
 		<h1 key="header_title" className="text-xl font-bold text-white flex-auto w-24">
 			HR Recruitment Dashboard
 		</h1>,
 	);
 
-	const [showAnimatedFrame, setShowAnimatedFrame] = useState(false);
-
 	//############################ START MODULE 3 changes here ##############################
+	// Add the AI chat view to the header
 	headerViews.push(
 		<AiChatView
 			key="ai_chat_view"
@@ -90,6 +96,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 	);
 	//////////////////////////////// END MODULE 3 changes here //////////////////////////////
 
+	// Add the undo redo buttons to the header if the Undo/Redo context is available
 	const undoRedo = useContext(UndoRedoContext);
 	if (undoRedo) {
 		// Unsubscribe to undo-redo events when the component unmounts
@@ -101,6 +108,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 	}
 
 	// {VIEW MOD_2}
+	// Add the presence group view to the header
 	headerViews.push(<AppPresenceGroup key="presence_view" />);
 	// {END MOD_2}
 
@@ -128,15 +136,15 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 									setSelectedCandidate={handleCandidateSelected}
 								/>
 							)}
-							{selectedCandidate && onsiteScheduleSelectedCandidate && (
+							{selectedCandidate && onSiteForSelectedCandidate && (
 								<OnSitePlanView
 									candidate={selectedCandidate}
-									onSiteSchedule={onsiteScheduleSelectedCandidate!}
+									onSiteSchedule={onSiteForSelectedCandidate!}
 									interviewerPool={appData.interviewerPool}
 									handleToggleInterviewerList={() => setOpenDrawer(!openDrawer)}
 								/>
 							)}
-							{onsiteScheduleSelectedCandidate && (
+							{onSiteForSelectedCandidate && (
 								<InterviewerPoolView
 									interviewers={appData.interviewerPool}
 									isOpen={openDrawer}
@@ -172,6 +180,7 @@ export function ActionToolBar(props: { undoRedo: undoRedo }): JSX.Element {
 	);
 }
 
+// Component to display the presence group
 export function AppPresenceGroup(): JSX.Element {
 	const presenceManager = useContext(PresenceContext);
 	if (presenceManager === undefined) {
@@ -181,14 +190,17 @@ export function AppPresenceGroup(): JSX.Element {
 	const [invalidations, setInvalidations] = useState(0);
 
 	useEffect(() => {
+		// Listen to the attendeeJoined event and update the presence group when a new attendee joins
 		const unsubJoin = presenceManager.getPresence().events.on("attendeeJoined", () => {
 			setInvalidations(invalidations + Math.random());
 		});
+		// Listen to the attendeeDisconnected event and update the presence group when an attendee leaves
 		const unsubDisconnect = presenceManager
 			.getPresence()
 			.events.on("attendeeDisconnected", () => {
 				setInvalidations(invalidations + Math.random());
 			});
+		// Listen to the userInfoUpdate event and update the presence group when the user info is updated
 		presenceManager.setUserInfoUpdateListener(() => {
 			setInvalidations(invalidations + Math.random());
 		});
@@ -200,12 +212,15 @@ export function AppPresenceGroup(): JSX.Element {
 		};
 	}, []);
 
+	// Get the list of connected attendees
 	const connectedAttendees = [...presenceManager.getPresence().getAttendees()].filter(
 		(attendee) => attendee.getConnectionStatus() === "Connected",
 	);
 
+	// Get the user info for the connected attendees
 	const userInfoList = presenceManager.getUserInfo(connectedAttendees);
 
+	// Display the presence group with connected attendees
 	if (userInfoList) {
 		return userAvatarGroupView({
 			members: userInfoList,
