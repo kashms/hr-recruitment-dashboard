@@ -35,11 +35,6 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 			throw new Error("AZURE_OPENAI_ENDPOINT environment variable not set");
 		}
 
-		const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
-		if (deployment === null || deployment === undefined) {
-			throw new Error("AZURE_OPENAI_DEPLOYMENT environment variable not set");
-		}
-
 		const viewAlpha = asTreeViewAlpha(props.treeRoot);
 
 		// Create a new branch to make changes to the tree; main branch of tree is unaffected
@@ -54,7 +49,7 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 			openAI: {
 				client: new AzureOpenAI({
 					endpoint: endpoint,
-					deployment: deployment,
+					deployment: "gpt-4o",
 					apiKey: apiKey,
 					apiVersion: "2024-08-01-preview",
 					dangerouslyAllowBrowser: true,
@@ -81,7 +76,7 @@ export function AiChatView(props: AiChatViewProps): JSX.Element {
 				userAsk: inputPrompt,
 			},
 			limiters: {
-				maxModelCalls: 10,
+				maxModelCalls: 40,
 			},
 			// Optionally dump the debug log to the console.
 			dumpDebugLog: true,
