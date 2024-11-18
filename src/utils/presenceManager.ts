@@ -12,6 +12,7 @@ import {
 } from "@fluidframework/presence/alpha";
 import { OdspMember, type IOdspAudience } from "@fluidframework/odsp-client/beta";
 import { TinyliciousMember, type ITinyliciousAudience } from "@fluidframework/tinylicious-client";
+import { uniqueNamesGenerator, adjectives, animals } from 'unique-names-generator';
 
 // Type guard to check if a member is an OdspMember
 function isOdspMember(member: OdspMember | TinyliciousMember): member is OdspMember {
@@ -67,10 +68,12 @@ export class PresenceManager {
 		const myselfMember = this.audience.getMyself();
 
 		if (myselfMember) {
+			const myRandomName = uniqueNamesGenerator({ dictionaries: [adjectives, animals], separator: ' ', style: 'capital' });
+
 			this.appSelectionPresenceState.props.userInfo.local = {
 				userId: myselfMember.id,
-				userName: myselfMember.name,
-				userEmail: isOdspMember(myselfMember) ? myselfMember.email : "",
+				userName: isOdspMember(myselfMember) ? myselfMember.name : myRandomName,
+				userEmail: isOdspMember(myselfMember) ? myselfMember.email : myRandomName.replace(/ /g, "_") + "@hotmail.com",
 			};
 
 			this.userInfoMap.set(

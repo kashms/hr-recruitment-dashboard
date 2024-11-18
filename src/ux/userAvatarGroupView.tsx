@@ -33,7 +33,7 @@ export function userAvatarGroupView(props: {
 	});
 
 	// Function to get the display name of a member, including their email if available
-	const getMemberName = (member: UserInfo) => {
+	const getToolTipName = (member: UserInfo) => {
 		const emailPart = member.userEmail ? ` - ${member.userEmail}` : "";
 		return `${member.userName}${emailPart}`;
 	};
@@ -44,14 +44,14 @@ export function userAvatarGroupView(props: {
 			{/* Render inline avatar items with tooltips */}
 			{inlineItems.map((member) => (
 				<Tooltip
-					content={getMemberName(member)}
+					content={getToolTipName(member)}
 					key={member.userId + Math.random()}
 					relationship="description"
 				>
 					<AvatarGroupItem
 						active={props.myselfUserId === member.userId ? "active" : "unset"}
 						color="colorful"
-						name={getMemberName(member)}
+						name={member.userName}
 						key={member.userId + Math.random()}
 					/>
 				</Tooltip>
@@ -61,7 +61,7 @@ export function userAvatarGroupView(props: {
 				<AvatarGroupPopover>
 					{overflowItems.map((member) => (
 						<AvatarGroupItem
-							name={getMemberName(member)}
+							name={getToolTipName(member)}
 							key={member.userId + Math.random()}
 							color="colorful"
 						/>
