@@ -84,7 +84,7 @@ export function OnSitePlanView(props: {
 			className={`flex flex-col gap-1 content-center w-96 min-w-96 h-full overflow-y-auto border-r-4`}
 		>
 			<div className="text-lg p-2 mx-0.5 font-bold bg-slate-600 text-white text-center">
-				On Site Day
+				On-Site Day
 			</div>
 			<div className={`flex flex-col p-2 mx-2 ${isValid ? "bg-green-100" : "bg-red-100"}`}>
 				{isValid ? (

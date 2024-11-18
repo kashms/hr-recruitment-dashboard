@@ -196,17 +196,19 @@ export function CandidateView(props: {
 						<span className="w-2 h-2 bg-red-500 rounded-full"></span>
 					</div>
 				)}
-				{!props.job.hasOnSiteForCandidate(getCandidate().candidateId) && (
-					<Button
+				{!props.job.hasOnSiteForCandidate(getCandidate().candidateId) ? (
+					<button
 						aria-label="Setup On-Site"
-						appearance="primary"
+						className="bg-blue-600 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded w-fit"
 						onClick={() =>
 							props.job.addNewOnSiteForCandidate(getCandidate().candidateId)
 						}
-						className="inline-block"
 					>
 						Setup On-Site
-					</Button>
+					</button>
+				) : (
+					// shows text saying that onsite has been setup
+					<div className="text-green-600 font-bold p-2 rounded">On-Site Scheduled ✅</div>
 				)}
 			</div>
 			{
