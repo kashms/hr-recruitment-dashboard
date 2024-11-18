@@ -54,7 +54,6 @@
 		"@fluidframework/ai-collab": "2.10.0-307399",
 		"@fluidframework/build-common": "^2.0.3",
 		"@fluidframework/core-interfaces": "2.10.0-307399",
-		"@fluidframework/devtools": "2.10.0-307399",
 		"@fluidframework/odsp-client": "2.10.0-307399",
 		"@fluidframework/tinylicious-client": "2.10.0-307399",
 		"@fluidframework/tree": "2.10.0-307399",

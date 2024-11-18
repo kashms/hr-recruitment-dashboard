@@ -4,7 +4,6 @@
  */
 
 import { ExperimentalPresenceManager } from "@fluidframework/presence/alpha";
-import type { ITelemetryBaseLogger } from "@fluidframework/core-interfaces";
 import { OdspClient, OdspContainerServices } from "@fluidframework/odsp-client/beta";
 import { type ContainerSchema, type IFluidContainer, SharedTree } from "fluid-framework";
 
@@ -18,7 +17,6 @@ export async function loadFluidData<T extends ContainerSchema>(
 	containerId: string,
 	containerSchema: T,
 	client: OdspClient,
-	telemetryLogger?: ITelemetryBaseLogger,
 ): Promise<{
 	services: OdspContainerServices;
 	container: IFluidContainer<T>;
@@ -35,15 +33,6 @@ export async function loadFluidData<T extends ContainerSchema>(
 		// Use the unique container ID to fetch the container created earlier. It will already be connected to the
 		// collaboration session.
 		({ container, services } = await client.getContainer(containerId, containerSchema));
-	}
-
-	// Initialize Devtools
-	if (process.env.NODE_ENV === "development") {
-		const { initializeDevtools } = await import("@fluidframework/devtools/beta");
-		initializeDevtools({
-			initialContainers: [{ containerKey: "HR App Container", container }],
-			logger: telemetryLogger,
-		});
 	}
 
 	return { services, container };
