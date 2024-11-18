@@ -106,7 +106,13 @@ export class PresenceManager {
 				const userInfo =
 					this.appSelectionPresenceState.props.userInfo.clientValue(sessionClient).value;
 				if (userInfo) {
-					userInfoList.push(userInfo);
+					// If the user is local user, then add it to the beginning of the list
+					if (sessionClient.sessionId === this.presence.getMyself().sessionId) {
+						userInfoList.unshift(userInfo);
+					} else {
+						// If the user is remote user, then add it to the end of the list
+						userInfoList.push(userInfo);
+					}
 				}
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (e) {

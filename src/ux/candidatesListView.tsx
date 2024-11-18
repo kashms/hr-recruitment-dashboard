@@ -8,7 +8,6 @@ import { Candidate, Job } from "@lab/appSchema.js";
 import { createTestCandidate } from "../utils/testData.js";
 import React from "react";
 import { AvailabilityView } from "./availabilityView.js";
-import { Button } from "@fluentui/react-components";
 import { getKeysByValue } from "../utils/util.js";
 import { userAvatarGroupView } from "./userAvatarGroupView.js";
 import { ISessionClient } from "@fluidframework/presence/alpha";

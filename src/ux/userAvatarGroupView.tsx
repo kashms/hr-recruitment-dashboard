@@ -18,6 +18,7 @@ import { UserInfo } from "../utils/presenceManager.js";
 // jobs and candidate cards.
 export function userAvatarGroupView(props: {
 	members?: UserInfo[]; // Optional array of UserInfo objects representing the members
+	myselfUserId?: string; // Optional string representing the current user's ID
 	size: AvatarSize; // Size of the avatars
 	layout: "spread" | "stack"; // Layout style for the avatar group
 }): JSX.Element {
@@ -48,8 +49,7 @@ export function userAvatarGroupView(props: {
 					relationship="description"
 				>
 					<AvatarGroupItem
-						active="active"
-						activeAppearance="ring-shadow"
+						active={props.myselfUserId === member.userId ? "active" : "unset"}
 						color="colorful"
 						name={getMemberName(member)}
 						key={member.userId + Math.random()}
@@ -63,9 +63,7 @@ export function userAvatarGroupView(props: {
 						<AvatarGroupItem
 							name={getMemberName(member)}
 							key={member.userId + Math.random()}
-							active="active"
 							color="colorful"
-							activeAppearance="ring-shadow"
 						/>
 					))}
 				</AvatarGroupPopover>

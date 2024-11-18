@@ -205,6 +205,7 @@ export function AppPresenceGroup(): JSX.Element {
 	if (userInfoList) {
 		return userAvatarGroupView({
 			members: userInfoList,
+			myselfUserId: presenceManager.getStates().userInfo.local.userId,
 			size: 40,
 			layout: "spread",
 		});
