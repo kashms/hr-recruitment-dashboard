@@ -39,7 +39,7 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 		setOnsiteScheduleSelectedCandidate(undefined);
 		setOpenDrawer(false);
 
-		if (job) {
+		if (job?.isUnread) {
 			job.isUnread = false;
 		}
 	};
@@ -50,14 +50,18 @@ export function HRApp(props: { data: TreeView<typeof HRData> }): JSX.Element {
 			if (selectedJob?.hasOnSiteForCandidate(candidate.candidateId)) {
 				const candidateSchedule = selectedJob.getOnSiteForCandidate(candidate.candidateId);
 				if (candidateSchedule) {
-					candidateSchedule.isUnread = false;
+					if (candidateSchedule.isUnread) {
+						candidateSchedule.isUnread = false;
+					}
 					setOnsiteScheduleSelectedCandidate(candidateSchedule);
 				}
 			} else {
 				setOnsiteScheduleSelectedCandidate(undefined);
 			}
 			setOpenDrawer(false);
-			candidate.isUnread = false;
+			if (candidate.isUnread) {
+				candidate.isUnread = false;
+			}
 		}
 	};
 
